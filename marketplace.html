@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omego Marketplace | Products, Services &amp; Suppliers</title>
+<meta name="description" content="Omego Marketplace — find products, services, suppliers and manufacturers in one place, powered by AI search.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="marketplace.css">
+</head>
+<body>
+
+<!-- background glass blobs -->
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+</div>
+
+<!-- ===== BAR 1 — utility ===== -->
+<header class="bar bar-1">
+  <div class="bar-inner">
+    <a href="#home" class="logo">
+      <span class="logo-mark">O</span>
+      <span class="logo-text">omego<em>market</em></span>
+    </a>
+
+    <nav class="bar1-links">
+      <a href="#home" class="active">Home</a>
+      <a href="#contact">Contact Us</a>
+      <a href="#suppliers">Suppliers</a>
+      <a href="#manufacturers">Manufacturers</a>
+    </nav>
+
+    <div class="bar1-auth">
+      <button class="link-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+      <button class="link-btn" id="loginBtn">Login</button>
+      <button class="btn-pill" id="createBtn">Create Account</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== BAR 2 — marketplace nav ===== -->
+<nav class="bar bar-2">
+  <div class="bar-inner">
+    <a href="#products" class="active" data-tab="products">
+      <svg viewBox="0 0 24 24" width="16" height="16"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6M12 15v9"/></svg>
+      Products
+    </a>
+    <a href="#services" data-tab="services">
+      <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+      Services
+    </a>
+    <a href="#transactions">
+      <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg>
+      Transactions
+    </a>
+    <a href="#advertisement">
+      <svg viewBox="0 0 24 24" width="16" height="16"><path d="M3 11l18-7-7 18-3-8-8-3z"/></svg>
+      Advertisement
+    </a>
+    <a href="#cart" id="cartLink">
+      <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+      Cart <span class="cart-count" id="cartCount">0</span>
+    </a>
+  </div>
+</nav>
+
+<main id="home">
+
+  <!-- ===== AI SEARCH ===== -->
+  <section class="search-zone">
+    <div class="search-glow">
+      <svg class="ai-icon" viewBox="0 0 24 24" width="20" height="20"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
+      <input type="text" id="searchInput" placeholder="Search products, services or suppliers — or ask the AI…">
+      <button class="ai-btn" id="aiBtn"><span>Ask AI</span></button>
+    </div>
+  </section>
+
+  <!-- ===== CATEGORY LIST ===== -->
+  <section class="categories" aria-label="Category list">
+    <div class="cat-scroll" id="catScroll">
+      <button class="cat-chip active" data-cat="all"><span class="cat-ic">✦</span>All</button>
+      <button class="cat-chip" data-cat="electronics"><span class="cat-ic">🔌</span>Electronics</button>
+      <button class="cat-chip" data-cat="textiles"><span class="cat-ic">🧵</span>Textiles</button>
+      <button class="cat-chip" data-cat="machinery"><span class="cat-ic">⚙</span>Machinery</button>
+      <button class="cat-chip" data-cat="food"><span class="cat-ic">🍽</span>Food &amp; Beverage</button>
+      <button class="cat-chip" data-cat="construction"><span class="cat-ic">🏗</span>Construction</button>
+      <button class="cat-chip" data-cat="packaging"><span class="cat-ic">📦</span>Packaging</button>
+      <button class="cat-chip" data-cat="services"><span class="cat-ic">🛠</span>Services</button>
+      <button class="cat-chip" data-cat="logistics"><span class="cat-ic">🚚</span>Logistics</button>
+    </div>
+  </section>
+
+  <!-- ===== MARKETPLACE GRID ===== -->
+  <section class="grid-zone" id="products">
+    <div class="grid-toolbar">
+      <span id="resultCount">36 listings</span>
+      <select id="sortSelect">
+        <option value="relevance">Sort: Relevance</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+        <option value="rating">Top Rated</option>
+      </select>
+    </div>
+
+    <div class="product-grid" id="productGrid"><!-- cards injected by marketplace.js --></div>
+  </section>
+
+</main>
+
+<script src="marketplace.js"></script>
+</body>
+</html>
