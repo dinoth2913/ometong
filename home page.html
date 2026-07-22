@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omego Market | The Marketplace Built for Global Trade</title>
+<meta name="description" content="Omego Market connects verified suppliers, manufacturers and buyers worldwide — with AI-matched sourcing, secure transactions and integrated logistics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="home page.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="loader" id="loader">
+  <div class="loader-ring"></div>
+  <span class="loader-word">omego<em>market</em></span>
+</div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+</div>
+
+<!-- ===== ANNOUNCEMENT ===== -->
+<div class="announce" id="announce">
+  <span>✦ New — AI supplier matching is now live across all categories</span>
+  <a href="marketplace.html">Try it now →</a>
+  <button id="announceClose" aria-label="Dismiss">&times;</button>
+</div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="#top" class="logo">
+      <span class="logo-mark">O</span>
+      <span class="logo-text">omego<em>market</em></span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#how">How it Works</a>
+      <a href="#categories">Categories</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="#suppliers">For Suppliers</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="#" class="link-btn">Login</a>
+      <a href="marketplace.html" class="btn btn-primary btn-sm">Explore Marketplace</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#how">How it Works</a>
+  <a href="#categories">Categories</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="#suppliers">For Suppliers</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#" class="link-btn">Login</a>
+  <a href="marketplace.html" class="btn btn-primary">Explore Marketplace</a>
+</div>
+
+<main id="top">
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow" data-reveal>✦ Trade smarter, not harder</span>
+      <h1 data-reveal>The marketplace built for <span>global trade</span></h1>
+      <p data-reveal>Source from verified suppliers and manufacturers, sell to buyers worldwide, and move it all with logistics baked in — matched by AI, secured end to end.</p>
+
+      <div class="hero-search" data-reveal>
+        <svg class="ai-icon" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>
+        <input type="text" placeholder="Search 12,000+ products, services &amp; suppliers…" id="heroSearch">
+        <button class="ai-btn" id="heroSearchBtn">Search</button>
+      </div>
+      <div class="hero-suggest" data-reveal>
+        <span>Popular:</span>
+        <button>Electronics</button><button>Textiles</button><button>Logistics</button><button>Machinery</button>
+      </div>
+
+      <div class="hero-actions" data-reveal>
+        <a href="marketplace.html" class="btn btn-primary btn-lg magnetic">Explore Marketplace</a>
+        <a href="#suppliers" class="btn btn-ghost btn-lg magnetic">Become a Supplier</a>
+      </div>
+
+      <div class="hero-trust" data-reveal>
+        <div class="avatars"><span></span><span></span><span></span><span></span></div>
+        <p><strong>4,200+</strong> businesses sourcing on Omego Market this month</p>
+      </div>
+    </div>
+
+    <div class="hero-visual" data-reveal>
+      <div class="orbit-stage" id="orbitStage">
+        <div class="orbit-core">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>
+          <span>AI Match</span>
+        </div>
+        <div class="float-card fc1">
+          <div class="fc-thumb" style="background:#FF743122"></div>
+          <div><strong>LED Panel Array</strong><span>$128 · Verified</span></div>
+        </div>
+        <div class="float-card fc2">
+          <div class="fc-thumb" style="background:#3A6FF722"></div>
+          <div><strong>Ceylon Cinnamon Bulk</strong><span>$64 · New</span></div>
+        </div>
+        <div class="float-card fc3">
+          <div class="fc-thumb" style="background:#22C55E22"></div>
+          <div><strong>Freight Insurance</strong><span>Service · Top Rated</span></div>
+        </div>
+        <div class="float-card fc4">
+          <div class="fc-thumb" style="background:#8B5CF622"></div>
+          <div><strong>CNC Spindle Unit</strong><span>$1,240 · Verified</span></div>
+        </div>
+        <svg class="orbit-rings" viewBox="0 0 400 400"><circle cx="200" cy="200" r="120"/><circle cx="200" cy="200" r="170"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-marquee">
+    <div class="marquee-track">
+      <span>CEYLON TRADERS</span><span>HORIZON SUPPLY CO.</span><span>LANKA INDUSTRIAL GROUP</span><span>SPICE ROUTE EXPORTS</span><span>ISLAND MANUFACTURING</span><span>APEX ELECTRONICS</span>
+      <span>CEYLON TRADERS</span><span>HORIZON SUPPLY CO.</span><span>LANKA INDUSTRIAL GROUP</span><span>SPICE ROUTE EXPORTS</span><span>ISLAND MANUFACTURING</span><span>APEX ELECTRONICS</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats-band">
+  <div class="stats-inner">
+    <div class="stat" data-reveal><span class="stat-num" data-count="12400">0</span><label>Products &amp; Services Listed</label></div>
+    <div class="stat" data-reveal><span class="stat-num" data-count="3100">0</span><label>Verified Suppliers</label></div>
+    <div class="stat" data-reveal><span class="stat-num" data-count="58">0</span><label>Countries Reached</label></div>
+    <div class="stat" data-reveal><span class="stat-num" data-count="99">0</span><label>% On-Time Fulfilment</label></div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="tag">How it Works</span>
+      <h2>From search to delivery, in four steps</h2>
+      <p>No middlemen chasing quotes for weeks. Just a clear path from need to shipment.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-line" aria-hidden="true"></div>
+      <div class="step" data-reveal>
+        <div class="step-num">01</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+        <h3>Search or ask AI</h3>
+        <p>Describe what you need in plain language — our AI matches you to the right listings and suppliers.</p>
+      </div>
+      <div class="step" data-reveal>
+        <div class="step-num">02</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h3>Compare verified suppliers</h3>
+        <p>Every supplier is vetted, rated and documented — so you compare real options, not guesswork.</p>
+      </div>
+      <div class="step" data-reveal>
+        <div class="step-num">03</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg></div>
+        <h3>Transact securely</h3>
+        <p>Escrow-backed payments and clear contracts keep both sides protected until delivery is confirmed.</p>
+      </div>
+      <div class="step" data-reveal>
+        <div class="step-num">04</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg></div>
+        <h3>Ship with logistics built in</h3>
+        <p>Freight, customs and last-mile delivery are arranged for you, with tracking from factory to door.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CATEGORIES ===== -->
+<section class="section alt" id="categories">
+  <div class="container">
+    <div class="section-head with-action" data-reveal>
+      <div>
+        <span class="tag">Browse</span>
+        <h2>Shop by category</h2>
+      </div>
+      <a href="marketplace.html" class="link-arrow">View all categories <span>→</span></a>
+    </div>
+
+    <div class="category-grid">
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">🔌</span><h4>Electronics</h4><span class="cat-count">1,840 listings</span></a>
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">🧵</span><h4>Textiles</h4><span class="cat-count">1,120 listings</span></a>
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">⚙</span><h4>Machinery</h4><span class="cat-count">960 listings</span></a>
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">🍽</span><h4>Food &amp; Beverage</h4><span class="cat-count">1,430 listings</span></a>
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">🏗</span><h4>Construction</h4><span class="cat-count">870 listings</span></a>
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">📦</span><h4>Packaging</h4><span class="cat-count">640 listings</span></a>
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">🛠</span><h4>Services</h4><span class="cat-count">2,010 listings</span></a>
+      <a class="cat-card" href="marketplace.html" data-reveal><span class="cat-emoji">🚚</span><h4>Logistics</h4><span class="cat-count">590 listings</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED LISTINGS ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-head with-action" data-reveal>
+      <div>
+        <span class="tag">Trending Now</span>
+        <h2>Featured listings this week</h2>
+      </div>
+      <a href="marketplace.html" class="link-arrow">Browse marketplace <span>→</span></a>
+    </div>
+
+    <div class="feat-scroll" id="featScroll">
+      <div class="feat-card" data-reveal>
+        <div class="feat-thumb" style="background:#FF743118"></div>
+        <span class="feat-badge">Verified</span>
+        <h4>Industrial Sensor Kit</h4>
+        <span class="feat-meta">★ 4.8 · Apex Electronics</span>
+        <strong class="feat-price">$212 <small>/unit</small></strong>
+      </div>
+      <div class="feat-card" data-reveal>
+        <div class="feat-thumb" style="background:#3A6FF718"></div>
+        <span class="feat-badge">New</span>
+        <h4>Woven Poly Bags</h4>
+        <span class="feat-meta">★ 4.6 · Horizon Supply Co.</span>
+        <strong class="feat-price">$38 <small>/unit</small></strong>
+      </div>
+      <div class="feat-card" data-reveal>
+        <div class="feat-thumb" style="background:#22C55E18"></div>
+        <span class="feat-badge">Top Rated</span>
+        <h4>Cold Chain Transport</h4>
+        <span class="feat-meta">★ 4.9 · Omego Logistics</span>
+        <strong class="feat-price">Service</strong>
+      </div>
+      <div class="feat-card" data-reveal>
+        <div class="feat-thumb" style="background:#8B5CF618"></div>
+        <span class="feat-badge">Verified</span>
+        <h4>Hydraulic Press</h4>
+        <span class="feat-meta">★ 4.7 · Lanka Industrial Group</span>
+        <strong class="feat-price">$3,150 <small>/unit</small></strong>
+      </div>
+      <div class="feat-card" data-reveal>
+        <div class="feat-thumb" style="background:#FFC24D18"></div>
+        <span class="feat-badge">New</span>
+        <h4>Roasted Cashew Lot</h4>
+        <span class="feat-meta">★ 4.5 · Spice Route Exports</span>
+        <strong class="feat-price">$96 <small>/unit</small></strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY CHOOSE ===== -->
+<section class="section alt" id="suppliers">
+  <div class="container why-grid">
+    <div class="why-copy" data-reveal>
+      <span class="tag">Why Omego Market</span>
+      <h2>Built for businesses that can't afford supply-chain surprises</h2>
+      <p>Every listing, supplier and transaction on Omego Market is backed by verification, escrow and logistics support — so growth doesn't come with hidden risk.</p>
+      <a href="marketplace.html" class="btn btn-primary magnetic">Start Sourcing</a>
+    </div>
+
+    <div class="why-list">
+      <div class="why-item" data-reveal>
+        <div class="why-icon"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div><h4>Verified suppliers only</h4><p>Every supplier is document-checked and rated before they can list.</p></div>
+      </div>
+      <div class="why-item" data-reveal>
+        <div class="why-icon"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg></div>
+        <div><h4>AI-matched sourcing</h4><p>Describe your need once — get ranked, relevant supplier matches back in seconds.</p></div>
+      </div>
+      <div class="why-item" data-reveal>
+        <div class="why-icon"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg></div>
+        <div><h4>Escrow-secured payments</h4><p>Funds release only when delivery is confirmed on both sides.</p></div>
+      </div>
+      <div class="why-item" data-reveal>
+        <div class="why-icon"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg></div>
+        <div><h4>Logistics built in</h4><p>Freight, customs and delivery arranged without leaving the platform.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section testimonials-section">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="tag">Trusted by Growing Businesses</span>
+      <h2>What buyers &amp; suppliers say</h2>
+    </div>
+
+    <div class="testi-slider" data-reveal>
+      <div class="testi-track" id="testiTrack">
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>"We found a verified electronics supplier and closed the deal in three days — something that used to take us weeks."</p>
+          <div class="testi-person"><span class="tp-avatar">RD</span><div><strong>Ruwan De Silva</strong><span>Ceylon Traders Ltd.</span></div></div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>"The AI matching actually understood our spec on the first try. Listing our products here doubled our export leads."</p>
+          <div class="testi-person"><span class="tp-avatar">NF</span><div><strong>Nadia Fernando</strong><span>Horizon Supply Co.</span></div></div>
+        </div>
+        <div class="testi-card">
+          <div class="stars">★★★★★</div>
+          <p>"Escrow payments removed all the trust issues we used to have with new overseas buyers."</p>
+          <div class="testi-person"><span class="tp-avatar">SP</span><div><strong>Suresh Perera</strong><span>Lanka Industrial Group</span></div></div>
+        </div>
+      </div>
+      <div class="testi-dots" id="testiDots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING TEASER ===== -->
+<section class="section alt" id="pricing">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="tag">Pricing</span>
+      <h2>Simple plans for buyers and suppliers</h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card" data-reveal>
+        <h4>Buyer</h4>
+        <div class="price-amt">Free</div>
+        <p>Search, compare and transact with any verified supplier.</p>
+        <ul><li>Unlimited AI search</li><li>Escrow-protected orders</li><li>Order tracking</li></ul>
+        <a href="marketplace.html" class="btn btn-ghost">Get Started</a>
+      </div>
+      <div class="price-card featured" data-reveal>
+        <span class="price-tag">Most Popular</span>
+        <h4>Supplier Growth</h4>
+        <div class="price-amt">$49<small>/mo</small></div>
+        <p>List unlimited products &amp; services with priority AI matching.</p>
+        <ul><li>Unlimited listings</li><li>Priority placement</li><li>Verified badge</li><li>Analytics dashboard</li></ul>
+        <a href="#" class="btn btn-primary">Start Free Trial</a>
+      </div>
+      <div class="price-card" data-reveal>
+        <h4>Enterprise</h4>
+        <div class="price-amt">Custom</div>
+        <p>Dedicated account management and logistics integration.</p>
+        <ul><li>API access</li><li>Dedicated manager</li><li>Custom contracts</li></ul>
+        <a href="#" class="btn btn-ghost">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-band">
+  <div class="container cta-inner" data-reveal>
+    <h2>Ready to grow your business globally?</h2>
+    <p>Join thousands of buyers and suppliers already trading on Omego Market.</p>
+    <div class="cta-actions">
+      <a href="marketplace.html" class="btn btn-primary btn-lg magnetic">Explore Marketplace</a>
+      <a href="#suppliers" class="btn btn-ghost-light btn-lg magnetic">Become a Supplier</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="#top" class="logo"><span class="logo-mark">O</span><span class="logo-text">omego<em>market</em></span></a>
+      <p>The marketplace built for global trade — products, services and logistics, matched by AI.</p>
+      <div class="footer-social"><a href="#">in</a><a href="#">f</a><a href="#">x</a><a href="#">ig</a></div>
+    </div>
+    <div><h5>Marketplace</h5><a href="marketplace.html">Products</a><a href="marketplace.html">Services</a><a href="#categories">Categories</a><a href="#suppliers">Suppliers</a></div>
+    <div><h5>Company</h5><a href="#how">How it Works</a><a href="#pricing">Pricing</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    <div><h5>Resources</h5><a href="#">Help Center</a><a href="#">Trust &amp; Safety</a><a href="#">API Docs</a><a href="#">Blog</a></div>
+    <div class="footer-newsletter"><h5>Stay Updated</h5><p>Sourcing tips &amp; platform news, monthly.</p>
+      <form class="nl-form"><input type="email" placeholder="Your email"><button type="submit">Join</button></form>
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    <span>&copy; <span id="year"></span> Omego Market. All rights reserved.</span>
+    <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Back to top">
+  <svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 3v12M4 8l5-5 5 5"/></svg>
+</button>
+
+<script src="homepage.js"></script>
+</body>
+</html>
