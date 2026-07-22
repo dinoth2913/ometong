@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         successTitle.textContent = title;
         successText.textContent = text;
         authSuccess.classList.add('show');
-        setTimeout(() => { window.location.href = 'home.html'; }, 1800);
+        setTimeout(() => { window.location.href = 'home page.html'; }, 1800);
       }, 700);
     });
   }
