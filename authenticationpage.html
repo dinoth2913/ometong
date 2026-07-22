@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omego Market | Login or Create Account</title>
+    <meta name="description" content="Log in or create your Omego Market account to start sourcing or selling.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="authenticationpage.css">
+</head>
+
+<body>
+
+    <div class="bg-blobs" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+    </div>
+
+    <div class="auth-shell">
+
+        <!-- ===== LEFT PANEL ===== -->
+        <aside class="auth-brand">
+            <a href="home.html" class="logo">
+                <span class="logo-mark">O</span>
+                <span class="logo-text">omego<em>market</em></span>
+            </a>
+
+            <div class="brand-content">
+                <h1>Trade with confidence, everywhere you do business.</h1>
+                <p>Verified suppliers, AI-matched sourcing and escrow-secured payments — all in one place.</p>
+
+                <div class="brand-quote">
+                    <div class="stars">★★★★★</div>
+                    <p>"We found a verified supplier and closed the deal in three days."</p>
+                    <div class="quote-person">
+                        <span class="qp-avatar">RD</span>
+                        <div><strong>Ruwan De Silva</strong><span>Ceylon Traders Ltd.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="home.html" class="back-home">&larr; Back to home</a>
+        </aside>
+
+        <!-- ===== RIGHT PANEL ===== -->
+        <main class="auth-panel">
+            <div class="auth-card">
+
+                <div class="auth-tabs">
+                    <button class="tab active" data-tab="login">Log in</button>
+                    <button class="tab" data-tab="signup">Create account</button>
+                    <span class="tab-indicator" id="tabIndicator"></span>
+                </div>
+
+                <!-- ---- LOGIN FORM ---- -->
+                <form class="auth-form active" id="loginForm" novalidate>
+                    <h2>Welcome back</h2>
+                    <p class="auth-sub">Log in to continue sourcing and selling.</p>
+
+                    <div class="social-row">
+                        <button type="button" class="social-btn">
+                            <svg viewBox="0 0 24 24" width="18" height="18">
+                                <path
+                                    d="M22 12.2c0-.7-.06-1.4-.18-2H12v3.8h5.6a4.8 4.8 0 01-2.1 3.1v2.6h3.4c2-1.8 3.1-4.5 3.1-7.5z"
+                                    fill="#4285F4" />
+                                <path
+                                    d="M12 22c2.7 0 5-.9 6.9-2.4l-3.4-2.6c-.9.6-2.1 1-3.5 1-2.7 0-5-1.8-5.8-4.3H2.7v2.7A10 10 0 0012 22z"
+                                    fill="#34A853" />
+                                <path d="M6.2 13.7a6 6 0 010-3.8V7.2H2.7a10 10 0 000 9l3.5-2.5z" fill="#FBBC05" />
+                                <path
+                                    d="M12 6.2c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0012 2a10 10 0 00-9.3 5.2l3.5 2.7C7 7.9 9.3 6.2 12 6.2z"
+                                    fill="#EA4335" />
+                            </svg>
+                            Google
+                        </button>
+                        <button type="button" class="social-btn">
+                            <svg viewBox="0 0 24 24" width="18" height="18">
+                                <path
+                                    d="M16.5 1.5c.1 1.2-.4 2.4-1.1 3.3-.8.9-2 1.6-3.2 1.5-.1-1.2.5-2.5 1.2-3.3.8-.9 2.1-1.5 3.1-1.5zM20.8 17c-.6 1.3-.9 1.9-1.6 3-1 1.5-2.5 3.4-4.3 3.4-1.6 0-2-1-4.2-1s-2.7 1-4.3 1c-1.8 0-3.2-1.7-4.2-3.2C.2 17 -.7 12.1 1.4 9c1-1.6 2.9-2.6 4.6-2.6 1.7 0 2.8 1.1 4.2 1.1s2.3-1.1 4.3-1.1c1.4 0 2.9.8 4 2-1.7 1-2.9 2.9-2.9 4.9 0 2.3 1.4 3.4 2.2 3.7z"
+                                    fill="#111" />
+                            </svg>
+                            Apple
+                        </button>
+                    </div>
+                    <div class="divider"><span>or continue with email</span></div>
+
+                    <label>Email
+                        <input type="email" name="email" placeholder="you@company.com" required>
+                    </label>
+                    <label>Password
+                        <div class="pw-field">
+                            <input type="password" name="password" id="loginPw" placeholder="Enter your password"
+                                required>
+                            <button type="button" class="pw-toggle" data-target="loginPw" aria-label="Show password">
+                                <svg viewBox="0 0 24 24" width="18" height="18">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </label>
+
+                    <div class="form-row">
+                        <label class="checkbox"><input type="checkbox"> Remember me</label>
+                        <a href="#" class="link-small">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Log in</button>
+                    <p class="auth-switch">Don't have an account? <button type="button" class="link-inline"
+                            data-goto="signup">Create one</button></p>
+                </form>
+
+                <!-- ---- SIGNUP FORM ---- -->
+                <form class="auth-form" id="signupForm" novalidate>
+                    <h2>Create your account</h2>
+                    <p class="auth-sub">Start sourcing or selling in minutes.</p>
+
+                    <div class="social-row">
+                        <button type="button" class="social-btn">
+                            <svg viewBox="0 0 24 24" width="18" height="18">
+                                <path
+                                    d="M22 12.2c0-.7-.06-1.4-.18-2H12v3.8h5.6a4.8 4.8 0 01-2.1 3.1v2.6h3.4c2-1.8 3.1-4.5 3.1-7.5z"
+                                    fill="#4285F4" />
+                                <path
+                                    d="M12 22c2.7 0 5-.9 6.9-2.4l-3.4-2.6c-.9.6-2.1 1-3.5 1-2.7 0-5-1.8-5.8-4.3H2.7v2.7A10 10 0 0012 22z"
+                                    fill="#34A853" />
+                                <path d="M6.2 13.7a6 6 0 010-3.8V7.2H2.7a10 10 0 000 9l3.5-2.5z" fill="#FBBC05" />
+                                <path
+                                    d="M12 6.2c1.5 0 2.8.5 3.8 1.5l2.9-2.9A9.6 9.6 0 0012 2a10 10 0 00-9.3 5.2l3.5 2.7C7 7.9 9.3 6.2 12 6.2z"
+                                    fill="#EA4335" />
+                            </svg>
+                            Google
+                        </button>
+                        <button type="button" class="social-btn">
+                            <svg viewBox="0 0 24 24" width="18" height="18">
+                                <path
+                                    d="M16.5 1.5c.1 1.2-.4 2.4-1.1 3.3-.8.9-2 1.6-3.2 1.5-.1-1.2.5-2.5 1.2-3.3.8-.9 2.1-1.5 3.1-1.5zM20.8 17c-.6 1.3-.9 1.9-1.6 3-1 1.5-2.5 3.4-4.3 3.4-1.6 0-2-1-4.2-1s-2.7 1-4.3 1c-1.8 0-3.2-1.7-4.2-3.2C.2 17 -.7 12.1 1.4 9c1-1.6 2.9-2.6 4.6-2.6 1.7 0 2.8 1.1 4.2 1.1s2.3-1.1 4.3-1.1c1.4 0 2.9.8 4 2-1.7 1-2.9 2.9-2.9 4.9 0 2.3 1.4 3.4 2.2 3.7z"
+                                    fill="#111" />
+                            </svg>
+                            Apple
+                        </button>
+                    </div>
+                    <div class="divider"><span>or sign up with email</span></div>
+
+                    <label>Full name
+                        <input type="text" name="name" placeholder="Your full name" required>
+                    </label>
+                    <label>Email
+                        <input type="email" name="email" placeholder="you@company.com" required>
+                    </label>
+                    <label>Password
+                        <div class="pw-field">
+                            <input type="password" name="password" id="signupPw" placeholder="Create a password"
+                                required minlength="8">
+                            <button type="button" class="pw-toggle" data-target="signupPw" aria-label="Show password">
+                                <svg viewBox="0 0 24 24" width="18" height="18">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="pw-hint">At least 8 characters</span>
+                    </label>
+
+                    <label class="checkbox terms">
+                        <input type="checkbox" required>
+                        <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+                    </label>
+
+                    <button type="submit" class="btn btn-primary btn-block">Create account</button>
+                    <p class="auth-switch">Already have an account? <button type="button" class="link-inline"
+                            data-goto="login">Log in</button></p>
+                </form>
+
+                <!-- ---- SUCCESS STATE ---- -->
+                <div class="auth-success" id="authSuccess">
+                    <svg viewBox="0 0 52 52" width="56" height="56">
+                        <circle cx="26" cy="26" r="24" />
+                        <path d="M15 27l7 7 15-15" />
+                    </svg>
+                    <h3 id="successTitle">You're all set</h3>
+                    <p id="successText">Redirecting you to the marketplace…</p>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <script src="authenticationpage.js"></script>
+</body>
+
+</html>
