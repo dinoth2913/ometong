@@ -80,6 +80,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const allProducts = buildProducts();
 
+  /* ---------- Cart (persisted in localStorage, shared with cart.html) ---------- */
+  const CART_KEY = 'omego_cart';
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveCart(items) { localStorage.setItem(CART_KEY, JSON.stringify(items)); }
+  function cartTotalQty(items) { return items.reduce((sum, i) => sum + i.qty, 0); }
+  function addToCart(product) {
+    const items = getCart();
+    const existing = items.find(i => i.id === product.id);
+    if (existing) existing.qty++;
+    else items.push({ id: product.id, title: product.title, cat: product.cat, supplier: product.supplier, price: product.price, color: product.color, qty: 1 });
+    saveCart(items);
+    updateCartBadge();
+  }
+  function updateCartBadge() {
+    const el = document.getElementById('cartCount');
+    if (el) el.textContent = cartTotalQty(getCart());
+  }
+
   /* ---------- Render ---------- */
   const grid = document.getElementById('productGrid');
   const resultCount = document.getElementById('resultCount');
@@ -117,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeCat = 'all';
   let query = '';
   let sortMode = 'relevance';
-  let cart = 0;
 
   function currentList() {
     let list = allProducts;
@@ -135,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function refresh() { render(currentList()); }
   refresh();
+  updateCartBadge();
 
   /* ---------- Category chips ---------- */
   document.querySelectorAll('.cat-chip').forEach(chip => {
@@ -183,12 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ---------- Cart + favorites (event delegation, since cards re-render) ---------- */
-  const cartCount = document.getElementById('cartCount');
   grid.addEventListener('click', (e) => {
     const addBtn = e.target.closest('[data-add]');
     if (addBtn) {
-      cart++;
-      cartCount.textContent = cart;
+      const id = parseInt(addBtn.dataset.add, 10);
+      const product = allProducts.find(p => p.id === id);
+      if (product) addToCart(product);
       addBtn.classList.add('added');
       setTimeout(() => addBtn.classList.remove('added'), 700);
       return;
