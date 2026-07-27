@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advertise | Ometong</title>
+<meta name="description" content="Advertise your product or service on Ometong — reach thousands of verified buyers and suppliers with featured listings, homepage banners and sponsored search placements.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/advertisement.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+</div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="Home.html" class="logo">
+      <img src="../../images/logo.png" alt="Ometong" class="logo-img">
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="Home.html#how">How it Works</a>
+      <a href="Home.html#categories">Categories</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="Supplier.html">For Suppliers</a>
+      <a href="advertisement.html" class="active">Advertise</a>
+      <a href="contactus.html">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="authenticationpage.html" class="link-btn">Login</a>
+      <a href="marketplace.html" class="btn btn-primary btn-sm">Explore Marketplace</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="Home.html#how">How it Works</a>
+  <a href="Home.html#categories">Categories</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="Supplier.html">For Suppliers</a>
+  <a href="advertisement.html">Advertise</a>
+  <a href="contactus.html">Contact</a>
+  <a href="authenticationpage.html" class="link-btn">Login</a>
+  <a href="marketplace.html" class="btn btn-primary">Explore Marketplace</a>
+</div>
+
+<main>
+
+  <!-- ===== HERO ===== -->
+  <section class="ad-hero">
+    <span class="eyebrow" data-reveal>✦ Advertise on Ometong</span>
+    <h1 data-reveal>Put your product or service in front of <span>thousands of buyers</span></h1>
+    <p data-reveal>Anyone can advertise on Ometong — suppliers, manufacturers, service providers, even brands outside the marketplace. Pick a placement, submit your details, and get reviewed within one business day.</p>
+    <div class="ad-hero-actions" data-reveal>
+      <a href="#plans" class="btn btn-primary btn-lg">Choose a Placement</a>
+      <a href="#ad-form" class="btn btn-ghost btn-lg">Submit Your Ad</a>
+    </div>
+  </section>
+
+  <div class="ad-stats" data-reveal>
+    <div class="ad-stat"><strong>4,200+</strong><span>Monthly buyer visits</span></div>
+    <div class="ad-stat"><strong>58</strong><span>Countries reached</span></div>
+    <div class="ad-stat"><strong>&lt; 24h</strong><span>Ad review time</span></div>
+    <div class="ad-stat"><strong>3,100+</strong><span>Active suppliers on-platform</span></div>
+  </div>
+
+  <!-- ===== PLAN SELECTOR ===== -->
+  <section class="section" id="plans">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="tag">Ad Placements</span>
+        <h2>Choose where your ad appears</h2>
+        <p>Every placement is reviewed for quality before it goes live — no spam, no broken links, just clean visibility for real products and services.</p>
+      </div>
+
+      <div class="plan-grid">
+        <div class="plan-card" data-plan="spotlight" data-price="$0" data-reveal>
+          <div class="plan-icon" style="background:var(--blue)">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6M12 15v9"/></svg>
+          </div>
+          <h4>Category Spotlight</h4>
+          <div class="plan-price">Free<small> / listing</small></div>
+          <p class="plan-desc">A standard boosted position within your product category on the Marketplace page.</p>
+          <ul>
+            <li>Priority placement in category results</li>
+            <li>Basic performance stats</li>
+            <li>7-day rotation</li>
+          </ul>
+          <button type="button" class="plan-select-btn">Select this plan</button>
+        </div>
+
+        <div class="plan-card featured" data-plan="featured" data-price="$49" data-reveal>
+          <div class="plan-icon" style="background:linear-gradient(135deg,var(--accent),var(--accent-dark))">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>
+          </div>
+          <h4>Featured Listing</h4>
+          <div class="plan-price">$49<small> / month</small></div>
+          <p class="plan-desc">Your product or service badged as "Featured" across marketplace search and category pages.</p>
+          <ul>
+            <li>Featured badge on every listing</li>
+            <li>Top-of-results placement</li>
+            <li>Full analytics dashboard</li>
+            <li>Priority support</li>
+          </ul>
+          <button type="button" class="plan-select-btn">Select this plan</button>
+        </div>
+
+        <div class="plan-card" data-plan="banner" data-price="$149" data-reveal>
+          <div class="plan-icon" style="background:var(--violet)">
+            <svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg>
+          </div>
+          <h4>Homepage Banner</h4>
+          <div class="plan-price">$149<small> / month</small></div>
+          <p class="plan-desc">A dedicated banner slot on the Ometong homepage — maximum visibility, seen by every visitor.</p>
+          <ul>
+            <li>Homepage hero rotation</li>
+            <li>Click &amp; impression tracking</li>
+            <li>Custom creative &amp; link</li>
+            <li>Dedicated account manager</li>
+          </ul>
+          <button type="button" class="plan-select-btn">Select this plan</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FORM + BENEFITS ===== -->
+  <section class="section alt">
+    <div class="container ad-layout">
+
+      <div class="ad-form-wrap" data-reveal>
+        <div class="ad-card" id="ad-form">
+          <span class="tag">Submit Your Ad</span>
+          <h2>Tell us about your product or service</h2>
+          <p class="form-sub">Fill this out and our team will review it within one business day.</p>
+
+          <div class="selected-plan-banner">
+            <span>Selected placement: <strong id="selectedPlanName">Featured Listing</strong></span>
+            <span id="selectedPlanPrice">$49 / month</span>
+          </div>
+
+          <form id="adForm" novalidate>
+            <div class="field-row">
+              <label>Your name <input type="text" name="name" required placeholder="Full name"></label>
+              <label>Email <input type="email" name="email" required placeholder="you@company.com"></label>
+            </div>
+            <div class="field-row">
+              <label>Business / brand name <input type="text" name="business" required placeholder="e.g. Ceylon Traders Ltd"></label>
+              <label>Phone <input type="tel" name="phone" placeholder="+94 77 000 0000"></label>
+            </div>
+            <div class="field-row">
+              <label>Product or service name <input type="text" name="product" required placeholder="What are you advertising?"></label>
+              <label>Category
+                <select name="category" required>
+                  <option value="">Select a category</option>
+                  <option>Electronics</option>
+                  <option>Textiles</option>
+                  <option>Machinery</option>
+                  <option>Food &amp; Beverage</option>
+                  <option>Construction</option>
+                  <option>Packaging</option>
+                  <option>Services</option>
+                  <option>Logistics</option>
+                  <option>Other</option>
+                </select>
+              </label>
+            </div>
+            <label>Description
+              <textarea name="description" rows="4" required placeholder="Describe what you're advertising and who it's for…"></textarea>
+            </label>
+            <div class="field-row">
+              <label>Website or listing link <input type="url" name="link" placeholder="https://"></label>
+              <label>Monthly budget (optional) <input type="text" name="budget" placeholder="e.g. $100 - $300"></label>
+            </div>
+
+            <label>Ad image or banner
+              <div class="file-drop" id="fileDrop">
+                <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M4 21h16"/></svg>
+                <span>Click to upload or drag an image here</span>
+                <small>PNG, JPG up to 5MB</small>
+                <span class="file-name" id="fileName"></span>
+                <input type="file" name="adImage" id="adImageInput" accept="image/*">
+              </div>
+            </label>
+
+            <button type="submit" class="btn btn-primary btn-block" id="submitAdBtn">
+              <span>Submit for Review</span>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+
+          <div class="form-success" id="adFormSuccess">
+            <svg viewBox="0 0 52 52" width="56" height="56"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
+            <h3>Ad submitted for review</h3>
+            <p>Thanks — our team reviews every ad for quality before it goes live. You'll hear back within one business day at the email you provided.</p>
+            <button type="button" class="btn btn-ghost" id="submitAnotherAd">Submit another ad</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="ad-benefits" data-reveal>
+        <div class="info-card">
+          <div class="info-icon"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+          <div><strong>Reach real buyers</strong><p>Your ad is shown to businesses actively sourcing products and services — not random traffic.</p></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg></div>
+          <div><strong>Every ad is reviewed</strong><p>We manually check each submission for quality and relevance before it's published — keeping listings clean for everyone.</p></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon"><svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg></div>
+          <div><strong>Track performance</strong><p>Featured and banner placements include click and impression analytics so you know what's working.</p></div>
+        </div>
+        <div class="info-card">
+          <div class="info-icon"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <div><strong>No hidden fees</strong><p>The price you see for each placement is the full price — cancel or change your plan any time.</p></div>
+        </div>
+
+        <div class="ad-note">
+          <strong>Not selling on Ometong yet?</strong> You don't need a marketplace listing to advertise — but if you'd rather set up a full store, <a href="Supplier.html" style="color:var(--accent-light);text-decoration:underline;">become a supplier</a> instead.
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="tag">How it Works</span>
+        <h2>From submission to live ad, in four steps</h2>
+      </div>
+      <div class="steps">
+        <div class="step-line" aria-hidden="true"></div>
+        <div class="step" data-reveal>
+          <div class="step-num">01</div>
+          <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+          <h3>Choose a placement</h3>
+          <p>Pick the plan that fits your budget — from a free category spotlight to a homepage banner.</p>
+        </div>
+        <div class="step" data-reveal>
+          <div class="step-num">02</div>
+          <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M4 21h16"/></svg></div>
+          <h3>Submit your details</h3>
+          <p>Tell us about your product or service and upload creative — takes about two minutes.</p>
+        </div>
+        <div class="step" data-reveal>
+          <div class="step-num">03</div>
+          <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <h3>We review it</h3>
+          <p>Our team checks every ad for quality and relevance, usually within one business day.</p>
+        </div>
+        <div class="step" data-reveal>
+          <div class="step-num">04</div>
+          <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z"/></svg></div>
+          <h3>Your ad goes live</h3>
+          <p>Once approved, your ad appears in the placement you selected — with performance tracking from day one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="section alt">
+    <div class="container faq-container">
+      <div class="section-head" data-reveal>
+        <span class="tag">Common Questions</span>
+        <h2>Advertising FAQ</h2>
+      </div>
+      <div class="accordion">
+        <div class="acc-item" data-reveal>
+          <button class="acc-head">Do I need to be a registered supplier to advertise? <span>+</span></button>
+          <div class="acc-body"><p>No — anyone can submit an ad for their product or service, whether or not they have a marketplace listing.</p></div>
+        </div>
+        <div class="acc-item" data-reveal>
+          <button class="acc-head">How long does review take? <span>+</span></button>
+          <div class="acc-body"><p>Most ads are reviewed within one business day. You'll get an email once it's approved and live.</p></div>
+        </div>
+        <div class="acc-item" data-reveal>
+          <button class="acc-head">Can I change or cancel my placement later? <span>+</span></button>
+          <div class="acc-body"><p>Yes, you can upgrade, downgrade, or cancel your ad placement at any time — there are no long-term contracts.</p></div>
+        </div>
+        <div class="acc-item" data-reveal>
+          <button class="acc-head">What image sizes work best? <span>+</span></button>
+          <div class="acc-body"><p>Square or landscape images work best. We'll follow up with exact banner dimensions once your placement is approved.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="Home.html" class="logo"><img src="../../images/logo.png" alt="Ometong" class="logo-img"></a>
+      <p>The marketplace built for global trade — products, services and logistics, matched by AI.</p>
+    </div>
+    <div><h5>Marketplace</h5><a href="marketplace.html">Products</a><a href="marketplace.html">Services</a><a href="Home.html#categories">Categories</a><a href="Supplier.html">Suppliers</a></div>
+    <div><h5>Company</h5><a href="Home.html#how">How it Works</a><a href="advertisement.html">Advertise</a><a href="contactus.html">Contact</a></div>
+  </div>
+  <div class="footer-bottom container">
+    <span>&copy; <span id="year"></span> Ometong. All rights reserved.</span>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Back to top">
+  <svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 3v12M4 8l5-5 5 5"/></svg>
+</button>
+
+<script src="../js/advertisement.js"></script>
+</body>
+</html>
