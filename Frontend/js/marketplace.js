@@ -154,8 +154,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function refresh() { render(currentList()); }
+
+  /* ---------- Category from URL (e.g. marketplace.html?cat=electronics) ---------- */
+  const urlCat = new URLSearchParams(window.location.search).get('cat');
+  if (urlCat && categories.includes(urlCat)) {
+    activeCat = urlCat;
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === urlCat));
+    document.querySelectorAll('.bar-2 [data-tab]').forEach(a => a.classList.remove('active'));
+  }
+
   refresh();
   updateCartBadge();
+
+  if (urlCat && categories.includes(urlCat)) {
+    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   /* ---------- Category chips ---------- */
   document.querySelectorAll('.cat-chip').forEach(chip => {
