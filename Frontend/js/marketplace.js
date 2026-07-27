@@ -1,5 +1,5 @@
 /* =========================================================
-   OMEGO MARKETPLACE — SCRIPT
+   OMETONGPLACE — SCRIPT
 ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const allProducts = buildProducts();
 
   /* ---------- Cart (persisted in localStorage, shared with cart.html) ---------- */
-  const CART_KEY = 'omego_cart';
+  const CART_KEY = 'ometong_cart';
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
     catch { return []; }

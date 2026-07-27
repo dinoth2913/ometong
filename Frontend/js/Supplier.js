@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Suppliers.js — Omego Market (For Suppliers & Manufacturers page)
+   Suppliers.js — Ometong (For Suppliers & Manufacturers page)
    Handles: shared site chrome (loader, scroll progress, nav/mobile menu,
    announcement bar, back-to-top, footer year, newsletter) plus page-specific
    behavior: animated stat counters, testimonial slider dots, FAQ accordion,
@@ -10,8 +10,8 @@
 (function () {
   "use strict";
 
-  var LEADS_STORAGE_KEY = "omegoSupplierLeads";
-  var ANNOUNCE_STORAGE_KEY = "omegoSuppliersAnnounceDismissed";
+  var LEADS_STORAGE_KEY = "ometongSupplierLeads";
+  var ANNOUNCE_STORAGE_KEY = "ometongSuppliersAnnounceDismissed";
 
   document.addEventListener("DOMContentLoaded", function () {
     initSharedChrome();

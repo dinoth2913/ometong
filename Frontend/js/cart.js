@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Cart.js — Omego Market
+   Cart.js — Ometong
    Handles: shared site chrome (loader, scroll progress, nav/mobile menu,
    announcement bar, back-to-top, footer year) plus all cart logic
    (render, quantity, remove, promo codes, totals, checkout, recommended
@@ -12,8 +12,8 @@
   /* ---------------------------------------------------------------------
      Config
      --------------------------------------------------------------------- */
-  var STORAGE_KEY = "omegoMarketCart";
-  var PROMO_STORAGE_KEY = "omegoMarketPromo";
+  var STORAGE_KEY = "ometongCart";
+  var PROMO_STORAGE_KEY = "ometongPromo";
   var TAX_RATE = 0.08;          // 8% estimated tax
   var FLAT_SHIPPING = 45;       // flat shipping fee
   var FREE_SHIPPING_THRESHOLD = 500; // subtotal at/above which shipping is free
@@ -133,13 +133,13 @@
     // Announcement bar dismiss (remember across visits)
     var announce = document.getElementById("announce");
     var announceClose = document.getElementById("announceClose");
-    if (announce && localStorage.getItem("omegoAnnounceDismissed") === "1") {
+    if (announce && localStorage.getItem("ometongAnnounceDismissed") === "1") {
       announce.classList.add("is-hidden");
     }
     if (announceClose) {
       announceClose.addEventListener("click", function () {
         announce.classList.add("is-hidden");
-        try { localStorage.setItem("omegoAnnounceDismissed", "1"); } catch (e) { /* ignore */ }
+        try { localStorage.setItem("ometongAnnounceDismissed", "1"); } catch (e) { /* ignore */ }
       });
     }
 

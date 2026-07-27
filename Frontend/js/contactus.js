@@ -1,5 +1,5 @@
 /* =========================================================
-   OMEGO MARKET — CONTACT US SCRIPT
+   OMETONG — CONTACT US SCRIPT
 ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
 

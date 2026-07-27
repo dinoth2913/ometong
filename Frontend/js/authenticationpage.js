@@ -1,5 +1,5 @@
 /* =========================================================
-   OMEGO MARKET — LOGIN / SIGNUP SCRIPT
+   OMETONG — LOGIN / SIGNUP SCRIPT
 ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
 
