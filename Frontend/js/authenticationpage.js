@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => setTab(btn.dataset.goto));
   });
 
+  /* ---------- Default tab from URL (e.g. authenticationpage.html?tab=signup) ---------- */
+  const urlTab = new URLSearchParams(window.location.search).get('tab');
+  if (urlTab === 'signup') setTab('signup');
+
   /* ---------- Password visibility ---------- */
   document.querySelectorAll('.pw-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
