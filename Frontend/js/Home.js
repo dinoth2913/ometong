@@ -44,6 +44,37 @@ document.addEventListener('DOMContentLoaded', () => {
   hamburger?.addEventListener('click', () => mobileMenu.classList.toggle('open'));
   mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
 
+  /* ---------- Sliding liquid-glass nav indicator ---------- */
+  const navLinksWrap = document.getElementById('navLinks');
+  const navIndicator = document.getElementById('navIndicator');
+
+  if (navLinksWrap && navIndicator) {
+    const navItems = [...navLinksWrap.querySelectorAll('a')];
+
+    function moveIndicatorTo(el) {
+      const wrapRect = navLinksWrap.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const left = elRect.left - wrapRect.left;
+      navIndicator.style.width = elRect.width + 'px';
+      navIndicator.style.transform = `translate(${left}px, -50%)`;
+      navIndicator.classList.add('is-active');
+    }
+
+    navItems.forEach(item => {
+      item.addEventListener('mouseenter', () => moveIndicatorTo(item));
+      item.addEventListener('focus', () => moveIndicatorTo(item));
+    });
+
+    navLinksWrap.addEventListener('mouseleave', () => {
+      navIndicator.classList.remove('is-active');
+    });
+    navLinksWrap.addEventListener('focusout', (e) => {
+      if (!navLinksWrap.contains(e.relatedTarget)) {
+        navIndicator.classList.remove('is-active');
+      }
+    });
+  }
+
   /* ---------- Scroll reveal ---------- */
   const revealEls = document.querySelectorAll('[data-reveal]');
   const revealObserver = new IntersectionObserver((entries) => {

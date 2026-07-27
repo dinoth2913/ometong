@@ -106,19 +106,41 @@ button,input,select{font-family:inherit;}
 .nav-inner{max-width:1600px;margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;gap:30px;}
 .logo{display:flex;align-items:center;gap:9px;}
 .logo-img{height:38px;width:auto;display:block;}
-.nav-links{display:flex;gap:28px;margin:0 auto;}
-.nav-links a{font-size:.9rem;font-weight:600;color:var(--ink-soft);position:relative;padding:6px 0;transition:color .25s;}
-.nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--accent);border-radius:2px;transition:width .3s var(--ease);}
+.nav-links{display:flex;gap:6px;margin:0 auto;position:relative;}
+.nav-links a{font-size:.9rem;font-weight:600;color:var(--ink-soft);position:relative;z-index:1;padding:8px 14px;border-radius:999px;transition:color .25s;}
+.nav-links a::after{display:none;}
 .nav-links a:hover{color:var(--ink);}
-.nav-links a:hover::after{width:100%;}
+
+/* ---- Sliding liquid-glass indicator: follows whichever nav item is hovered/focused ---- */
+.nav-indicator{
+  position:absolute;top:50%;left:0;height:36px;width:0;
+  transform:translate(0,-50%);
+  border-radius:999px;
+  background:var(--glass-bg-strong);
+  border:1px solid var(--glass-border);
+  box-shadow:var(--shadow-sm);
+  opacity:0;z-index:0;pointer-events:none;
+  transition:transform .4s var(--ease), width .4s var(--ease), opacity .25s var(--ease);
+  backdrop-filter:blur(10px) saturate(160%);
+  -webkit-backdrop-filter:blur(10px) saturate(160%);
+}
+.nav-indicator.is-active{opacity:1;}
+.nav-indicator::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 55%);
+  opacity:.65;mix-blend-mode:overlay;
+}
+/* real liquid distortion, layered as progressive enhancement (see .nav.scrolled above) */
+.nav-indicator{
+  backdrop-filter:blur(7px) url(#navLiquidGlass) saturate(160%);
+  -webkit-backdrop-filter:blur(7px) url(#navLiquidGlass) saturate(160%);
+}
 
 /* ---- Glow highlight (Marketplace nav item only) ---- */
 .nav-links a.nav-glow{
   color:var(--accent-dark);background:rgba(255,116,49,.10);
-  padding:7px 16px;border-radius:999px;
   animation:navGlowPulse 2.6s ease-in-out infinite;
 }
-.nav-links a.nav-glow::after{display:none;}
 .nav-links a.nav-glow:hover{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-dark));}
 @keyframes navGlowPulse{
   0%,100%{box-shadow:0 0 0 rgba(255,116,49,.45);}
@@ -126,8 +148,19 @@ button,input,select{font-family:inherit;}
 }
 
 .nav-actions{display:flex;align-items:center;gap:14px;}
-.link-btn{font-size:.88rem;font-weight:600;color:var(--ink-soft);}
-.link-btn:hover{color:var(--ink);}
+.link-btn{font-size:.88rem;font-weight:600;color:var(--ink-soft);padding:8px 14px;border-radius:999px;transition:color .25s, background .3s;position:relative;overflow:hidden;isolation:isolate;}
+.link-btn:hover{
+  color:var(--ink);
+  background:var(--glass-bg-strong);
+  backdrop-filter:blur(10px) url(#navLiquidGlass) saturate(160%);
+  -webkit-backdrop-filter:blur(10px) url(#navLiquidGlass) saturate(160%);
+  box-shadow:var(--shadow-sm);
+}
+.link-btn:hover::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 55%);
+  opacity:.65;mix-blend-mode:overlay;
+}
 .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;}
 .hamburger span{width:22px;height:2px;background:var(--ink);}
 .mobile-menu{position:fixed;top:0;right:-100%;width:82%;max-width:320px;height:100vh;background:#fff;z-index:1100;padding:90px 30px 30px;display:flex;flex-direction:column;gap:22px;box-shadow:-10px 0 40px rgba(0,0,0,.15);transition:right .4s var(--ease);}
