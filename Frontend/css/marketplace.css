@@ -741,3 +741,28 @@ svg {
     height: 110px;
   }
 }
+
+/* =========================================================
+   GLASS BUTTON EFFECT
+========================================================= */
+.btn-pill, .ai-btn, .cat-chip, .p-add {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+}
+.btn-pill::before, .ai-btn::before, .cat-chip::before, .p-add::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
+  opacity: .6;
+  mix-blend-mode: overlay;
+}
+.btn-pill:active, .ai-btn:active, .cat-chip:active, .p-add:active {
+  transform: scale(.92);
+  transition: transform .12s var(--ease);
+}

@@ -220,3 +220,20 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(
   .footer-grid{grid-template-columns:1fr;}
   .contact-card{padding:26px 20px;}
 }
+
+/* =========================================================
+   GLASS BUTTON EFFECT
+========================================================= */
+.btn,.route-card,.back-top{
+  position:relative;overflow:hidden;isolation:isolate;
+  backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);
+}
+.btn::before,.route-card::before,.back-top::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
+  opacity:.6;mix-blend-mode:overlay;
+}
+.btn:active,.route-card:active,.back-top:active{
+  transform:scale(.96);
+  transition:transform .12s var(--ease);
+}

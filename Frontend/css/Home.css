@@ -410,3 +410,22 @@ button,input,select{font-family:inherit;}
   .float-card{width:150px;padding:7px 10px 7px 7px;}
   .fc-thumb{width:26px;height:26px;}
 }
+
+/* =========================================================
+   GLASS BUTTON EFFECT
+   Frosted blur + glossy top sheen + press-squish feedback,
+   applied to every clickable button/pill on the page.
+========================================================= */
+.btn,.ai-btn,.back-top{
+  position:relative;overflow:hidden;isolation:isolate;
+  backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);
+}
+.btn::before,.ai-btn::before,.back-top::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
+  opacity:.6;mix-blend-mode:overlay;
+}
+.btn:active,.ai-btn:active,.back-top:active{
+  transform:scale(.94);
+  transition:transform .12s var(--ease);
+}

@@ -169,3 +169,20 @@ label input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,116,4
   .auth-card{padding:28px 22px;}
   .social-row{grid-template-columns:1fr 1fr;}
 }
+
+/* =========================================================
+   GLASS BUTTON EFFECT
+========================================================= */
+.btn,.tab,.social-btn,.pw-toggle{
+  position:relative;overflow:hidden;isolation:isolate;
+  backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);
+}
+.btn::before,.tab::before,.social-btn::before,.pw-toggle::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
+  opacity:.6;mix-blend-mode:overlay;
+}
+.btn:active,.tab:active,.social-btn:active,.pw-toggle:active{
+  transform:scale(.94);
+  transition:transform .12s var(--ease);
+}

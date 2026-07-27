@@ -269,3 +269,20 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   .ad-card{padding:26px 20px;}
   .ad-stats{gap:28px;}
 }
+
+/* =========================================================
+   GLASS BUTTON EFFECT
+========================================================= */
+.btn,.plan-select-btn,.back-top{
+  position:relative;overflow:hidden;isolation:isolate;
+  backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);
+}
+.btn::before,.plan-select-btn::before,.back-top::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
+  opacity:.6;mix-blend-mode:overlay;
+}
+.btn:active,.plan-select-btn:active,.back-top:active{
+  transform:scale(.95);
+  transition:transform .12s var(--ease);
+}
