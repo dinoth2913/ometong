@@ -190,34 +190,10 @@ svg {
   margin-right: 6px;
 }
 
-.logo-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), #FFA361);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: .8rem;
-  box-shadow: var(--shadow-glow);
-}
-
-.logo-text {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: .86rem;
-  letter-spacing: .01em;
-  text-transform: lowercase;
-  color: var(--ink);
-}
-
-.logo-text em {
-  font-style: normal;
-  color: var(--accent);
-  margin-left: 1px;
+.logo-img {
+  height: 30px;
+  width: auto;
+  display: block;
 }
 
 .bar1-links {
@@ -740,8 +716,8 @@ svg {
     height: 44px;
   }
 
-  .logo-text {
-    display: none;
+  .logo-img {
+    height: 24px;
   }
 
   .search-glow {
