@@ -58,6 +58,29 @@
   background: rgba(41, 44, 51, 0.9);
 }
 
+[data-theme="dark"] .p-add {
+  background: var(--glass-bg-strong);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+[data-theme="dark"] .p-add:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+[data-theme="dark"] .p-add.added {
+  background: #22C55E;
+  border-color: #22C55E;
+  color: #fff;
+}
+
+[data-theme="dark"] .p-spec {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-soft);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -699,7 +722,7 @@ svg {
   font-size: .7rem;
   font-weight: 600;
   color: var(--ink-soft);
-  background: var(--bg-alt);
+  background: rgba(21, 24, 31, .045);
   padding: 4px 8px;
   border-radius: 999px;
 }
