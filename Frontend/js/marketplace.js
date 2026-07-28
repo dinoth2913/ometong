@@ -48,6 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const categories = Object.keys(names);
 
+  const descriptions = {
+    electronics: 'Precision-tested components sourced from certified manufacturing lines, ready for bulk industrial integration.',
+    textiles: 'Mill-direct material, quality-checked for weight, weave and colorfastness before it ever leaves the warehouse.',
+    machinery: 'Heavy-duty industrial equipment built for continuous operation, with full spec sheets available on request.',
+    food: 'Export-grade produce handled under cold-chain and food-safety compliance from farm to freight.',
+    construction: 'Site-ready materials meeting standard structural and safety certifications for commercial projects.',
+    packaging: 'Custom-fit packaging engineered for shipping durability and shelf presentation alike.',
+    services: 'A dedicated specialist team managing this end-to-end, so your shipment never sits idle waiting on paperwork.',
+    logistics: 'Tracked, insured movement with real-time visibility from pickup to final delivery.',
+  };
+
   function svgThumb(color, i) {
     return `<svg viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg">
       <rect width="220" height="140" fill="${color}" opacity="0.16"/>
@@ -72,6 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
           reviews: 8 + (id * 5) % 240,
           color: palette[ci % palette.length],
           badge: id % 6 === 0 ? 'New' : (id % 5 === 0 ? 'Verified' : null),
+          description: descriptions[cat],
+          moq: 10 + (id * 17) % 190,
+          leadTime: 3 + (id * 3) % 18,
         });
       });
     });
@@ -129,6 +143,23 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="p-specs">
           <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M20.6 12l-8-8H4v8.6l8 8 8.6-8.6z"/><circle cx="8" cy="8" r="1.4"/></svg>${catLabel}</span>
           <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>${p.badge || 'Standard'}</span>
+        </div>
+        <div class="p-expand">
+          <p class="p-desc">${p.description}</p>
+          <div class="p-expand-stats">
+            <div class="p-expand-stat">
+              <svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6"/></svg>
+              <span><strong>${p.moq}</strong> units MOQ</span>
+            </div>
+            <div class="p-expand-stat">
+              <svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+              <span><strong>${p.leadTime}</strong> day lead time</span>
+            </div>
+          </div>
+          <div class="p-expand-trust">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+            Escrow-protected purchase
+          </div>
         </div>
         <button class="p-add" data-add="${p.id}">
           <svg viewBox="0 0 24 24" width="15" height="15"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
