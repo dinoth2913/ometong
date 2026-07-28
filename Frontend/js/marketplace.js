@@ -106,25 +106,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultCount = document.getElementById('resultCount');
 
   function cardHTML(p, index) {
+    const catLabel = p.cat.charAt(0).toUpperCase() + p.cat.slice(1);
     return `
     <div class="p-card" style="animation-delay:${(index % 12) * 40}ms" data-id="${p.id}">
       <div class="p-thumb" style="background:${p.color}12">
         ${svgThumb(p.color, index)}
-        ${p.badge ? `<span class="p-badge">${p.badge}</span>` : ''}
+        <span class="p-price-badge">$${p.price}<small> /unit</small></span>
         <button class="p-fav" aria-label="Save item" data-fav="${p.id}">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </button>
+        ${p.badge ? `<span class="p-badge">${p.badge}</span>` : ''}
       </div>
       <div class="p-body">
-        <span class="p-cat">${p.cat}</span>
-        <h4 class="p-title">${p.title}</h4>
-        <div class="p-meta"><span class="stars">★ ${p.rating}</span><span>(${p.reviews}) · ${p.supplier}</span></div>
-        <div class="p-foot">
-          <span class="p-price">$${p.price}<small> /unit</small></span>
-          <button class="p-add" data-add="${p.id}" aria-label="Add to cart">
-            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
+        <div class="p-head">
+          <h4 class="p-title">${p.title}</h4>
+          <span class="p-rating"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>${p.rating}<span class="p-reviews">(${p.reviews})</span></span>
         </div>
+        <div class="p-meta">
+          <svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          ${p.supplier}, ${catLabel}
+        </div>
+        <div class="p-specs">
+          <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M20.6 12l-8-8H4v8.6l8 8 8.6-8.6z"/><circle cx="8" cy="8" r="1.4"/></svg>${catLabel}</span>
+          <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>${p.badge || 'Standard'}</span>
+        </div>
+        <button class="p-add" data-add="${p.id}">
+          <svg viewBox="0 0 24 24" width="15" height="15"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+          Add to Cart
+        </button>
       </div>
     </div>`;
   }
