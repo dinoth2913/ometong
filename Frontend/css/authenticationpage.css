@@ -100,6 +100,45 @@ button,input{font-family:inherit;}
 .tab.active{color:#fff;}
 .tab-indicator{position:absolute;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:999px;box-shadow:var(--shadow-glow);transition:transform .35s var(--ease);z-index:0;}
 
+/* ---- Role selector (Buyer / Supplier / Manufacturer) ---- */
+.role-select{
+  position:relative;display:flex;gap:2px;
+  background:rgba(21,24,31,.05);border-radius:999px;padding:4px;margin-bottom:16px;
+}
+.role-tab{
+  flex:1;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:5px;
+  background:none;border:none;padding:9px 4px;font-weight:700;font-size:.76rem;color:var(--ink-soft);
+  border-radius:999px;cursor:pointer;transition:color .3s;white-space:nowrap;
+}
+.role-tab svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.role-tab.active{color:var(--ink);}
+.role-indicator{
+  position:absolute;top:4px;left:4px;width:calc(33.333% - 3px);height:calc(100% - 8px);
+  background:var(--glass-bg-strong);border:1px solid var(--glass-border);
+  border-radius:999px;box-shadow:var(--shadow-md);transition:transform .35s var(--ease);z-index:0;
+  backdrop-filter:blur(8px) url(#navLiquidGlass) saturate(160%);
+  -webkit-backdrop-filter:blur(8px) url(#navLiquidGlass) saturate(160%);
+}
+.role-indicator::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 55%);
+  opacity:.65;mix-blend-mode:overlay;
+}
+.role-note{color:var(--accent);}
+
+/* ---- Business fields (shown for Supplier / Manufacturer) ---- */
+.biz-fields{display:none;flex-direction:column;gap:14px;padding-top:6px;margin-top:2px;border-top:1px dashed var(--line);}
+.biz-fields.show{display:flex;}
+.biz-fields-head{display:flex;align-items:center;gap:7px;font-size:.78rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-top:8px;}
+.biz-fields-head svg{fill:none;stroke:var(--accent);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.biz-note{display:flex;align-items:flex-start;gap:7px;font-size:.76rem;color:var(--ink-faint);line-height:1.5;margin:0;}
+.biz-note svg{fill:none;stroke:var(--ink-faint);stroke-width:1.6;flex-shrink:0;margin-top:1px;}
+label select,label textarea{
+  padding:12px 14px;border-radius:10px;border:1px solid var(--line);font-weight:400;font-size:.92rem;
+  color:var(--ink);background:#fff;font-family:inherit;transition:border-color .25s, box-shadow .25s;resize:vertical;
+}
+label select:focus,label textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,116,49,.12);outline:none;}
+
 /* ---- Forms ---- */
 .auth-form{display:none;flex-direction:column;gap:14px;animation:fadeUp .4s var(--ease);}
 .auth-form.active{display:flex;}
@@ -173,7 +212,7 @@ label input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,116,4
 /* =========================================================
    GLASS BUTTON EFFECT
 ========================================================= */
-.btn,.tab,.social-btn,.pw-toggle{
+.btn,.tab,.role-tab,.social-btn,.pw-toggle{
   position:relative;overflow:hidden;isolation:isolate;
   backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);
 }

@@ -28,6 +28,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlTab = new URLSearchParams(window.location.search).get('tab');
   if (urlTab === 'signup') setTab('signup');
 
+  /* ---------- Role selector (Buyer / Supplier / Manufacturer) ---------- */
+  const roleTabs = document.querySelectorAll('.role-tab');
+  const roleIndicator = document.getElementById('roleIndicator');
+  const bizFields = document.getElementById('signupBizFields');
+  const bizFieldsLabel = document.getElementById('bizFieldsLabel');
+  const bizDetailsLabel = document.getElementById('bizDetailsLabel');
+  const loginRoleNote = document.getElementById('loginRoleNote');
+
+  const roleIndex = { buyer: 0, supplier: 1, manufacturer: 2 };
+  const roleCopy = {
+    buyer: { note: 'a buyer', fieldsLabel: null, detailsLabel: null },
+    supplier: { note: 'a supplier', fieldsLabel: 'Supplier details', detailsLabel: 'What do you supply?' },
+    manufacturer: { note: 'a manufacturer', fieldsLabel: 'Manufacturer details', detailsLabel: 'What do you manufacture?' },
+  };
+
+  let currentRole = 'buyer';
+
+  function setRole(role) {
+    if (!roleCopy[role]) role = 'buyer';
+    currentRole = role;
+
+    roleTabs.forEach(t => {
+      const isActive = t.dataset.role === role;
+      t.classList.toggle('active', isActive);
+      t.setAttribute('aria-checked', String(isActive));
+    });
+    roleIndicator.style.transform = `translateX(${roleIndex[role] * 100}%)`;
+
+    const isBusiness = role !== 'buyer';
+    bizFields.classList.toggle('show', isBusiness);
+    if (isBusiness) {
+      bizFieldsLabel.textContent = roleCopy[role].fieldsLabel;
+      bizDetailsLabel.textContent = roleCopy[role].detailsLabel;
+    }
+    loginRoleNote.textContent = roleCopy[role].note;
+  }
+
+  roleTabs.forEach(tab => tab.addEventListener('click', () => setRole(tab.dataset.role)));
+
+  const urlRole = new URLSearchParams(window.location.search).get('role');
+  setRole(urlRole && roleCopy[urlRole] ? urlRole : 'buyer');
+
   /* ---------- Password visibility ---------- */
   document.querySelectorAll('.pw-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -43,7 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const successTitle = document.getElementById('successTitle');
   const successText = document.getElementById('successText');
 
-  function handleSubmit(form, title, text) {
+  function destinationForRole(role) {
+    return role === 'buyer' ? 'marketplace.html' : 'Supplier.html';
+  }
+
+  function handleSubmit(form, title, textFor) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const btn = form.querySelector('.btn-block');
@@ -53,14 +99,18 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         form.style.display = 'none';
         successTitle.textContent = title;
-        successText.textContent = text;
+        successText.textContent = textFor(currentRole);
         authSuccess.classList.add('show');
-        setTimeout(() => { window.location.href = 'index.html'; }, 1800);
+        setTimeout(() => { window.location.href = destinationForRole(currentRole); }, 1800);
       }, 700);
     });
   }
 
-  handleSubmit(loginForm, 'Welcome back', 'Redirecting you to the marketplace…');
-  handleSubmit(signupForm, "You're all set", 'Your account has been created — redirecting…');
+  handleSubmit(loginForm, 'Welcome back', (role) =>
+    role === 'buyer' ? 'Redirecting you to the marketplace…' : 'Redirecting you to your supplier dashboard…');
+  handleSubmit(signupForm, "You're all set", (role) =>
+    role === 'buyer'
+      ? 'Your account has been created — redirecting to the marketplace…'
+      : 'Your account has been created — redirecting to your supplier dashboard…');
 
 });
