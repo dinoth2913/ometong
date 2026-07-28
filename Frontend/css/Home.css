@@ -480,18 +480,25 @@ button,input,select{font-family:inherit;}
 .testi-dots button{width:9px;height:9px;border-radius:50%;background:var(--line);border:none;transition:.3s;}
 .testi-dots button.active{background:var(--accent);width:24px;border-radius:6px;}
 
-/* ---- Pricing ---- */
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-.price-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:34px 28px;text-align:center;transition:transform .4s var(--ease), box-shadow .4s var(--ease);position:relative;}
-.price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);}
-.price-card.featured{border-color:var(--accent);box-shadow:var(--shadow-glow);transform:scale(1.03);}
-.price-tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:.68rem;font-weight:700;padding:5px 14px;border-radius:999px;}
-.price-amt{font-family:var(--font-display);font-size:2.2rem;font-weight:700;margin:14px 0 10px;color:var(--ink);}
-.price-amt small{font-size:.9rem;font-weight:500;color:var(--ink-faint);}
-.price-card ul{list-style:none;padding:0;margin:18px 0 26px;display:flex;flex-direction:column;gap:10px;text-align:left;}
-.price-card li{font-size:.86rem;color:var(--ink-soft);display:flex;align-items:center;gap:8px;}
-.price-card li::before{content:"✓";color:var(--green);font-weight:700;}
-.price-card .btn{width:100%;}
+/* ---- Team ---- */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+.team-card{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:32px 22px;text-align:center;
+  transition:transform .4s var(--ease), box-shadow .4s var(--ease), border-color .3s var(--ease);
+}
+.team-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-md);border-color:var(--glass-border);}
+.team-avatar{
+  width:76px;height:76px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+  color:#fff;font-family:var(--font-display);font-weight:700;font-size:1.3rem;
+  box-shadow:0 10px 24px -8px rgba(21,24,31,.28);
+  transition:transform .4s var(--ease);
+}
+.team-card:hover .team-avatar{transform:scale(1.07);}
+.team-card h4{font-size:1rem;margin-bottom:4px;}
+.team-role{display:block;font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:12px;}
+.team-card p{font-size:.85rem;margin:0;}
 
 /* ---- CTA band ---- */
 .cta-band{background:linear-gradient(120deg,var(--ink),#2A2032 60%,var(--accent-dark));padding:90px 0;position:relative;overflow:hidden;}
@@ -551,8 +558,7 @@ button,input,select{font-family:inherit;}
   .step-line{display:none;}
   .category-grid{grid-template-columns:repeat(3,1fr);}
   .why-grid{grid-template-columns:1fr;gap:40px;}
-  .pricing-grid{grid-template-columns:1fr;}
-  .price-card.featured{transform:none;}
+  .team-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media (max-width: 860px){
   .nav-links{display:none;}
@@ -562,6 +568,7 @@ button,input,select{font-family:inherit;}
 }
 @media (max-width: 620px){
   .category-grid{grid-template-columns:repeat(2,1fr);}
+  .team-grid{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr;}
   .nav-actions .btn-sm{display:none;}
   .hero-visual{height:340px;}
