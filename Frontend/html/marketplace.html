@@ -99,12 +99,24 @@
   <section class="grid-zone" id="products">
     <div class="grid-toolbar">
       <span id="resultCount">36 listings</span>
-      <select id="sortSelect">
-        <option value="relevance">Sort: Relevance</option>
-        <option value="price-low">Price: Low to High</option>
-        <option value="price-high">Price: High to Low</option>
-        <option value="rating">Top Rated</option>
-      </select>
+      <div class="toolbar-filters">
+        <select id="brandSelect">
+          <option value="all">Brand: All</option>
+        </select>
+        <div class="price-filter">
+          <span class="price-filter-label">Price</span>
+          <input type="number" id="priceMin" placeholder="Min" min="0">
+          <span class="price-filter-sep">–</span>
+          <input type="number" id="priceMax" placeholder="Max" min="0">
+        </div>
+        <select id="sortSelect">
+          <option value="relevance">Sort: Relevance</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+        <button type="button" id="clearFiltersBtn" class="clear-filters-btn">Clear</button>
+      </div>
     </div>
 
     <div class="product-grid" id="productGrid"><!-- cards injected by marketplace.js --></div>

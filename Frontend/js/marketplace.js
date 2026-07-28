@@ -36,17 +36,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Data ---------- */
   const palette = ['#FF7431', '#3A6FF7', '#FFC24D', '#22C55E', '#8B5CF6'];
-  const names = {
-    electronics: ['Industrial Sensor Kit', 'LED Panel Array', 'Circuit Board Set', 'Power Inverter 5kW', 'Smart Meter Unit'],
-    textiles: ['Cotton Fabric Roll', 'Woven Poly Bags', 'Denim Bulk Lot', 'Technical Mesh Cloth', 'Dye-Ready Yarn'],
-    machinery: ['CNC Spindle Unit', 'Hydraulic Press', 'Conveyor Motor', 'Industrial Compressor', 'Gearbox Assembly'],
-    food: ['Ceylon Cinnamon Bulk', 'Roasted Cashew Lot', 'Coconut Oil Drums', 'Spice Blend Pack', 'Tea Leaf Crates'],
-    construction: ['Steel Rebar Bundle', 'Cement Pallet', 'PVC Pipe Set', 'Roofing Sheet Lot', 'Aggregate Supply'],
-    packaging: ['Corrugated Box Lot', 'Stretch Film Rolls', 'Pallet Wrap Set', 'Custom Carton Batch', 'Foam Insert Pack'],
-    services: ['Customs Documentation', 'Freight Insurance Plan', 'Warehousing Package', 'Quality Inspection', 'Supplier Vetting'],
-    logistics: ['FCL Sea Freight Slot', 'Air Cargo Booking', 'Last-Mile Delivery', 'Cross-Border Trucking', 'Cold Chain Transport'],
+
+  /* Each category lists its product types with a realistic price band (USD). */
+  const productDefs = {
+    electronics: [
+      { title: 'Smartphone', min: 250, max: 1300 },
+      { title: 'Laptop', min: 450, max: 2200 },
+      { title: 'Industrial Sensor Kit', min: 40, max: 320 },
+      { title: 'LED Panel Array', min: 60, max: 450 },
+      { title: 'Smart Meter Unit', min: 90, max: 500 },
+    ],
+    textiles: [
+      { title: 'Cotton Fabric Roll', min: 15, max: 120 },
+      { title: 'Woven Poly Bags', min: 10, max: 80 },
+      { title: 'Denim Bulk Lot', min: 200, max: 900 },
+      { title: 'Technical Mesh Cloth', min: 25, max: 150 },
+      { title: 'Dye-Ready Yarn', min: 30, max: 200 },
+    ],
+    machinery: [
+      { title: 'CNC Spindle Unit', min: 800, max: 4500 },
+      { title: 'Hydraulic Press', min: 1200, max: 6000 },
+      { title: 'Conveyor Motor', min: 250, max: 1400 },
+      { title: 'Industrial Compressor', min: 600, max: 3200 },
+      { title: 'Gearbox Assembly', min: 300, max: 1800 },
+    ],
+    food: [
+      { title: 'Ceylon Cinnamon Bulk', min: 30, max: 220 },
+      { title: 'Roasted Cashew Lot', min: 60, max: 380 },
+      { title: 'Coconut Oil Drums', min: 80, max: 500 },
+      { title: 'Spice Blend Pack', min: 20, max: 150 },
+      { title: 'Tea Leaf Crates', min: 40, max: 300 },
+    ],
+    construction: [
+      { title: 'Steel Rebar Bundle', min: 150, max: 900 },
+      { title: 'Cement Pallet', min: 60, max: 400 },
+      { title: 'PVC Pipe Set', min: 30, max: 220 },
+      { title: 'Roofing Sheet Lot', min: 100, max: 700 },
+      { title: 'Aggregate Supply', min: 50, max: 380 },
+    ],
+    packaging: [
+      { title: 'Corrugated Box Lot', min: 20, max: 180 },
+      { title: 'Stretch Film Rolls', min: 15, max: 110 },
+      { title: 'Pallet Wrap Set', min: 18, max: 130 },
+      { title: 'Custom Carton Batch', min: 40, max: 260 },
+      { title: 'Foam Insert Pack', min: 25, max: 160 },
+    ],
+    services: [
+      { title: 'Customs Documentation', min: 50, max: 400 },
+      { title: 'Freight Insurance Plan', min: 80, max: 600 },
+      { title: 'Warehousing Package', min: 100, max: 900 },
+      { title: 'Quality Inspection', min: 60, max: 500 },
+      { title: 'Supplier Vetting', min: 40, max: 350 },
+    ],
+    logistics: [
+      { title: 'FCL Sea Freight Slot', min: 500, max: 3500 },
+      { title: 'Air Cargo Booking', min: 300, max: 2200 },
+      { title: 'Last-Mile Delivery', min: 15, max: 120 },
+      { title: 'Cross-Border Trucking', min: 200, max: 1500 },
+      { title: 'Cold Chain Transport', min: 250, max: 1800 },
+    ],
   };
-  const categories = Object.keys(names);
+  const categories = Object.keys(productDefs);
+
+  /* Real brands per category, so buyers can filter the way they actually shop. */
+  const brandsByCategory = {
+    electronics: ['Samsung', 'Apple', 'Xiaomi', 'Oppo', 'Sony'],
+    textiles: ['Raymond', 'Arvind', 'Welspun', 'Vardhman', 'Trident'],
+    machinery: ['Caterpillar', 'Bosch', 'Siemens', 'Hitachi', 'Komatsu'],
+    food: ['Nestlé', 'Unilever', 'Tata Consumer', 'Britannia', 'Olam'],
+    construction: ['UltraTech', 'ACC', 'Ambuja', 'JSW', 'Tata Steel'],
+    packaging: ['Amcor', 'Tetra Pak', 'Mondi', 'Sealed Air', 'WestRock'],
+    services: ['SGS', 'Bureau Veritas', 'TÜV SÜD', 'Intertek', 'DHL'],
+    logistics: ['Maersk', 'DHL', 'FedEx', 'DB Schenker', 'Kuehne+Nagel'],
+  };
 
   const descriptions = {
     electronics: 'Precision-tested components sourced from certified manufacturing lines, ready for bulk industrial integration.',
@@ -71,21 +133,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = [];
     let id = 0;
     categories.forEach((cat, ci) => {
-      names[cat].forEach((title, ni) => {
-        id++;
-        list.push({
-          id,
-          cat,
-          title,
-          supplier: ['Ceylon Traders Ltd', 'Horizon Supply Co.', 'Lanka Industrial Group', 'Spice Route Exports', 'Island Manufacturing'][ (id) % 5 ],
-          price: Math.round((20 + (id * 13) % 480) * 1.0),
-          rating: (3.6 + ((id * 7) % 14) / 10).toFixed(1),
-          reviews: 8 + (id * 5) % 240,
-          color: palette[ci % palette.length],
-          badge: id % 6 === 0 ? 'New' : (id % 5 === 0 ? 'Verified' : null),
-          description: descriptions[cat],
-          moq: 10 + (id * 17) % 190,
-          leadTime: 3 + (id * 3) % 18,
+      const brands = brandsByCategory[cat];
+      productDefs[cat].forEach((def, ni) => {
+        brands.forEach((brand, bi) => {
+          id++;
+          const span = def.max - def.min;
+          list.push({
+            id,
+            cat,
+            title: `${brand} ${def.title}`,
+            brand,
+            supplier: ['Ceylon Traders Ltd', 'Horizon Supply Co.', 'Lanka Industrial Group', 'Spice Route Exports', 'Island Manufacturing'][id % 5],
+            price: Math.round(def.min + ((id * 13) % (span || 1))),
+            rating: (3.6 + ((id * 7) % 14) / 10).toFixed(1),
+            reviews: 8 + (id * 5) % 240,
+            color: palette[ci % palette.length],
+            badge: id % 6 === 0 ? 'New' : (id % 5 === 0 ? 'Verified' : null),
+            description: descriptions[cat],
+            moq: 10 + (id * 17) % 190,
+            leadTime: 3 + (id * 3) % 18,
+          });
         });
       });
     });
@@ -176,15 +243,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- State ---------- */
   let activeCat = 'all';
+  let activeBrand = 'all';
   let query = '';
   let sortMode = 'relevance';
+  let priceMinVal = null;
+  let priceMaxVal = null;
 
   function currentList() {
     let list = allProducts;
     if (activeCat !== 'all') list = list.filter(p => p.cat === activeCat);
+    if (activeBrand !== 'all') list = list.filter(p => p.brand === activeBrand);
+    if (priceMinVal !== null) list = list.filter(p => p.price >= priceMinVal);
+    if (priceMaxVal !== null) list = list.filter(p => p.price <= priceMaxVal);
     if (query) {
       const q = query.toLowerCase();
-      list = list.filter(p => p.title.toLowerCase().includes(q) || p.cat.includes(q) || p.supplier.toLowerCase().includes(q));
+      list = list.filter(p => p.title.toLowerCase().includes(q) || p.cat.includes(q) || p.supplier.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q));
     }
     list = [...list];
     if (sortMode === 'price-low') list.sort((a, b) => a.price - b.price);
@@ -195,6 +268,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function refresh() { render(currentList()); }
 
+  /* ---------- Brand filter (options depend on the active category) ---------- */
+  const brandSelect = document.getElementById('brandSelect');
+  function populateBrandOptions() {
+    if (!brandSelect) return;
+    const brands = activeCat === 'all'
+      ? [...new Set(categories.flatMap(c => brandsByCategory[c]))].sort()
+      : [...brandsByCategory[activeCat]];
+    const previous = activeBrand;
+    brandSelect.innerHTML = '<option value="all">Brand: All</option>' +
+      brands.map(b => `<option value="${b}">${b}</option>`).join('');
+    activeBrand = brands.includes(previous) ? previous : 'all';
+    brandSelect.value = activeBrand;
+  }
+  brandSelect?.addEventListener('change', () => {
+    activeBrand = brandSelect.value;
+    refresh();
+  });
+
+  /* ---------- Price range filter ---------- */
+  const priceMinInput = document.getElementById('priceMin');
+  const priceMaxInput = document.getElementById('priceMax');
+  priceMinInput?.addEventListener('input', () => {
+    priceMinVal = priceMinInput.value === '' ? null : Number(priceMinInput.value);
+    refresh();
+  });
+  priceMaxInput?.addEventListener('input', () => {
+    priceMaxVal = priceMaxInput.value === '' ? null : Number(priceMaxInput.value);
+    refresh();
+  });
+
+  /* ---------- Clear filters ---------- */
+  document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+    activeCat = 'all';
+    activeBrand = 'all';
+    query = '';
+    sortMode = 'relevance';
+    priceMinVal = null;
+    priceMaxVal = null;
+    const searchEl = document.getElementById('searchInput');
+    const sortEl = document.getElementById('sortSelect');
+    if (searchEl) searchEl.value = '';
+    if (priceMinInput) priceMinInput.value = '';
+    if (priceMaxInput) priceMaxInput.value = '';
+    if (sortEl) sortEl.value = 'relevance';
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'all'));
+    populateBrandOptions();
+    refresh();
+  });
+
   /* ---------- Category from URL (e.g. marketplace.html?cat=electronics) ---------- */
   const urlCat = new URLSearchParams(window.location.search).get('cat');
   if (urlCat && categories.includes(urlCat)) {
@@ -203,6 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.bar-2 [data-tab]').forEach(a => a.classList.remove('active'));
   }
 
+  populateBrandOptions();
   refresh();
   updateCartBadge();
 
@@ -216,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       activeCat = chip.dataset.cat;
+      populateBrandOptions();
       refresh();
     });
   });
@@ -251,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activeCat = 'all';
         document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'all'));
       }
+      populateBrandOptions();
       refresh();
       document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
