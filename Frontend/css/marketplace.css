@@ -219,6 +219,10 @@ svg {
   display: block;
 }
 
+.logo-img-compact {
+  display: none;
+}
+
 .bar1-links {
   display: flex;
   align-items: center;
@@ -959,8 +963,14 @@ svg {
     height: 44px;
   }
 
-  .logo-img {
-    height: 24px;
+  .logo-img-full {
+    display: none;
+  }
+
+  .logo-img-compact {
+    display: block;
+    height: 26px;
+    width: auto;
   }
 
   .search-glow {

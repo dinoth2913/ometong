@@ -103,6 +103,11 @@ ul { list-style: none; margin: 0; padding: 0; }
 .nav-inner { max-width: var(--container-w); margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .logo { display: flex; align-items: center; gap: 8px; font-family: var(--font-head); font-weight: 700; font-size: 18px; }
 .logo-img { height: 36px; width: auto; display: block; }
+.logo-img-compact { display: none; }
+@media (max-width: 560px) {
+  .logo-img-full { display: none; }
+  .logo-img-compact { display: block; height: 30px; width: auto; }
+}
 .nav-links { display: flex; gap: 28px; }
 .nav-links a { font-size: 14px; font-weight: 500; color: var(--c-ink-soft); }
 .nav-links a:hover, .nav-links a[aria-current] { color: var(--c-ink); }

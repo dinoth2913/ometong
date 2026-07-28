@@ -120,6 +120,11 @@ button,input,select{font-family:inherit;}
 .nav-inner{max-width:1600px;margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;gap:30px;}
 .logo{display:flex;align-items:center;gap:9px;}
 .logo-img{height:38px;width:auto;display:block;}
+.logo-img-compact{display:none;}
+@media (max-width:560px){
+  .logo-img-full{display:none;}
+  .logo-img-compact{display:block;height:32px;width:auto;}
+}
 .nav-links{display:flex;gap:6px;margin:0 auto;position:relative;}
 .nav-links a{font-size:.9rem;font-weight:600;color:var(--accent);position:relative;z-index:1;padding:8px 14px;border-radius:999px;transition:color .25s;}
 .nav-links a::after{display:none;}

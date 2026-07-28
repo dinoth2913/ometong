@@ -66,6 +66,11 @@ button,input{font-family:inherit;}
 }
 .logo{position:relative;display:flex;align-items:center;gap:9px;z-index:1;}
 .logo-img{height:38px;width:auto;display:block;}
+.logo-img-compact{display:none;}
+@media (max-width:560px){
+  .logo-img-full{display:none;}
+  .logo-img-compact{display:block;height:32px;width:auto;}
+}
 
 .brand-content{position:relative;z-index:1;max-width:440px;}
 .brand-content h1{font-size:clamp(1.7rem,2.6vw,2.3rem);letter-spacing:-.01em;}

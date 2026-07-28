@@ -64,6 +64,11 @@ button,input,textarea,select{font-family:inherit;}
 .nav-inner{max-width:1280px;margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;gap:30px;}
 .logo{display:flex;align-items:center;gap:9px;}
 .logo-img{height:38px;width:auto;display:block;}
+.logo-img-compact{display:none;}
+@media (max-width:560px){
+  .logo-img-full{display:none;}
+  .logo-img-compact{display:block;height:32px;width:auto;}
+}
 .nav-links{display:flex;gap:28px;margin:0 auto;}
 .nav-links a{font-size:.9rem;font-weight:600;color:var(--ink-soft);position:relative;padding:6px 0;transition:color .25s;}
 .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--accent);border-radius:2px;transition:width .3s var(--ease);}
