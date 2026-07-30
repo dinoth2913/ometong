@@ -1,0 +1,254 @@
+/* =========================================================
+   OMETONG — SUPPLIER DASHBOARD SCRIPT
+========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ---------- Dark mode (shared "theme" preference across the site) ---------- */
+  const themeToggle = document.getElementById('themeToggle');
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    if (themeToggle) themeToggle.checked = theme === 'dark';
+  }
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) setTheme(savedTheme);
+  else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+  else setTheme('light');
+
+  themeToggle?.addEventListener('change', () => {
+    setTheme(themeToggle.checked ? 'dark' : 'light');
+  });
+
+  /* ---------- Footer year ---------- */
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* ---------- Scroll progress + nav + back-to-top ---------- */
+  const progress = document.getElementById('scrollProgress');
+  const nav = document.getElementById('mainNav');
+  const backTop = document.getElementById('backTop');
+
+  function onScroll() {
+    const top = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (top / docHeight) * 100 : 0;
+    if (progress) progress.style.width = pct + '%';
+    if (nav) nav.classList.toggle('scrolled', top > 40);
+    if (backTop) backTop.classList.toggle('show', top > 500);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  backTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  /* ---------- Mobile menu ---------- */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('open');
+  });
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  /* ---------- Scroll reveal ---------- */
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
+  /* ---------- Demo supplier data ---------- */
+  const demoListings = [
+    { id: 1, title: 'Bluetooth Earbuds Pro X3', category: 'Electronics', price: '$18.50', moq: 'MOQ 200 units', color: '#3A6FF7', status: 'active' },
+    { id: 2, title: 'Cotton Blend T-Shirts (Bulk)', category: 'Textiles', price: '$3.20', moq: 'MOQ 500 units', color: '#8B5CF6', status: 'active' },
+    { id: 3, title: 'CNC Precision Metal Parts', category: 'Machinery', price: '$42.00', moq: 'MOQ 50 units', color: '#22C55E', status: 'active' },
+    { id: 4, title: 'Recyclable Kraft Packaging', category: 'Packaging', price: '$0.85', moq: 'MOQ 1000 units', color: '#FFC24D', status: 'paused' },
+    { id: 5, title: 'Solar Garden Lights', category: 'Electronics', price: '$6.10', moq: 'MOQ 300 units', color: '#FF7431', status: 'active' },
+    { id: 6, title: 'Stainless Steel Cookware Set', category: 'Housewares', price: '$27.90', moq: 'MOQ 100 units', color: '#EF4444', status: 'active' },
+  ];
+
+  const demoRequests = [
+    { id: 1, product: 'Bluetooth Earbuds Pro X3', buyer: 'Retail chain', country: 'United States', qty: '2,000 units', budget: '$32,000', status: 'new' },
+    { id: 2, product: 'Recyclable Kraft Packaging', buyer: 'Cafe distributor', country: 'Canada', qty: '10,000 units', budget: '$7,500', status: 'new' },
+    { id: 3, product: 'CNC Precision Metal Parts', buyer: 'Auto parts importer', country: 'Germany', qty: '300 units', budget: '$11,400', status: 'quoted' },
+    { id: 4, product: 'Cotton Blend T-Shirts (Bulk)', buyer: 'Fashion wholesaler', country: 'Sri Lanka', qty: '5,000 units', budget: '$14,200', status: 'quoted' },
+    { id: 5, product: 'Solar Garden Lights', buyer: 'Home & garden retailer', country: 'India', qty: '1,500 units', budget: '$8,900', status: 'won' },
+    { id: 6, product: 'Stainless Steel Cookware Set', buyer: 'Department store', country: 'United States', qty: '800 units', budget: '$19,300', status: 'new' },
+  ];
+
+  const demoOrders = [
+    { id: 'OM-70213', buyer: 'Retail chain', country: 'USA', product: 'Bluetooth Earbuds Pro X3', amount: 5400, status: 'processing', shipBy: '05 Aug 2026' },
+    { id: 'OM-70198', buyer: 'Home & garden retailer', country: 'India', product: 'Solar Garden Lights', amount: 3050, status: 'shipped', shipBy: 'Shipped 22 Jul 2026' },
+    { id: 'OM-70166', buyer: 'Fashion wholesaler', country: 'Sri Lanka', product: 'Cotton Blend T-Shirts', amount: 2180, status: 'delivered', shipBy: 'Delivered 14 Jul 2026' },
+    { id: 'OM-70140', buyer: 'Auto parts importer', country: 'Germany', product: 'CNC Precision Metal Parts', amount: 11400, status: 'delivered', shipBy: 'Delivered 02 Jul 2026' },
+  ];
+
+  const demoPayouts = [
+    { date: '22 Jul 2026', order: 'OM-70198', amount: 3050 },
+    { date: '14 Jul 2026', order: 'OM-70166', amount: 2180 },
+    { date: '02 Jul 2026', order: 'OM-70140', amount: 11400 },
+    { date: '19 Jun 2026', order: 'OM-69894', amount: 6720 },
+  ];
+
+  const LISTINGS_KEY = 'ometong_supplier_listing_status';
+
+  function getListingOverrides() {
+    try { return JSON.parse(localStorage.getItem(LISTINGS_KEY)) || {}; } catch { return {}; }
+  }
+  function saveListingOverride(id, status) {
+    const map = getListingOverrides();
+    map[id] = status;
+    localStorage.setItem(LISTINGS_KEY, JSON.stringify(map));
+  }
+
+  function thumbSvg(color) {
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'><rect width='200' height='100' fill='${color}22'/><circle cx='40' cy='50' r='22' fill='${color}55'/><rect x='80' y='30' width='100' height='12' rx='6' fill='${color}66'/><rect x='80' y='52' width='70' height='10' rx='5' fill='${color}44'/></svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+
+  /* ---------- Render listings ---------- */
+  const listingsGrid = document.getElementById('listingsGrid');
+  const overrides = getListingOverrides();
+
+  function renderListings() {
+    if (!listingsGrid) return;
+    listingsGrid.innerHTML = demoListings.map(item => {
+      const status = overrides[item.id] || item.status;
+      const isActive = status === 'active';
+      return `
+        <div class="listing-card" data-id="${item.id}">
+          <div class="listing-thumb" style="background-image:url('${thumbSvg(item.color)}');background-size:cover;">
+            <span class="listing-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</span>
+          </div>
+          <div class="listing-body">
+            <div class="listing-title">${item.title}</div>
+            <div class="listing-meta">${item.category} · ${item.moq}</div>
+            <div class="listing-price">${item.price} <span style="color:var(--ink-faint);font-weight:600;font-size:.72rem;">/ unit</span></div>
+            <button class="listing-toggle ${isActive ? '' : 'is-paused'}" data-toggle="${item.id}">${isActive ? 'Pause listing' : 'Reactivate listing'}</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    listingsGrid.querySelectorAll('[data-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.getAttribute('data-toggle'));
+        const item = demoListings.find(l => l.id === id);
+        const current = overrides[id] || item.status;
+        const next = current === 'active' ? 'paused' : 'active';
+        overrides[id] = next;
+        saveListingOverride(id, next);
+        renderListings();
+        renderStats();
+      });
+    });
+  }
+
+  /* ---------- Render buyer requests ---------- */
+  const requestsGrid = document.getElementById('requestsGrid');
+  const reqLabels = { new: 'New', quoted: 'Quoted', won: 'Won' };
+
+  function renderRequests() {
+    if (!requestsGrid) return;
+    requestsGrid.innerHTML = demoRequests.map(r => `
+      <div class="request-card">
+        <div class="req-top">
+          <span class="req-product">${r.product}</span>
+          <span class="req-status ${r.status}">${reqLabels[r.status]}</span>
+        </div>
+        <div class="req-buyer"><strong>${r.buyer}</strong> · ${r.country}</div>
+        <div class="req-meta"><span>${r.qty}</span><span>Budget ${r.budget}</span></div>
+        <div class="req-actions">
+          ${r.status === 'won'
+            ? '<button class="btn btn-ghost btn-sm" disabled>Deal closed</button>'
+            : `<button class="btn btn-primary btn-sm" data-quote="${r.id}">${r.status === 'quoted' ? 'View quote' : 'Send a quote'}</button>`}
+        </div>
+      </div>`).join('');
+
+    requestsGrid.querySelectorAll('[data-quote]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.textContent = 'Quote sent ✓';
+        btn.disabled = true;
+      });
+    });
+  }
+
+  /* ---------- Render orders ---------- */
+  const ordersList = document.getElementById('ordersList');
+  const orderStatusLabels = { processing: 'Processing', shipped: 'Shipped', delivered: 'Delivered' };
+
+  function renderOrders() {
+    if (!ordersList) return;
+    ordersList.innerHTML = demoOrders.map(o => `
+      <div class="order-row">
+        <div>
+          <div class="order-buyer">${o.buyer}</div>
+          <div class="order-buyer-sub">${o.country} · ${o.id}</div>
+        </div>
+        <div class="order-product-name">${o.product}</div>
+        <div class="order-amount">$${o.amount.toLocaleString('en-US')}</div>
+        <div><span class="order-status ${o.status}">${orderStatusLabels[o.status]}</span></div>
+        <div class="order-shipby">${o.shipBy}</div>
+      </div>`).join('');
+  }
+
+  /* ---------- Render payouts ---------- */
+  function renderPayouts() {
+    const escrow = demoOrders.filter(o => o.status !== 'delivered').reduce((sum, o) => sum + o.amount, 0);
+    const paidTotal = demoPayouts.reduce((sum, p) => sum + p.amount, 0);
+    const nextAmount = demoOrders.find(o => o.status === 'processing')?.amount || 0;
+
+    const escrowEl = document.getElementById('payoutEscrow');
+    const nextEl = document.getElementById('payoutNext');
+    const nextDateEl = document.getElementById('payoutNextDate');
+    const totalEl = document.getElementById('payoutTotal');
+    const countEl = document.getElementById('payoutCount');
+    if (escrowEl) escrowEl.textContent = '$' + escrow.toLocaleString('en-US');
+    if (nextEl) nextEl.textContent = '$' + nextAmount.toLocaleString('en-US');
+    if (nextDateEl) nextDateEl.textContent = nextAmount ? 'Expected on delivery confirmation' : 'No payout scheduled';
+    if (totalEl) totalEl.textContent = '$' + paidTotal.toLocaleString('en-US');
+    if (countEl) countEl.textContent = demoPayouts.length;
+
+    const historyEl = document.getElementById('payoutHistory');
+    if (historyEl) {
+      historyEl.innerHTML = `
+        <div class="payout-row head"><span>Date</span><span>Order</span><span>Amount</span></div>
+        ${demoPayouts.map(p => `
+          <div class="payout-row">
+            <span>${p.date}</span><span>${p.order}</span><span class="p-amt">$${p.amount.toLocaleString('en-US')}</span>
+          </div>`).join('')}
+      `;
+    }
+  }
+
+  /* ---------- Render stats ---------- */
+  function renderStats() {
+    const activeListings = demoListings.filter(l => (overrides[l.id] || l.status) === 'active').length;
+    const newRequests = demoRequests.filter(r => r.status === 'new').length;
+    const ordersInProgress = demoOrders.filter(o => o.status !== 'delivered').length;
+    const totalEarnings = demoPayouts.reduce((sum, p) => sum + p.amount, 0)
+      + demoOrders.filter(o => o.status === 'delivered').reduce((sum, o) => sum + o.amount, 0);
+
+    const setNum = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    setNum('statListings', activeListings);
+    setNum('statRequests', newRequests);
+    setNum('statOrders', ordersInProgress);
+    setNum('statEarnings', '$' + totalEarnings.toLocaleString('en-US'));
+  }
+
+  renderListings();
+  renderRequests();
+  renderOrders();
+  renderPayouts();
+  renderStats();
+
+});
