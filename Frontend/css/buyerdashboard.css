@@ -59,8 +59,8 @@
 [data-theme="dark"] .order-status.transit{background:rgba(58,111,247,.2);color:#9DB8FF;}
 [data-theme="dark"] .order-status.delivered{background:rgba(34,197,94,.18);color:#5FE0A0;}
 [data-theme="dark"] .soon-badge{background:rgba(255,255,255,.08);color:var(--ink-faint);}
-[data-theme="dark"] .quick-link-icon,
-[data-theme="dark"] .region-picker select option{background:transparent;}
+[data-theme="dark"] .quick-link-icon{background:transparent;}
+[data-theme="dark"] .region-picker select option{background:var(--card-bg);color:var(--ink);}
 [data-theme="dark"] .wish-remove{background:rgba(23,26,33,.85);}
 [data-theme="dark"] .wish-remove svg{stroke:#fff;}
 [data-theme="dark"] .wish-price{color:var(--accent-light);}
