@@ -32,8 +32,8 @@
 
   <!-- ===== ANNOUNCEMENT ===== -->
   <div class="announce" id="announce">
-    <span>✦ Supplier Growth plan — first 3 months at 50% off for new manufacturers</span>
-    <a href="#pricing">See pricing →</a>
+    <span data-i18n="announce.text">✦ Supplier Growth plan — first 3 months at 50% off for new manufacturers</span>
+    <a href="#pricing" data-i18n="announce.link">See pricing →</a>
     <button id="announceClose" aria-label="Dismiss">&times;</button>
   </div>
 
@@ -45,29 +45,43 @@
       </a>
 
       <nav class="nav-links" id="navLinks">
-        <a href="Home.html#how">How it Works</a>
-        <a href="Home.html#categories">Categories</a>
-        <a href="marketplace.html">Marketplace</a>
-        <a href="Supplier.html" aria-current="page">For Suppliers</a>
-        <a href="advertisement.html">Advertise</a>
+        <a href="Home.html#how" data-i18n="nav.how">How it Works</a>
+        <a href="Home.html#categories" data-i18n="nav.categories">Categories</a>
+        <a href="marketplace.html" data-i18n="nav.marketplace">Marketplace</a>
+        <a href="Supplier.html" aria-current="page" data-i18n="nav.suppliers">For Suppliers</a>
+        <a href="advertisement.html" data-i18n="nav.advertise">Advertise</a>
       </nav>
 
       <div class="nav-actions">
-        <a href="authenticationpage.html" class="link-btn">Login</a>
-        <a href="#apply" class="btn btn-primary btn-sm">Become a Supplier</a>
+        <div class="lang-switch" id="langSwitch">
+          <button class="lang-switch-btn" id="langSwitchBtn" aria-haspopup="listbox" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z"></path></svg>
+            <span id="langSwitchLabel">English</span>
+          </button>
+          <ul class="lang-switch-list" id="langSwitchList" role="listbox">
+            <li role="option" data-lang="en">English</li>
+            <li role="option" data-lang="zh">中文 (简体)</li>
+            <li role="option" data-lang="es">Español</li>
+            <li role="option" data-lang="fr">Français</li>
+            <li role="option" data-lang="hi">हिन्दी</li>
+            <li role="option" data-lang="si">සිංහල</li>
+          </ul>
+        </div>
+        <a href="authenticationpage.html" class="link-btn" data-i18n="nav.login">Login</a>
+        <a href="#apply" class="btn btn-primary btn-sm" data-i18n="nav.becomeSupplier">Become a Supplier</a>
         <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
       </div>
     </div>
   </header>
 
   <div class="mobile-menu" id="mobileMenu">
-    <a href="Home.html#how">How it Works</a>
-    <a href="Home.html#categories">Categories</a>
-    <a href="marketplace.html">Marketplace</a>
-    <a href="Supplier.html">For Suppliers</a>
-    <a href="advertisement.html">Advertise</a>
-    <a href="authenticationpage.html" class="link-btn">Login</a>
-    <a href="#apply" class="btn btn-primary">Become a Supplier</a>
+    <a href="Home.html#how" data-i18n="nav.how">How it Works</a>
+    <a href="Home.html#categories" data-i18n="nav.categories">Categories</a>
+    <a href="marketplace.html" data-i18n="nav.marketplace">Marketplace</a>
+    <a href="Supplier.html" data-i18n="nav.suppliers">For Suppliers</a>
+    <a href="advertisement.html" data-i18n="nav.advertise">Advertise</a>
+    <a href="authenticationpage.html" class="link-btn" data-i18n="nav.login">Login</a>
+    <a href="#apply" class="btn btn-primary" data-i18n="nav.becomeSupplier">Become a Supplier</a>
   </div>
 
   <main id="top">
@@ -76,38 +90,38 @@
     <section class="sup-hero">
       <div class="container sup-hero-inner">
         <div class="sup-hero-copy">
-          <span class="tag" data-reveal>✦ For Suppliers &amp; Manufacturers</span>
-          <h1 data-reveal>Sell to the world. <span>Skip the cold outreach.</span></h1>
-          <p data-reveal>List once and get matched with buyer requests by AI, get paid through escrow, and let Ometong
+          <span class="tag" data-reveal data-i18n="hero.tag">✦ For Suppliers &amp; Manufacturers</span>
+          <h1 data-reveal><span data-i18n="hero.h1a">Sell to the world.</span> <span data-i18n="hero.h1b">Skip the cold outreach.</span></h1>
+          <p data-reveal data-i18n="hero.p">List once and get matched with buyer requests by AI, get paid through escrow, and let Ometong
             Market's logistics network handle freight and customs — so you can focus on making and shipping product.</p>
 
           <div class="sup-hero-actions" data-reveal>
-            <a href="#apply" class="btn btn-primary btn-lg magnetic">Apply as a Supplier</a>
-            <a href="#how-suppliers" class="btn btn-ghost btn-lg magnetic">See how it works</a>
+            <a href="#apply" class="btn btn-primary btn-lg magnetic" data-i18n="hero.applyBtn">Apply as a Supplier</a>
+            <a href="#how-suppliers" class="btn btn-ghost btn-lg magnetic" data-i18n="hero.seeHowBtn">See how it works</a>
           </div>
 
           <div class="sup-hero-trust" data-reveal>
             <div class="avatars"><span></span><span></span><span></span><span></span></div>
-            <p><strong>3,100+</strong> verified suppliers already selling on Ometong</p>
+            <p><strong>3,100+</strong> <span data-i18n="hero.trust">verified suppliers already selling on Ometong</span></p>
           </div>
         </div>
 
         <div class="sup-hero-stats" data-reveal>
           <div class="sup-stat-card">
             <span class="sup-stat-num" data-count="4200">0</span>
-            <span class="sup-stat-label">Active buyer requests / month</span>
+            <span class="sup-stat-label" data-i18n="hero.stat1">Active buyer requests / month</span>
           </div>
           <div class="sup-stat-card">
             <span class="sup-stat-num" data-count="58">0</span>
-            <span class="sup-stat-label">Countries buyers source from</span>
+            <span class="sup-stat-label" data-i18n="hero.stat2">Countries buyers source from</span>
           </div>
           <div class="sup-stat-card">
             <span class="sup-stat-num" data-count="99">0</span>
-            <span class="sup-stat-label">% escrow payout success rate</span>
+            <span class="sup-stat-label" data-i18n="hero.stat3">% escrow payout success rate</span>
           </div>
           <div class="sup-stat-card">
             <span class="sup-stat-num" data-count="11">0</span>
-            <span class="sup-stat-label">Days avg. time-to-first-order</span>
+            <span class="sup-stat-label" data-i18n="hero.stat4">Days avg. time-to-first-order</span>
           </div>
         </div>
       </div>
@@ -117,53 +131,53 @@
     <section class="section" id="benefits">
       <div class="container">
         <div class="section-head" data-reveal>
-          <span class="tag">What you get</span>
-          <h2>Built to help suppliers close more deals, faster</h2>
-          <p>Everything below comes standard — no separate integrations, no extra vendors to manage.</p>
+          <span class="tag" data-i18n="benefits.tag">What you get</span>
+          <h2 data-i18n="benefits.h2">Built to help suppliers close more deals, faster</h2>
+          <p data-i18n="benefits.p">Everything below comes standard — no separate integrations, no extra vendors to manage.</p>
         </div>
 
         <div class="benefit-grid">
-          <div class="benefit-card" data-reveal>
+          <div class="benefit-card" data-reveal style="--accent-c:#FF7431">
             <div class="benefit-icon" style="background:#FF743118;color:#FF7431">
               <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" /></svg>
             </div>
-            <h3>AI-matched buyer requests</h3>
-            <p>Get surfaced directly to buyers searching for what you make — no bidding against thousands of unrelated listings.</p>
+            <h3 data-i18n="benefits.b1.h">AI-matched buyer requests</h3>
+            <p data-i18n="benefits.b1.p">We show your products directly to buyers already looking for them — you don't compete against thousands of unrelated listings.</p>
           </div>
-          <div class="benefit-card" data-reveal>
+          <div class="benefit-card" data-reveal style="--accent-c:#3A6FF7">
             <div class="benefit-icon" style="background:#3A6FF718;color:#3A6FF7">
               <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a4 4 0 018 0v2" /></svg>
             </div>
-            <h3>Escrow-secured payouts</h3>
-            <p>Funds are held safely and released to you the moment delivery is confirmed — protection against non-payment on both sides.</p>
+            <h3 data-i18n="benefits.b2.h">Escrow-secured payouts</h3>
+            <p data-i18n="benefits.b2.p">Buyer payment is held safely and paid to you as soon as delivery is confirmed — both sides are protected.</p>
           </div>
-          <div class="benefit-card" data-reveal>
+          <div class="benefit-card" data-reveal style="--accent-c:#22C55E">
             <div class="benefit-icon" style="background:#22C55E18;color:#22C55E">
               <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z" /></svg>
             </div>
-            <h3>Logistics handled for you</h3>
-            <p>Freight booking, customs paperwork, and delivery tracking are arranged through our partner network — no exporting license required.</p>
+            <h3 data-i18n="benefits.b3.h">Logistics handled for you</h3>
+            <p data-i18n="benefits.b3.p">Freight booking, customs paperwork, and delivery tracking are arranged by our partner network — you don't need your own export license.</p>
           </div>
-          <div class="benefit-card" data-reveal>
+          <div class="benefit-card" data-reveal style="--accent-c:#8B5CF6">
             <div class="benefit-icon" style="background:#8B5CF618;color:#8B5CF6">
               <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg>
             </div>
-            <h3>Verified badge &amp; trust profile</h3>
-            <p>Complete document verification once, then wear the badge across every listing — buyers filter for it first.</p>
+            <h3 data-i18n="benefits.b4.h">Verified badge &amp; trust profile</h3>
+            <p data-i18n="benefits.b4.p">Verify your business documents once, then keep the badge on every listing — it's the first thing buyers look for.</p>
           </div>
-          <div class="benefit-card" data-reveal>
+          <div class="benefit-card" data-reveal style="--accent-c:#B8860B">
             <div class="benefit-icon" style="background:#FFC24D18;color:#B8860B">
               <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
             </div>
-            <h3>Analytics dashboard</h3>
-            <p>See which listings convert, where buyer traffic comes from, and what to adjust — all without a separate BI tool.</p>
+            <h3 data-i18n="benefits.b5.h">Simple sales dashboard</h3>
+            <p data-i18n="benefits.b5.p">See which listings are getting views and orders, and where your buyers come from — no extra software to learn.</p>
           </div>
-          <div class="benefit-card" data-reveal>
+          <div class="benefit-card" data-reveal style="--accent-c:#EF4444">
             <div class="benefit-icon" style="background:#EF444418;color:#EF4444">
               <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 12h18M3 6h18M3 18h18" /></svg>
             </div>
-            <h3>Global reach, no new headcount</h3>
-            <p>Reach buyers in 58+ countries without hiring regional sales teams or opening local offices.</p>
+            <h3 data-i18n="benefits.b6.h">Global reach, no new hires</h3>
+            <p data-i18n="benefits.b6.p">Sell to buyers in 58+ countries without hiring regional sales staff or opening local offices.</p>
           </div>
         </div>
       </div>
@@ -173,8 +187,8 @@
     <section class="section alt" id="how-suppliers">
       <div class="container">
         <div class="section-head" data-reveal>
-          <span class="tag">How it Works</span>
-          <h2>From application to your first order</h2>
+          <span class="tag" data-i18n="how.tag">How it Works</span>
+          <h2 data-i18n="how.h2">From application to your first order</h2>
         </div>
 
         <div class="steps">
@@ -182,26 +196,26 @@
           <div class="step" data-reveal>
             <div class="step-num">01</div>
             <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 12l2 2 4-4" /><circle cx="12" cy="12" r="9" /></svg></div>
-            <h3>Apply &amp; get verified</h3>
-            <p>Submit your business documents once. Our team verifies your company within 2–3 business days.</p>
+            <h3 data-i18n="how.s1.h">Apply &amp; get verified</h3>
+            <p data-i18n="how.s1.p">Submit your business documents once. Our team checks your company within 2–3 business days.</p>
           </div>
           <div class="step" data-reveal>
             <div class="step-num">02</div>
             <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a4 4 0 018 0v2" /></svg></div>
-            <h3>List products &amp; services</h3>
-            <p>Build your catalog with pricing, MOQs, and lead times. AI tags each listing for the right buyer searches.</p>
+            <h3 data-i18n="how.s2.h">List products &amp; services</h3>
+            <p data-i18n="how.s2.p">Add your products with prices, minimum order amounts, and how long they take to make. The AI tags each one so the right buyers can find it.</p>
           </div>
           <div class="step" data-reveal>
             <div class="step-num">03</div>
             <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" /></svg></div>
-            <h3>Get matched &amp; negotiate</h3>
-            <p>Receive matched buyer requests directly in your dashboard. Message, quote, and close the deal in-platform.</p>
+            <h3 data-i18n="how.s3.h">Get matched &amp; negotiate</h3>
+            <p data-i18n="how.s3.p">Matching buyer requests appear right in your dashboard. Message the buyer, send a quote, and agree the deal — all in one place.</p>
           </div>
           <div class="step" data-reveal>
             <div class="step-num">04</div>
             <div class="step-icon"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z" /></svg></div>
-            <h3>Ship &amp; get paid</h3>
-            <p>Hand off to our logistics partners, buyer confirms delivery, and escrow releases your payout automatically.</p>
+            <h3 data-i18n="how.s4.h">Ship &amp; get paid</h3>
+            <p data-i18n="how.s4.p">Hand the order to our logistics partners. Once the buyer confirms it arrived, your payment is released automatically.</p>
           </div>
         </div>
       </div>
@@ -211,27 +225,27 @@
     <section class="section mutual-section">
       <div class="container mutual-grid">
         <div class="mutual-copy" data-reveal>
-          <span class="tag">Why this works for everyone</span>
-          <h2>A marketplace that only grows when you do</h2>
-          <p>Ometong doesn't hold inventory and doesn't compete with suppliers for buyers. We earn only when
-            trade actually happens — through supplier subscriptions and a small fee on escrow-protected orders. That
-            keeps our incentives lined up with yours: more verified suppliers attract more buyers, more buyers create
-            more matched requests, and better data makes the AI matching sharper for everyone on the platform.</p>
+          <span class="tag" data-i18n="mutual.tag">Why this works for everyone</span>
+          <h2 data-i18n="mutual.h2">A marketplace that only grows when you do</h2>
+          <p data-i18n="mutual.p">Ometong never buys or stores products, and we don't compete with you for buyers. We only earn money when
+            a real trade happens — through supplier subscriptions and a small fee on escrow-protected orders. So more
+            verified suppliers bring more buyers, more buyers create more matching requests, and better data makes
+            the matching smarter for everyone.</p>
         </div>
         <div class="mutual-list">
           <div class="mutual-item" data-reveal>
-            <strong>For suppliers &amp; manufacturers</strong>
-            <p>Lower customer-acquisition cost than trade shows or cold outreach, faster payment cycles via escrow,
-              and a trust badge that shortens negotiation time with new buyers.</p>
+            <strong data-i18n="mutual.i1.h">For suppliers &amp; manufacturers</strong>
+            <p data-i18n="mutual.i1.p">Costs less than trade shows or cold outreach, pays you faster through escrow, and a trust badge that
+              speeds up talks with new buyers.</p>
           </div>
           <div class="mutual-item" data-reveal>
-            <strong>For Ometong</strong>
-            <p>Recurring subscription and transaction revenue, network effects that compound as both sides grow, and
-              transaction data that keeps improving AI-matching accuracy — without ever carrying inventory risk.</p>
+            <strong data-i18n="mutual.i2.h">For Ometong</strong>
+            <p data-i18n="mutual.i2.p">Steady subscription and transaction income, and better matching data as both suppliers and buyers grow —
+              all without ever holding any inventory ourselves.</p>
           </div>
           <div class="mutual-item" data-reveal>
-            <strong>For buyers</strong>
-            <p>A shorter path to vetted, ready-to-ship suppliers instead of weeks of unanswered outreach and
+            <strong data-i18n="mutual.i3.h">For buyers</strong>
+            <p data-i18n="mutual.i3.p">A faster way to find checked, ready-to-ship suppliers instead of weeks of unanswered messages and
               unverifiable claims.</p>
           </div>
         </div>
@@ -242,44 +256,44 @@
     <section class="section alt" id="pricing">
       <div class="container">
         <div class="section-head" data-reveal>
-          <span class="tag">Pricing</span>
-          <h2>Simple plans for suppliers</h2>
+          <span class="tag" data-i18n="pricing.tag">Pricing</span>
+          <h2 data-i18n="pricing.h2">Simple plans for suppliers</h2>
         </div>
         <div class="pricing-grid">
           <div class="price-card" data-reveal>
-            <h4>Starter</h4>
-            <div class="price-amt">Free</div>
-            <p>Get verified and list up to 10 products or services.</p>
+            <h4 data-i18n="pricing.starter.h">Starter</h4>
+            <div class="price-amt" data-i18n="pricing.starter.amt">Free</div>
+            <p data-i18n="pricing.starter.p">Get verified and list up to 10 products or services.</p>
             <ul>
-              <li>Verified badge</li>
-              <li>Up to 10 listings</li>
-              <li>Standard buyer matching</li>
+              <li data-i18n="pricing.starter.f1">Verified badge</li>
+              <li data-i18n="pricing.starter.f2">Up to 10 listings</li>
+              <li data-i18n="pricing.starter.f3">Standard buyer matching</li>
             </ul>
-            <a href="#apply" class="btn btn-ghost">Get Started</a>
+            <a href="#apply" class="btn btn-ghost" data-i18n="pricing.starter.btn">Get Started</a>
           </div>
           <div class="price-card featured" data-reveal>
-            <span class="price-tag">Most Popular</span>
-            <h4>Supplier Growth</h4>
-            <div class="price-amt">$49<small>/mo</small></div>
-            <p>Unlimited listings with priority AI matching.</p>
+            <span class="price-tag" data-i18n="pricing.growth.tag">Most Popular</span>
+            <h4 data-i18n="pricing.growth.h">Supplier Growth</h4>
+            <div class="price-amt">$49<small data-i18n="pricing.growth.per">/mo</small></div>
+            <p data-i18n="pricing.growth.p">Unlimited listings with priority AI matching.</p>
             <ul>
-              <li>Unlimited listings</li>
-              <li>Priority placement</li>
-              <li>Analytics dashboard</li>
-              <li>Priority escrow payout</li>
+              <li data-i18n="pricing.growth.f1">Unlimited listings</li>
+              <li data-i18n="pricing.growth.f2">Priority placement</li>
+              <li data-i18n="pricing.growth.f3">Analytics dashboard</li>
+              <li data-i18n="pricing.growth.f4">Priority escrow payout</li>
             </ul>
-            <a href="#apply" class="btn btn-primary">Start Free Trial</a>
+            <a href="#apply" class="btn btn-primary" data-i18n="pricing.growth.btn">Start Free Trial</a>
           </div>
           <div class="price-card" data-reveal>
-            <h4>Enterprise</h4>
-            <div class="price-amt">Custom</div>
-            <p>Dedicated account management and logistics integration.</p>
+            <h4 data-i18n="pricing.ent.h">Enterprise</h4>
+            <div class="price-amt" data-i18n="pricing.ent.amt">Custom</div>
+            <p data-i18n="pricing.ent.p">Dedicated account management and logistics integration.</p>
             <ul>
-              <li>API access</li>
-              <li>Dedicated manager</li>
-              <li>Custom contracts</li>
+              <li data-i18n="pricing.ent.f1">API access</li>
+              <li data-i18n="pricing.ent.f2">Dedicated manager</li>
+              <li data-i18n="pricing.ent.f3">Custom contracts</li>
             </ul>
-            <a href="#apply" class="btn btn-ghost">Contact Sales</a>
+            <a href="#apply" class="btn btn-ghost" data-i18n="pricing.ent.btn">Contact Sales</a>
           </div>
         </div>
       </div>
@@ -289,8 +303,8 @@
     <section class="section testimonials-section">
       <div class="container">
         <div class="section-head" data-reveal>
-          <span class="tag">From our suppliers</span>
-          <h2>What manufacturers say about selling here</h2>
+          <span class="tag" data-i18n="testi.tag">From our suppliers</span>
+          <h2 data-i18n="testi.h2">What manufacturers say about selling here</h2>
         </div>
 
         <div class="testi-slider" data-reveal>
@@ -320,60 +334,60 @@
     <section class="section alt" id="faq">
       <div class="container">
         <div class="section-head" data-reveal>
-          <span class="tag">FAQ</span>
-          <h2>Common questions from suppliers</h2>
+          <span class="tag" data-i18n="faq.tag">FAQ</span>
+          <h2 data-i18n="faq.h2">Common questions from suppliers</h2>
         </div>
 
         <div class="faq-list" id="faqList">
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>How does supplier verification work?</span>
+              <span data-i18n="faq.q1.q">How does supplier verification work?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>You submit business registration documents, tax ID, and product certifications where relevant. Our
-                team reviews and verifies within 2–3 business days, after which your profile carries the Verified badge.</p>
+              <p data-i18n="faq.q1.a">You submit business registration documents, tax ID, and product certificates where relevant. Our
+                team checks and verifies within 2–3 business days, then your profile shows the Verified badge.</p>
             </div>
           </div>
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>How and when do I get paid?</span>
+              <span data-i18n="faq.q2.q">How and when do I get paid?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>Buyer payment is held in escrow when an order is placed. Once the buyer confirms delivery (or the
-                confirmation window passes without a dispute), funds are released to your linked payout account.</p>
+              <p data-i18n="faq.q2.a">The buyer's payment is held in escrow when they place an order. Once the buyer confirms it arrived
+                (or the confirmation window passes with no dispute), the money is released to your payout account.</p>
             </div>
           </div>
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>What fees does Ometong charge?</span>
+              <span data-i18n="faq.q3.q">What fees does Ometong charge?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>Starter is free with limited listings. Supplier Growth is $49/month for unlimited listings and
-                priority matching. A small transaction fee applies on escrow-protected orders — full details are shown
-                before you confirm any listing plan.</p>
+              <p data-i18n="faq.q3.a">Starter is free with a limited number of listings. Supplier Growth is $49/month for unlimited
+                listings and priority matching. A small transaction fee applies on escrow-protected orders — you'll always
+                see the full amount before confirming any plan.</p>
             </div>
           </div>
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Do I need to arrange my own shipping?</span>
+              <span data-i18n="faq.q4.q">Do I need to arrange my own shipping?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>No — you can hand off fulfillment to our logistics partner network, which handles freight booking,
-                customs documentation, and tracking. You can also arrange your own shipping if you prefer.</p>
+              <p data-i18n="faq.q4.a">No — you can hand fulfillment to our logistics partner network, which takes care of freight booking,
+                customs paperwork, and tracking. You can also arrange your own shipping if you prefer.</p>
             </div>
           </div>
           <div class="faq-item">
             <button class="faq-question" aria-expanded="false">
-              <span>Which countries can I sell to?</span>
+              <span data-i18n="faq.q5.q">Which countries can I sell to?</span>
               <span class="faq-icon">+</span>
             </button>
             <div class="faq-answer">
-              <p>Buyers on Ometong currently source from 58+ countries. You choose which regions you're willing
-                to ship to when setting up each listing.</p>
+              <p data-i18n="faq.q5.a">Buyers on Ometong currently come from 58+ countries. You choose which regions you're willing
+                to ship to for each listing you create.</p>
             </div>
           </div>
         </div>
@@ -384,44 +398,44 @@
     <section class="section apply-section" id="apply">
       <div class="container apply-grid">
         <div class="apply-copy" data-reveal>
-          <span class="tag">Get Started</span>
-          <h2>Apply to become a verified supplier</h2>
-          <p>Tell us a bit about your business. Our team reviews applications within 2–3 business days and follows up
-            by email with next steps.</p>
+          <span class="tag" data-i18n="apply.tag">Get Started</span>
+          <h2 data-i18n="apply.h2">Apply to become a verified supplier</h2>
+          <p data-i18n="apply.p">Tell us a little about your business. Our team reviews applications within 2–3 business days and
+            follows up by email with next steps.</p>
           <div class="cart-trust">
-            <div class="cart-trust-item"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg><span>No cost to apply</span></div>
-            <div class="cart-trust-item"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg><span>2–3 day review</span></div>
+            <div class="cart-trust-item"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg><span data-i18n="apply.trust1">No cost to apply</span></div>
+            <div class="cart-trust-item"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg><span data-i18n="apply.trust2">2–3 day review</span></div>
           </div>
         </div>
 
         <form class="apply-form" id="applyForm" data-reveal novalidate>
           <div class="form-row">
-            <label for="companyName">Company name</label>
-            <input type="text" id="companyName" name="companyName" required placeholder="e.g. Horizon Supply Co.">
+            <label for="companyName" data-i18n="apply.f.company">Company name</label>
+            <input type="text" id="companyName" name="companyName" required placeholder="e.g. Horizon Supply Co." data-i18n-placeholder="apply.f.companyPh">
           </div>
           <div class="form-row">
-            <label for="contactEmail">Business email</label>
+            <label for="contactEmail" data-i18n="apply.f.email">Business email</label>
             <input type="email" id="contactEmail" name="contactEmail" required placeholder="you@company.com">
           </div>
           <div class="form-row">
-            <label for="category">Primary category</label>
+            <label for="category" data-i18n="apply.f.category">Primary category</label>
             <select id="category" name="category" required>
-              <option value="">Select a category</option>
-              <option>Electronics</option>
-              <option>Textiles</option>
-              <option>Machinery</option>
-              <option>Food &amp; Beverage</option>
-              <option>Construction</option>
-              <option>Packaging</option>
-              <option>Services</option>
-              <option>Logistics</option>
+              <option value="" data-i18n="apply.f.categoryPh">Select a category</option>
+              <option data-i18n="apply.f.cat1">Electronics</option>
+              <option data-i18n="apply.f.cat2">Textiles</option>
+              <option data-i18n="apply.f.cat3">Machinery</option>
+              <option data-i18n="apply.f.cat4">Food &amp; Beverage</option>
+              <option data-i18n="apply.f.cat5">Construction</option>
+              <option data-i18n="apply.f.cat6">Packaging</option>
+              <option data-i18n="apply.f.cat7">Services</option>
+              <option data-i18n="apply.f.cat8">Logistics</option>
             </select>
           </div>
           <div class="form-row">
-            <label for="details">Tell us what you make or offer</label>
-            <textarea id="details" name="details" rows="4" placeholder="Brief description of your products/services and typical order volumes"></textarea>
+            <label for="details" data-i18n="apply.f.details">Tell us what you make or offer</label>
+            <textarea id="details" name="details" rows="4" placeholder="Brief description of your products/services and typical order volumes" data-i18n-placeholder="apply.f.detailsPh"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary btn-lg magnetic apply-submit">Submit Application</button>
+          <button type="submit" class="btn btn-primary btn-lg magnetic apply-submit" data-i18n="apply.f.submit">Submit Application</button>
           <p class="form-msg" id="applyFormMsg" aria-live="polite"></p>
         </form>
       </div>
@@ -434,22 +448,22 @@
     <div class="container footer-grid">
       <div class="footer-brand">
         <a href="Home.html" class="logo"><img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact"></a>
-        <p>The marketplace built for global trade — products, services and logistics, matched by AI.</p>
+        <p data-i18n="footer.brand">The marketplace built for global trade — products, services and logistics, matched by AI.</p>
       </div>
       <div>
-        <h5>Marketplace</h5><a href="marketplace.html">Products</a><a href="marketplace.html">Services</a><a href="Home.html#categories">Categories</a><a href="Supplier.html">Suppliers</a>
+        <h5 data-i18n="footer.h1">Marketplace</h5><a href="marketplace.html" data-i18n="footer.products">Products</a><a href="marketplace.html" data-i18n="footer.services">Services</a><a href="Home.html#categories" data-i18n="nav.categories">Categories</a><a href="Supplier.html" data-i18n="footer.suppliers">Suppliers</a>
       </div>
       <div>
-        <h5>Company</h5><a href="Home.html#how">How it Works</a><a href="advertisement.html">Advertise</a><a href="contactus.html">Contact</a>
+        <h5 data-i18n="footer.h2">Company</h5><a href="Home.html#how" data-i18n="nav.how">How it Works</a><a href="advertisement.html" data-i18n="nav.advertise">Advertise</a><a href="contactus.html" data-i18n="footer.contact">Contact</a>
       </div>
       <div class="footer-newsletter">
-        <h5>Stay Updated</h5>
-        <p>Sourcing tips &amp; platform news, monthly.</p>
-        <form class="nl-form"><input type="email" placeholder="Your email"><button type="submit">Join</button></form>
+        <h5 data-i18n="footer.h3">Stay Updated</h5>
+        <p data-i18n="footer.newsletter">Sourcing tips &amp; platform news, monthly.</p>
+        <form class="nl-form"><input type="email" placeholder="Your email" data-i18n-placeholder="footer.emailPh"><button type="submit" data-i18n="footer.join">Join</button></form>
       </div>
     </div>
     <div class="footer-bottom container">
-      <span>&copy; <span id="year"></span> Ometong. All rights reserved.</span>
+      <span>&copy; <span id="year"></span> <span data-i18n="footer.rights">Ometong. All rights reserved.</span></span>
     </div>
   </footer>
 
