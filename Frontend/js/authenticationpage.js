@@ -86,7 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const successText = document.getElementById('successText');
 
   function destinationForRole(role) {
-    return role === 'buyer' ? 'buyerdashboard.html' : 'supplierdashboard.html';
+    if (role === 'buyer') return 'buyerdashboard.html';
+    if (role === 'manufacturer') return 'manufacturerdashboard.html';
+    return 'supplierdashboard.html';
   }
 
   function handleSubmit(form, title, textFor) {
