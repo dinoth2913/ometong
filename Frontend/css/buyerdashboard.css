@@ -15,6 +15,7 @@
   --ink:#15181F;
   --ink-soft:#666E7A;
   --ink-faint:#9AA1AC;
+  --footer-bg:#15181F;
   --line:rgba(21,24,31,.09);
   --bg:#F5F6F8;
   --bg-alt:#FBFAF8;
@@ -245,7 +246,7 @@ button,input,textarea,select{font-family:inherit;}
 /* =========================================================
    FOOTER
 ========================================================= */
-.footer{background:var(--ink);color:rgba(255,255,255,.7);padding:60px 0 0;margin-top:40px;}
+.footer{background:var(--footer-bg);color:rgba(255,255,255,.7);padding:60px 0 0;margin-top:40px;}
 .footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:36px;padding-bottom:44px;}
 .footer-brand p{color:rgba(255,255,255,.55);font-size:.86rem;margin:16px 0 20px;}
 .footer h5{color:#fff;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;}
