@@ -62,6 +62,7 @@
 [data-theme="dark"] .region-picker select option{background:transparent;}
 [data-theme="dark"] .wish-remove{background:rgba(23,26,33,.85);}
 [data-theme="dark"] .wish-remove svg{stroke:#fff;}
+[data-theme="dark"] .wish-price{color:var(--accent-light);}
 
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
