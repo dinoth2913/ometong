@@ -5,14 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Dark mode (shared "theme" preference with marketplace.html) ---------- */
   const themeToggle = document.getElementById('themeToggle');
-  const sunIcon = themeToggle?.querySelector('.sun-icon');
-  const moonIcon = themeToggle?.querySelector('.moon-icon');
 
   function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-    if (sunIcon) sunIcon.style.display = theme === 'dark' ? 'block' : 'none';
-    if (moonIcon) moonIcon.style.display = theme === 'dark' ? 'none' : 'block';
+    if (themeToggle) themeToggle.checked = theme === 'dark';
   }
 
   const savedTheme = localStorage.getItem('theme');
@@ -20,9 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
   else setTheme('light');
 
-  themeToggle?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme');
-    setTheme(current === 'dark' ? 'light' : 'dark');
+  themeToggle?.addEventListener('change', () => {
+    setTheme(themeToggle.checked ? 'dark' : 'light');
   });
 
   /* ---------- Footer year ---------- */
