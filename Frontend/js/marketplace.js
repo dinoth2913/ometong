@@ -182,6 +182,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.textContent = cartTotalQty(getCart());
   }
 
+  /* ---------- Wishlist (persisted in localStorage, shared with the buyer dashboard) ---------- */
+  const WISHLIST_KEY = 'ometong_wishlist';
+  function getWishlist() {
+    try { return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveWishlist(ids) { localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids)); }
+  function toggleWishlist(product) {
+    const ids = getWishlist();
+    const idx = ids.indexOf(product.id);
+    if (idx === -1) ids.push(product.id);
+    else ids.splice(idx, 1);
+    saveWishlist(ids);
+    return idx === -1;
+  }
+
   /* ---------- Render ---------- */
   const grid = document.getElementById('productGrid');
   const resultCount = document.getElementById('resultCount');
@@ -193,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="p-thumb" style="background:${p.color}12">
         ${svgThumb(p.color, index)}
         <span class="p-price-badge">$${p.price}<small> /unit</small></span>
-        <button class="p-fav" aria-label="Save item" data-fav="${p.id}">
+        <button class="p-fav${getWishlist().includes(p.id) ? ' saved' : ''}" aria-label="Save item" data-fav="${p.id}">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </button>
         ${p.badge ? `<span class="p-badge">${p.badge}</span>` : ''}
@@ -394,7 +410,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const favBtn = e.target.closest('[data-fav]');
     if (favBtn) {
-      favBtn.classList.toggle('saved');
+      const id = parseInt(favBtn.dataset.fav, 10);
+      const product = allProducts.find(p => p.id === id);
+      if (product) {
+        const nowSaved = toggleWishlist(product);
+        favBtn.classList.toggle('saved', nowSaved);
+      }
     }
   });
 

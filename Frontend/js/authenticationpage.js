@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const successText = document.getElementById('successText');
 
   function destinationForRole(role) {
-    return role === 'buyer' ? 'marketplace.html' : 'Supplier.html';
+    return role === 'buyer' ? 'buyerdashboard.html' : 'Supplier.html';
   }
 
   function handleSubmit(form, title, textFor) {
@@ -107,10 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   handleSubmit(loginForm, 'Welcome back', (role) =>
-    role === 'buyer' ? 'Redirecting you to the marketplace…' : 'Redirecting you to your supplier dashboard…');
+    role === 'buyer' ? 'Redirecting you to your dashboard…' : 'Redirecting you to your supplier dashboard…');
   handleSubmit(signupForm, "You're all set", (role) =>
     role === 'buyer'
-      ? 'Your account has been created — redirecting to the marketplace…'
+      ? 'Your account has been created — redirecting to your dashboard…'
       : 'Your account has been created — redirecting to your supplier dashboard…');
 
 });
