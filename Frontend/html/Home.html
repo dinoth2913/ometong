@@ -157,32 +157,124 @@
 
     <div class="reach-map-wrap" data-reveal>
       <div class="reach-map">
-        <svg class="reach-lines" viewBox="0 0 800 400" preserveAspectRatio="none" aria-hidden="true">
-          <path class="reach-path" d="M120,200 C300,80 480,60 650,90" />
-          <path class="reach-path" d="M120,200 C280,120 500,110 680,150" />
-          <path class="reach-path" d="M120,200 C220,100 320,60 420,70" />
-          <path class="reach-path" d="M120,200 C220,260 330,280 430,300" />
-          <path class="reach-path" d="M120,200 C250,280 380,330 480,340" />
+        <svg class="world-map-svg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
 
-          <circle class="reach-dot" r="4"><animateMotion dur="3.4s" begin="0s" repeatCount="indefinite" path="M120,200 C300,80 480,60 650,90" /></circle>
-          <circle class="reach-dot" r="4"><animateMotion dur="3.8s" begin="0.4s" repeatCount="indefinite" path="M120,200 C280,120 500,110 680,150" /></circle>
-          <circle class="reach-dot" r="4"><animateMotion dur="3s" begin="0.8s" repeatCount="indefinite" path="M120,200 C220,100 320,60 420,70" /></circle>
-          <circle class="reach-dot" r="4"><animateMotion dur="3.2s" begin="1.2s" repeatCount="indefinite" path="M120,200 C220,260 330,280 430,300" /></circle>
-          <circle class="reach-dot" r="4"><animateMotion dur="3.6s" begin="1.6s" repeatCount="indefinite" path="M120,200 C250,280 380,330 480,340" /></circle>
+          <!-- ===== world landmasses (stylised, orange outline) ===== -->
+          <g class="world-continents">
+            <!-- North America -->
+            <path d="M95,75 C150,55 210,60 245,90 C270,112 275,140 262,168 C255,185 260,205 245,222 C225,244 190,248 168,232 C158,224 150,232 138,225 C112,210 95,185 90,155 C86,128 78,98 95,75 Z" />
+            <!-- Central America link -->
+            <path d="M188,232 C198,240 205,252 200,262 C196,270 184,268 178,258 C173,248 178,236 188,232 Z" />
+            <!-- South America -->
+            <path d="M205,270 C230,262 252,272 262,298 C272,326 270,360 260,392 C252,416 234,438 214,432 C198,428 190,404 186,378 C182,346 184,312 190,290 C194,278 198,273 205,270 Z" />
+            <!-- Europe -->
+            <path d="M468,78 C495,64 528,64 550,80 C566,92 570,110 560,126 C550,140 528,148 505,144 C486,141 468,132 460,114 C455,102 458,88 468,78 Z" />
+            <!-- Africa -->
+            <path d="M478,150 C512,142 548,150 566,178 C584,206 588,244 578,282 C570,312 556,346 530,362 C510,374 488,364 480,340 C470,310 462,278 458,244 C454,208 456,174 478,150 Z" />
+            <!-- Asia (Middle East through China) -->
+            <path d="M585,95 C630,66 700,58 760,66 C820,74 872,96 895,132 C910,156 902,182 878,198 C858,211 838,222 812,224 C815,240 800,254 778,252 C748,249 715,238 690,224 C665,238 634,238 612,220 C588,200 578,176 578,150 C578,130 578,112 585,95 Z" />
+            <!-- SE Asia island scatter -->
+            <path d="M770,255 C782,251 794,257 796,268 C798,278 788,286 776,284 C766,282 760,272 763,263 C765,259 767,257 770,255 Z" />
+            <path d="M812,240 C822,236 833,241 834,251 C835,260 826,267 815,265 C806,263 801,254 804,246 C806,242 809,241 812,240 Z" />
+            <!-- Australia -->
+            <path d="M828,300 C858,290 892,294 910,314 C922,328 920,348 902,360 C880,374 848,376 826,364 C810,355 802,338 808,322 C812,312 818,306 828,300 Z" />
+          </g>
+
+          <!-- ===== shipping routes: China ⇄ highlighted countries ===== -->
+          <g class="ship-routes">
+            <path class="route-path" id="routeUSA" d="M818,188 Q520,40 222,140" />
+            <path class="route-path" id="routeUK" d="M818,188 Q660,20 502,108" />
+            <path class="route-path" id="routeUAE" d="M818,188 Q745,118 645,178" />
+            <path class="route-path" id="routeIndia" d="M818,188 Q775,145 717,192" />
+            <path class="route-path" id="routeSriLanka" d="M818,188 Q790,200 704,246" />
+            <path class="route-path" id="routeAustralia" d="M818,188 Q855,245 869,319" />
+          </g>
+
+          <g class="ship-icons">
+            <text class="ship-icon" font-size="15" text-anchor="middle">🚢
+              <animateMotion dur="7s" begin="0s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
+                <mpath href="#routeUSA"/>
+              </animateMotion>
+            </text>
+            <text class="ship-icon" font-size="15" text-anchor="middle">🚢
+              <animateMotion dur="6.4s" begin="0.5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
+                <mpath href="#routeUK"/>
+              </animateMotion>
+            </text>
+            <text class="ship-icon" font-size="15" text-anchor="middle">🚢
+              <animateMotion dur="5s" begin="1s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
+                <mpath href="#routeUAE"/>
+              </animateMotion>
+            </text>
+            <text class="ship-icon" font-size="15" text-anchor="middle">🚢
+              <animateMotion dur="5.4s" begin="1.5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
+                <mpath href="#routeIndia"/>
+              </animateMotion>
+            </text>
+            <text class="ship-icon" font-size="15" text-anchor="middle">🚢
+              <animateMotion dur="5.8s" begin="2s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
+                <mpath href="#routeSriLanka"/>
+              </animateMotion>
+            </text>
+            <text class="ship-icon" font-size="15" text-anchor="middle">🚢
+              <animateMotion dur="6.8s" begin="2.5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
+                <mpath href="#routeAustralia"/>
+              </animateMotion>
+            </text>
+          </g>
+
+          <!-- ===== origin: Guangzhou, China ===== -->
+          <g class="map-origin" transform="translate(818,188)">
+            <circle class="origin-pulse" r="6" style="animation-delay:0s" />
+            <circle class="origin-pulse" r="6" style="animation-delay:1s" />
+            <circle class="origin-dot" r="6" />
+            <text class="map-label origin-label" x="10" y="-10">Guangzhou, China</text>
+          </g>
+
+          <!-- ===== highlighted destination countries (numbered pins, see legend) ===== -->
+          <g class="map-highlight" transform="translate(222,140)">
+            <circle class="highlight-pulse" r="8" />
+            <circle class="highlight-dot" r="8" />
+            <text class="pin-number" y="3.5">1</text>
+          </g>
+          <g class="map-highlight" transform="translate(502,108)">
+            <circle class="highlight-pulse" r="8" style="animation-delay:.3s" />
+            <circle class="highlight-dot" r="8" />
+            <text class="pin-number" y="3.5">2</text>
+          </g>
+          <g class="map-highlight" transform="translate(645,178)">
+            <circle class="highlight-pulse" r="8" style="animation-delay:.6s" />
+            <circle class="highlight-dot" r="8" />
+            <text class="pin-number" y="3.5">3</text>
+          </g>
+          <g class="map-highlight" transform="translate(717,192)">
+            <circle class="highlight-pulse" r="8" style="animation-delay:.9s" />
+            <circle class="highlight-dot" r="8" />
+            <text class="pin-number" y="3.5">4</text>
+          </g>
+          <g class="map-highlight" transform="translate(704,246)">
+            <circle class="highlight-pulse" r="8" style="animation-delay:1.2s" />
+            <circle class="highlight-dot" r="8" />
+            <text class="pin-number" y="3.5">5</text>
+          </g>
+          <g class="map-highlight" transform="translate(869,319)">
+            <circle class="highlight-pulse" r="8" style="animation-delay:1.5s" />
+            <circle class="highlight-dot" r="8" />
+            <text class="pin-number" y="3.5">6</text>
+          </g>
+
         </svg>
 
-        <div class="reach-origin" style="left:15%;top:50%">
-          <span class="reach-pulse"></span>
-          <span class="reach-pulse" style="animation-delay:1s"></span>
-          <span class="reach-origin-dot"></span>
-          <span class="reach-origin-label">🇨🇳 Guangzhou, China</span>
+        <div class="map-legend">
+          <span class="legend-item"><span class="legend-pin">1</span>USA</span>
+          <span class="legend-item"><span class="legend-pin">2</span>UK</span>
+          <span class="legend-item"><span class="legend-pin">3</span>UAE</span>
+          <span class="legend-item"><span class="legend-pin">4</span>India</span>
+          <span class="legend-item"><span class="legend-pin">5</span>Sri Lanka</span>
+          <span class="legend-item"><span class="legend-pin">6</span>Australia</span>
         </div>
 
-        <div class="reach-dest" style="left:81.25%;top:22.5%;animation-delay:.4s"><span class="reach-dest-dot"></span>🇺🇸 USA</div>
-        <div class="reach-dest" style="left:85%;top:37.5%;animation-delay:.6s"><span class="reach-dest-dot"></span>🇨🇦 Canada</div>
-        <div class="reach-dest" style="left:52.5%;top:17.5%;animation-delay:.8s"><span class="reach-dest-dot"></span>🇪🇺 Europe</div>
-        <div class="reach-dest" style="left:53.75%;top:75%;animation-delay:1s"><span class="reach-dest-dot"></span>🇮🇳 India</div>
-        <div class="reach-dest" style="left:60%;top:85%;animation-delay:1.2s"><span class="reach-dest-dot"></span>🇱🇰 Sri Lanka</div>
+        <p class="map-caption">Highlighted in orange: the countries we ship to directly. Every other country on the map is shown with an orange outline — reachable through our logistics network on request.</p>
       </div>
     </div>
 
