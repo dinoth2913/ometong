@@ -316,38 +316,30 @@ button,input,select{font-family:inherit;}
 ========================================================= */
 .reach-section{background:var(--bg-alt);overflow:hidden;}
 
-.reach-map-wrap{margin:0 auto 20px;max-width:980px;}
+.reach-map-wrap{margin:0 auto 20px;max-width:1080px;}
 .reach-map{
-  position:relative;width:100%;
-  background:radial-gradient(circle at 82% 38%, rgba(255,116,49,.10), transparent 55%);
+  position:relative;width:100%;aspect-ratio:1920/1280;
   border:1px solid var(--line);border-radius:var(--radius-lg);
-  padding:18px 18px 8px;
+  overflow:hidden;background:#fff;
 }
-.world-map-svg{display:block;width:100%;height:auto;}
-
-/* ---- continents: soft fill + orange outline for every non-highlighted country ---- */
-.world-continents path{
-  fill:var(--bg-alt);
-  stroke:var(--accent);stroke-width:1.6;stroke-linejoin:round;
-  opacity:.85;
-  transition:fill .3s var(--ease);
-}
-[data-theme="dark"] .world-continents path{fill:rgba(255,255,255,.04);}
+.world-map-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;}
+.world-map-overlay{position:absolute;inset:0;width:100%;height:100%;display:block;}
 
 /* ---- animated shipping routes ---- */
 .route-path{
-  fill:none;stroke:var(--accent);stroke-width:1.4;stroke-linecap:round;
-  stroke-dasharray:5 6;opacity:.4;
+  fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;
+  stroke-dasharray:14 16;opacity:.75;
+  filter:drop-shadow(0 0 2px rgba(255,116,49,.5));
   animation:reachDash 22s linear infinite;
 }
-@keyframes reachDash{to{stroke-dashoffset:-220;}}
+@keyframes reachDash{to{stroke-dashoffset:-600;}}
 
-.ship-icon{opacity:.95;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35));}
+.ship-icon{opacity:.95;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));}
 
 /* ---- origin marker (Guangzhou) ---- */
-.origin-dot{fill:var(--gold);stroke:#fff;stroke-width:1.5;}
+.origin-dot{fill:var(--gold);stroke:#fff;stroke-width:3.5;}
 .origin-pulse{
-  fill:none;stroke:var(--gold);stroke-width:2;
+  fill:none;stroke:var(--gold);stroke-width:4;
   transform-box:fill-box;transform-origin:center;
   animation:mapPulse 2.4s var(--ease) infinite;
 }
@@ -358,23 +350,23 @@ button,input,select{font-family:inherit;}
 
 /* ---- highlighted destination countries ---- */
 .highlight-dot{
-  fill:var(--accent);stroke:#fff;stroke-width:1.5;
-  filter:drop-shadow(0 0 4px rgba(255,116,49,.6));
+  fill:var(--accent);stroke:#fff;stroke-width:3.5;
+  filter:drop-shadow(0 0 8px rgba(255,116,49,.6));
 }
 .highlight-pulse{
-  fill:none;stroke:var(--accent);stroke-width:2;
+  fill:none;stroke:var(--accent);stroke-width:4;
   transform-box:fill-box;transform-origin:center;
   animation:mapPulse 2.4s var(--ease) infinite;
 }
 
 .map-label{
-  font-family:var(--font-body);font-size:13px;font-weight:700;fill:var(--ink);
-  paint-order:stroke;stroke:var(--bg-alt);stroke-width:4px;stroke-linejoin:round;
+  font-family:var(--font-body);font-size:26px;font-weight:700;fill:var(--ink);
+  paint-order:stroke;stroke:#fff;stroke-width:8px;stroke-linejoin:round;
 }
-.origin-label{font-size:12px;fill:var(--ink-soft);font-weight:600;}
+.origin-label{font-size:24px;fill:var(--ink-soft);font-weight:600;}
 
 .pin-number{
-  font-family:var(--font-display);font-size:9px;font-weight:700;fill:#fff;
+  font-family:var(--font-display);font-size:20px;font-weight:700;fill:#fff;
   text-anchor:middle;pointer-events:none;
 }
 
