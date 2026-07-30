@@ -111,6 +111,75 @@ button,input,textarea,select{font-family:inherit;}
 .ad-stat span{font-size:.8rem;color:var(--ink-faint);font-weight:600;}
 
 /* =========================================================
+   LIVE AD PLACEMENTS SHOWCASE
+========================================================= */
+.section-hint{font-size:.8rem;color:var(--ink-faint);font-weight:600;}
+
+.slot-tag{
+  display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  padding:5px 12px;border-radius:999px;background:rgba(21,24,31,.06);color:var(--ink-soft);
+  margin-bottom:10px;
+}
+.slot-tag.light{background:rgba(255,255,255,.22);color:#fff;}
+
+.ad-banner-slot{
+  display:block;position:relative;overflow:hidden;
+  background:linear-gradient(120deg,var(--accent) 0%,var(--accent-dark) 55%,#B8460F 100%);
+  border-radius:var(--radius-lg);padding:44px 48px;margin-bottom:40px;
+  box-shadow:var(--shadow-glow);transition:transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+.ad-banner-slot::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 82% 25%, rgba(255,255,255,.25), transparent 55%);
+}
+.ad-banner-slot:hover{transform:translateY(-5px);box-shadow:0 26px 52px rgba(255,116,49,.4);}
+.ad-banner-content{position:relative;max-width:560px;}
+.ad-banner-content h3{color:#fff;font-size:clamp(1.3rem,2.6vw,1.7rem);margin-bottom:10px;}
+.ad-banner-content p{color:rgba(255,255,255,.85);font-size:.95rem;margin-bottom:18px;}
+.ad-banner-cta{
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--accent-dark);
+  font-weight:700;font-size:.88rem;padding:11px 20px;border-radius:999px;transition:transform .25s var(--ease);
+}
+.ad-banner-cta svg{fill:none;stroke:currentColor;stroke-width:2;}
+.ad-banner-slot:hover .ad-banner-cta{transform:translateX(4px);}
+
+.other-ads-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.other-ads-head h3{font-size:1.1rem;margin:0;}
+
+.ad-rows{display:flex;flex-direction:column;gap:16px;}
+.ad-row{
+  display:grid;grid-template-columns:2fr 1fr;gap:16px;text-decoration:none;
+  border-radius:var(--radius-lg);overflow:hidden;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.ad-row:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);}
+
+.ad-row-main{
+  position:relative;padding:28px 30px;color:#fff;display:flex;flex-direction:column;justify-content:center;
+  min-height:150px;
+}
+.ad-row-main h4{color:#fff;font-size:1.05rem;margin-bottom:6px;}
+.ad-row-main p{color:rgba(255,255,255,.85);font-size:.86rem;margin:0;}
+
+.ad-row-side{
+  background:#fff;border:1px solid var(--line);padding:22px 22px;
+  display:flex;flex-direction:column;justify-content:center;gap:4px;
+}
+.ad-row-side strong{font-size:.92rem;color:var(--ink);}
+.ad-row-link{font-size:.82rem;font-weight:700;color:var(--accent);transition:transform .25s var(--ease);}
+.ad-row:hover .ad-row-link{transform:translateX(4px);display:inline-block;}
+
+.ad-row-empty .ad-row-main.empty{
+  background:transparent;border:1.5px dashed var(--line);color:var(--ink-faint);
+  align-items:center;text-align:center;gap:6px;
+}
+.ad-row-empty .ad-row-main.empty svg{fill:none;stroke:var(--ink-faint);stroke-width:1.7;margin:0 auto 8px;}
+.ad-row-empty .ad-row-main.empty h4{color:var(--ink);}
+.ad-row-empty .ad-row-main.empty p{color:var(--ink-soft);}
+.ad-row-side.highlight{background:rgba(255,116,49,.06);border-color:rgba(255,116,49,.3);}
+.ad-row-side.highlight .ad-row-link{color:var(--accent-dark);}
+
+/* =========================================================
    PLAN SELECTOR
 ========================================================= */
 .section{padding:70px 0;}
@@ -273,6 +342,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   .footer-grid{grid-template-columns:1fr;}
   .ad-card{padding:26px 20px;}
   .ad-stats{gap:28px;}
+  .ad-banner-slot{padding:30px 24px;}
+  .ad-row{grid-template-columns:1fr;}
 }
 
 /* =========================================================
