@@ -45,7 +45,7 @@
         </label>
       </div>
       <span class="user-chip"><span class="user-chip-avatar" id="userAvatarInitials">GP</span><span id="userChipName">Guangzhou Precision Mfg.</span></span>
-      <a href="authenticationpage.html" class="link-btn">Log out</a>
+      <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
       <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -57,7 +57,7 @@
   <a href="#rfqs">Buyer RFQs</a>
   <a href="#certs">Certifications</a>
   <a href="#payouts">Payouts</a>
-  <a href="authenticationpage.html" class="link-btn">Log out</a>
+  <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
 </div>
 
 <main>
@@ -276,6 +276,10 @@
   <svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 3v12M4 8l5-5 5 5" /></svg>
 </button>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/supabaseConfig.js"></script>
+<script src="../js/supabaseClient.js"></script>
+<script src="../js/authGuard.js" data-role="manufacturer"></script>
 <script src="../js/manufacturerdashboard.js"></script>
 </body>
 </html>

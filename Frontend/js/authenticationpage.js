@@ -80,39 +80,116 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ---------- Form submission (demo) ---------- */
+  /* ---------- Real auth via Supabase ---------- */
   const authSuccess = document.getElementById('authSuccess');
   const successTitle = document.getElementById('successTitle');
   const successText = document.getElementById('successText');
-
   function destinationForRole(role) {
-    if (role === 'buyer') return 'buyerdashboard.html';
-    if (role === 'manufacturer') return 'manufacturerdashboard.html';
-    return 'supplierdashboard.html';
+    return window.ometongDashboardForRole ? window.ometongDashboardForRole(role) : 'buyerdashboard.html';
   }
 
-  function handleSubmit(form, title, textFor) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const btn = form.querySelector('.btn-block');
-      btn.classList.add('loading');
-      btn.textContent = 'Please wait…';
+  function showError(form, message) {
+    let errorEl = form.querySelector('.auth-error');
+    if (!errorEl) {
+      errorEl = document.createElement('p');
+      errorEl.className = 'auth-error';
+      form.prepend(errorEl);
+    }
+    errorEl.textContent = message;
+    errorEl.classList.add('show');
+  }
 
-      setTimeout(() => {
-        form.style.display = 'none';
-        successTitle.textContent = title;
-        successText.textContent = textFor(currentRole);
-        authSuccess.classList.add('show');
-        setTimeout(() => { window.location.href = destinationForRole(currentRole); }, 1800);
-      }, 700);
+  function clearError(form) {
+    const errorEl = form.querySelector('.auth-error');
+    if (errorEl) errorEl.classList.remove('show');
+  }
+
+  function setLoading(form, isLoading, label) {
+    const btn = form.querySelector('.btn-block');
+    btn.disabled = isLoading;
+    btn.textContent = isLoading ? 'Please wait…' : label;
+  }
+
+  function showSuccess(title, message, redirectTo) {
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'none';
+    successTitle.textContent = title;
+    successText.textContent = message;
+    authSuccess.classList.add('show');
+    if (redirectTo) setTimeout(() => { window.location.href = redirectTo; }, 1600);
+  }
+
+  if (!window.sb) {
+    console.error('Ometong: Supabase client not available — check that supabaseConfig.js and supabaseClient.js are loaded before authenticationpage.js.');
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError(loginForm);
+    const email = loginForm.email.value.trim();
+    const password = loginForm.password.value;
+
+    setLoading(loginForm, true, 'Log in');
+    const { data, error } = await window.sb.auth.signInWithPassword({ email, password });
+    setLoading(loginForm, false, 'Log in');
+
+    if (error) {
+      showError(loginForm, error.message || 'Could not log in. Check your email and password.');
+      return;
+    }
+
+    const { data: profile } = await window.sb
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .single();
+    const role = profile ? profile.role : 'buyer';
+
+    showSuccess('Welcome back', 'Redirecting you to your dashboard…', destinationForRole(role));
+  });
+
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError(signupForm);
+    const email = signupForm.email.value.trim();
+    const password = signupForm.password.value;
+    const fullName = signupForm.name.value.trim();
+    const business = signupForm.business ? signupForm.business.value.trim() : '';
+    const category = signupForm.category ? signupForm.category.value : '';
+    const details = signupForm.details ? signupForm.details.value.trim() : '';
+
+    setLoading(signupForm, true, 'Create account');
+    const { data, error } = await window.sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          role: currentRole,
+          full_name: fullName,
+          business_name: business,
+          category,
+          details
+        }
+      }
     });
-  }
+    setLoading(signupForm, false, 'Create account');
 
-  handleSubmit(loginForm, 'Welcome back', (role) =>
-    role === 'buyer' ? 'Redirecting you to your dashboard…' : 'Redirecting you to your supplier dashboard…');
-  handleSubmit(signupForm, "You're all set", (role) =>
-    role === 'buyer'
-      ? 'Your account has been created — redirecting to your dashboard…'
-      : 'Your account has been created — redirecting to your supplier dashboard…');
+    if (error) {
+      showError(signupForm, error.message || 'Could not create your account. Please try again.');
+      return;
+    }
+
+    if (!data.session) {
+      // Email confirmation is required before the account can log in — don't redirect yet.
+      showSuccess(
+        'Check your email',
+        "We've sent a confirmation link to " + email + ". Confirm it, then log in to reach your dashboard.",
+        null
+      );
+      return;
+    }
+
+    showSuccess("You're all set", 'Your account has been created — redirecting to your dashboard…', destinationForRole(currentRole));
+  });
 
 });

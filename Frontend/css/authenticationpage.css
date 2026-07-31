@@ -147,6 +147,12 @@ label select:focus,label textarea:focus{border-color:var(--accent);box-shadow:0 
 /* ---- Forms ---- */
 .auth-form{display:none;flex-direction:column;gap:14px;animation:fadeUp .4s var(--ease);}
 .auth-form.active{display:flex;}
+.auth-error{
+  display:none;margin:0;padding:11px 14px;border-radius:10px;
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);
+  color:#C0341E;font-size:.84rem;font-weight:600;
+}
+.auth-error.show{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .auth-form h2{font-size:1.4rem;}
 .auth-sub{font-size:.88rem;margin-bottom:6px;}
@@ -188,7 +194,7 @@ label input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,116,4
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:var(--shadow-glow);}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(255,116,49,.4);}
 .btn-block{width:100%;padding:13px;font-size:.94rem;margin-top:4px;}
-.btn-block.loading{opacity:.75;pointer-events:none;}
+.btn-block.loading,.btn-block:disabled{opacity:.75;pointer-events:none;cursor:not-allowed;}
 
 .auth-switch{text-align:center;font-size:.85rem;margin:12px 0 0;}
 .link-inline{background:none;border:none;color:var(--accent);font-weight:700;cursor:pointer;font-size:.85rem;padding:0;}
