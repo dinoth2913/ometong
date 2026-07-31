@@ -20,13 +20,29 @@
     return (parts[0][0] + (parts[1] ? parts[1][0] : "")).toUpperCase();
   }
 
+  // On a fresh page load, the Supabase client needs a moment to restore
+  // the session from storage. Calling getSession() immediately can race
+  // ahead of that and return null even when the user is actually logged
+  // in. Waiting for the one-time INITIAL_SESSION event is the documented
+  // way to know the client has finished checking storage.
+  function getInitialSession() {
+    return new Promise((resolve) => {
+      const { data: sub } = window.sb.auth.onAuthStateChange((event, session) => {
+        if (event === "INITIAL_SESSION") {
+          sub.subscription.unsubscribe();
+          resolve(session);
+        }
+      });
+    });
+  }
+
   async function guard() {
     if (!window.SUPABASE_URL || window.SUPABASE_URL.indexOf("YOUR_SUPABASE") === 0) {
       return; // Not configured yet — skip the guard, keep demo data visible.
     }
     if (!window.sb) return;
 
-    const { data: { session } } = await window.sb.auth.getSession();
+    const session = await getInitialSession();
     if (!session) {
       window.location.href = "authenticationpage.html";
       return;
