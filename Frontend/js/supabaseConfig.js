@@ -6,5 +6,5 @@
    works within the Row Level Security policies defined in
    supabase/schema.sql. Never put the service_role key here.
 ========================================================= */
-window.SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-window.SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+window.SUPABASE_URL = "https://gqqqznkkakvdofzooijm.supabase.co";
+window.SUPABASE_ANON_KEY = "sb_publishable_A0E-oh9TofGD6Wn4xkGsAw__tVwNNpp";
