@@ -67,38 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach(el => el.classList.add('in'));
   }
 
-  /* ---------- Demo supplier data ---------- */
-  const demoListings = [
-    { id: 1, title: 'Bluetooth Earbuds Pro X3', category: 'Electronics', price: '$18.50', moq: 'MOQ 200 units', color: '#3A6FF7', status: 'active' },
-    { id: 2, title: 'Cotton Blend T-Shirts (Bulk)', category: 'Textiles', price: '$3.20', moq: 'MOQ 500 units', color: '#8B5CF6', status: 'active' },
-    { id: 3, title: 'CNC Precision Metal Parts', category: 'Machinery', price: '$42.00', moq: 'MOQ 50 units', color: '#22C55E', status: 'active' },
-    { id: 4, title: 'Recyclable Kraft Packaging', category: 'Packaging', price: '$0.85', moq: 'MOQ 1000 units', color: '#FFC24D', status: 'paused' },
-    { id: 5, title: 'Solar Garden Lights', category: 'Electronics', price: '$6.10', moq: 'MOQ 300 units', color: '#FF7431', status: 'active' },
-    { id: 6, title: 'Stainless Steel Cookware Set', category: 'Housewares', price: '$27.90', moq: 'MOQ 100 units', color: '#EF4444', status: 'active' },
-  ];
-
-  const demoRequests = [
-    { id: 1, product: 'Bluetooth Earbuds Pro X3', buyer: 'Retail chain', country: 'United States', qty: '2,000 units', budget: '$32,000', status: 'new' },
-    { id: 2, product: 'Recyclable Kraft Packaging', buyer: 'Cafe distributor', country: 'Canada', qty: '10,000 units', budget: '$7,500', status: 'new' },
-    { id: 3, product: 'CNC Precision Metal Parts', buyer: 'Auto parts importer', country: 'Germany', qty: '300 units', budget: '$11,400', status: 'quoted' },
-    { id: 4, product: 'Cotton Blend T-Shirts (Bulk)', buyer: 'Fashion wholesaler', country: 'Sri Lanka', qty: '5,000 units', budget: '$14,200', status: 'quoted' },
-    { id: 5, product: 'Solar Garden Lights', buyer: 'Home & garden retailer', country: 'India', qty: '1,500 units', budget: '$8,900', status: 'won' },
-    { id: 6, product: 'Stainless Steel Cookware Set', buyer: 'Department store', country: 'United States', qty: '800 units', budget: '$19,300', status: 'new' },
-  ];
-
-  const demoOrders = [
-    { id: 'OM-70213', buyer: 'Retail chain', country: 'USA', product: 'Bluetooth Earbuds Pro X3', amount: 5400, status: 'processing', shipBy: '05 Aug 2026' },
-    { id: 'OM-70198', buyer: 'Home & garden retailer', country: 'India', product: 'Solar Garden Lights', amount: 3050, status: 'shipped', shipBy: 'Shipped 22 Jul 2026' },
-    { id: 'OM-70166', buyer: 'Fashion wholesaler', country: 'Sri Lanka', product: 'Cotton Blend T-Shirts', amount: 2180, status: 'delivered', shipBy: 'Delivered 14 Jul 2026' },
-    { id: 'OM-70140', buyer: 'Auto parts importer', country: 'Germany', product: 'CNC Precision Metal Parts', amount: 11400, status: 'delivered', shipBy: 'Delivered 02 Jul 2026' },
-  ];
-
-  const demoPayouts = [
-    { date: '22 Jul 2026', order: 'OM-70198', amount: 3050 },
-    { date: '14 Jul 2026', order: 'OM-70166', amount: 2180 },
-    { date: '02 Jul 2026', order: 'OM-70140', amount: 11400 },
-    { date: '19 Jun 2026', order: 'OM-69894', amount: 6720 },
-  ];
+  /* ---------- Supplier data ----------
+     No listings/order-fulfillment/payout backend exists yet, so a
+     real new supplier account genuinely starts with none of this —
+     everything below fills in on its own once that's built. */
+  const demoListings = [];
+  const demoRequests = [];
+  const demoOrders = [];
+  const demoPayouts = [];
 
   const LISTINGS_KEY = 'ometong_supplier_listing_status';
 
@@ -118,10 +94,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render listings ---------- */
   const listingsGrid = document.getElementById('listingsGrid');
+  const listingsEmpty = document.getElementById('listingsEmpty');
   const overrides = getListingOverrides();
 
   function renderListings() {
     if (!listingsGrid) return;
+    if (demoListings.length === 0) {
+      listingsGrid.innerHTML = '';
+      listingsGrid.style.display = 'none';
+      if (listingsEmpty) listingsEmpty.hidden = false;
+      return;
+    }
+    listingsGrid.style.display = 'grid';
+    if (listingsEmpty) listingsEmpty.hidden = true;
     listingsGrid.innerHTML = demoListings.map(item => {
       const status = overrides[item.id] || item.status;
       const isActive = status === 'active';
@@ -155,10 +140,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render buyer requests ---------- */
   const requestsGrid = document.getElementById('requestsGrid');
+  const requestsEmpty = document.getElementById('requestsEmpty');
   const reqLabels = { new: 'New', quoted: 'Quoted', won: 'Won' };
 
   function renderRequests() {
     if (!requestsGrid) return;
+    if (demoRequests.length === 0) {
+      requestsGrid.innerHTML = '';
+      requestsGrid.style.display = 'none';
+      if (requestsEmpty) requestsEmpty.hidden = false;
+      return;
+    }
+    requestsGrid.style.display = 'grid';
+    if (requestsEmpty) requestsEmpty.hidden = true;
     requestsGrid.innerHTML = demoRequests.map(r => `
       <div class="request-card">
         <div class="req-top">
@@ -184,10 +178,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render orders ---------- */
   const ordersList = document.getElementById('ordersList');
+  const ordersHead = document.getElementById('ordersHead');
+  const ordersEmpty = document.getElementById('ordersEmpty');
   const orderStatusLabels = { processing: 'Processing', shipped: 'Shipped', delivered: 'Delivered' };
 
   function renderOrders() {
     if (!ordersList) return;
+    if (demoOrders.length === 0) {
+      ordersList.innerHTML = '';
+      if (ordersHead) ordersHead.style.display = 'none';
+      if (ordersEmpty) ordersEmpty.hidden = false;
+      return;
+    }
+    if (ordersHead) ordersHead.style.display = '';
+    if (ordersEmpty) ordersEmpty.hidden = true;
     ordersList.innerHTML = demoOrders.map(o => `
       <div class="order-row">
         <div>
@@ -219,7 +223,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (countEl) countEl.textContent = demoPayouts.length;
 
     const historyEl = document.getElementById('payoutHistory');
+    const historyEmptyEl = document.getElementById('payoutHistoryEmpty');
+    if (demoPayouts.length === 0) {
+      if (historyEl) { historyEl.innerHTML = ''; historyEl.style.display = 'none'; }
+      if (historyEmptyEl) historyEmptyEl.hidden = false;
+      return;
+    }
+    if (historyEmptyEl) historyEmptyEl.hidden = true;
     if (historyEl) {
+      historyEl.style.display = '';
       historyEl.innerHTML = `
         <div class="payout-row head"><span>Date</span><span>Order</span><span>Amount</span></div>
         ${demoPayouts.map(p => `

@@ -66,6 +66,7 @@
     const acctName = document.getElementById("acctName");
     const acctCompany = document.getElementById("acctCompany");
     const acctEmail = document.getElementById("acctEmail");
+    const acctCategory = document.getElementById("acctCategory");
 
     if (welcomeName) welcomeName.textContent = displayName;
     if (userChipName) userChipName.textContent = displayName;
@@ -73,6 +74,7 @@
     if (acctName) acctName.textContent = profile.full_name || displayName;
     if (acctCompany) acctCompany.textContent = profile.business_name || displayName;
     if (acctEmail) acctEmail.textContent = profile.email || "";
+    if (acctCategory) acctCategory.textContent = profile.category || "Not set";
   }
 
   document.querySelectorAll(".logout-link").forEach((link) => {

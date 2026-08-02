@@ -143,7 +143,12 @@ button,input,textarea,select{font-family:inherit;}
 .status-pill{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:700;padding:9px 16px;border-radius:999px;}
 .status-pill.verified{background:rgba(34,197,94,.12);color:#178A50;}
 .status-pill.verified svg{fill:none;stroke:currentColor;stroke-width:1.8;}
+.status-pill.pending{background:rgba(21,24,31,.06);color:var(--ink-soft);}
+.status-pill.pending svg{fill:none;stroke:currentColor;stroke-width:1.8;}
+[data-theme="dark"] .status-pill.pending{background:rgba(255,255,255,.08);color:var(--ink-soft);}
 .status-pill.plan{background:rgba(255,116,49,.12);color:var(--accent-dark);}
+.status-pill.plan-cta{background:rgba(255,116,49,.12);color:var(--accent-dark);transition:background .2s,color .2s;}
+.status-pill.plan-cta:hover{background:var(--accent);color:#fff;}
 
 /* =========================================================
    STATS
@@ -187,6 +192,14 @@ button,input,textarea,select{font-family:inherit;}
 .req-buyer strong{color:var(--ink);}
 .req-actions{display:flex;gap:10px;margin-top:4px;}
 .req-actions .btn{flex:1;}
+
+/* =========================================================
+   EMPTY STATES
+========================================================= */
+.empty-state{text-align:center;padding:56px 24px;}
+.empty-state svg{fill:none;stroke:var(--ink-faint);stroke-width:1.5;margin:0 auto 16px;}
+.empty-state h3{font-size:1.05rem;margin-bottom:6px;}
+.empty-state p{max-width:440px;margin:0 auto 20px;}
 
 /* =========================================================
    LISTINGS

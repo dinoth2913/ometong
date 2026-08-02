@@ -71,11 +71,11 @@
         <p>Here's how your listings and buyer requests are performing.</p>
       </div>
       <div class="status-pills">
-        <span class="status-pill verified">
-          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg>
-          Verified supplier
+        <span class="status-pill pending" id="verifyPill">
+          <svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></svg>
+          Verification pending
         </span>
-        <span class="status-pill plan">Supplier Growth plan</span>
+        <a href="Supplier.html#pricing" class="status-pill plan-cta">Choose a plan</a>
       </div>
     </div>
 
@@ -118,6 +118,12 @@
         <a href="Supplier.html#benefits" class="btn btn-ghost btn-sm">How matching works</a>
       </div>
       <div class="requests-grid" id="requestsGrid"></div>
+      <div class="empty-state" id="requestsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" /></svg>
+        <h3>No buyer requests yet</h3>
+        <p>When a buyer's search matches something you sell, their request will appear here automatically — you don't need to search for buyers yourself. Add a listing so our AI has something to match against.</p>
+        <a href="Supplier.html#apply" class="btn btn-primary btn-sm">Add your first listing</a>
+      </div>
     </section>
 
     <!-- ===== MY LISTINGS ===== -->
@@ -127,6 +133,12 @@
         <a href="Supplier.html#apply" class="btn btn-primary btn-sm">Add a listing</a>
       </div>
       <div class="listings-grid" id="listingsGrid"></div>
+      <div class="empty-state" id="listingsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a4 4 0 018 0v2" /></svg>
+        <h3>You haven't listed anything yet</h3>
+        <p>Listings are the products or services buyers can find and order from you. Add your first one to start showing up in buyer searches and matched requests.</p>
+        <a href="Supplier.html#apply" class="btn btn-primary btn-sm">Add your first listing</a>
+      </div>
     </section>
 
     <!-- ===== RECENT ORDERS ===== -->
@@ -135,8 +147,8 @@
         <h2>Recent orders</h2>
         <span class="section-hint">Sorted by most recent</span>
       </div>
-      <div class="orders-card">
-        <div class="order-row head">
+      <div class="orders-card" id="ordersCard">
+        <div class="order-row head" id="ordersHead">
           <span>Buyer</span>
           <span>Product</span>
           <span>Amount</span>
@@ -144,6 +156,11 @@
           <span></span>
         </div>
         <div id="ordersList"></div>
+        <div class="empty-state" id="ordersEmpty" hidden>
+          <svg viewBox="0 0 24 24" width="40" height="40"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z" /></svg>
+          <h3>No orders yet</h3>
+          <p>Orders show up here once a buyer purchases from one of your listings. Nothing to do right now — this fills in on its own as sales come in.</p>
+        </div>
       </div>
     </section>
 
@@ -157,7 +174,7 @@
         <div class="payout-card highlight">
           <span class="payout-label">Escrow balance</span>
           <span class="payout-amt" id="payoutEscrow">$0</span>
-          <p>Released automatically once buyers confirm delivery.</p>
+          <p>Money from orders in progress, held safely until the buyer confirms delivery.</p>
         </div>
         <div class="payout-card">
           <span class="payout-label">Next payout</span>
@@ -171,6 +188,11 @@
         </div>
       </div>
       <div class="payout-history" id="payoutHistory"></div>
+      <div class="empty-state" id="payoutHistoryEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 1v22M17 5.5c0-2-2.2-3.5-5-3.5s-5 1.5-5 3.5 2.2 3 5 3.5c2.8.5 5 1.5 5 3.5s-2.2 3.5-5 3.5-5-1.5-5-3.5" /></svg>
+        <h3>No payouts yet</h3>
+        <p>Once a buyer confirms delivery on a paid order, the money moves from escrow into a payout here — automatically, no action needed from you.</p>
+      </div>
     </section>
 
     <!-- ===== ACCOUNT ===== -->
@@ -183,8 +205,8 @@
           <h3>Business profile</h3>
           <div class="account-row"><span>Company</span><span id="acctCompany">Horizon Supply Co.</span></div>
           <div class="account-row"><span>Email</span><span id="acctEmail">contact@horizonsupply.example</span></div>
-          <div class="account-row"><span>Category</span><span id="acctCategory">Electronics</span></div>
-          <div class="account-row"><span>Plan</span><span id="acctPlan">Supplier Growth</span></div>
+          <div class="account-row"><span>Category</span><span id="acctCategory">Not set</span></div>
+          <div class="account-row"><span>Plan</span><span id="acctPlan">No plan selected</span></div>
           <div class="account-row"><span>Member since</span><span>Jul 2026</span></div>
         </div>
         <div class="account-card">
