@@ -71,11 +71,11 @@
         <p>Here's your factory's production, certifications, and buyer activity at a glance.</p>
       </div>
       <div class="status-pills">
-        <span class="status-pill verified">
-          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg>
-          Verified manufacturer
+        <span class="status-pill pending" id="verifyPill">
+          <svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></svg>
+          Verification pending
         </span>
-        <span class="status-pill plan">OEM &amp; ODM capable</span>
+        <a href="Supplier.html#pricing" class="status-pill plan-cta">Choose a plan</a>
       </div>
     </div>
 
@@ -115,34 +115,35 @@
     <section data-reveal>
       <div class="section-head">
         <h2>Factory profile</h2>
-        <span class="section-hint">Shown to buyers on your verified profile</span>
+        <span class="section-hint">Shown to buyers once your profile is complete</span>
       </div>
       <div class="factory-grid">
         <div class="factory-card">
           <span class="factory-label">Established</span>
-          <span class="factory-value" id="factEstablished">2011</span>
+          <span class="factory-value" id="factEstablished">Not set</span>
         </div>
         <div class="factory-card">
           <span class="factory-label">Factory size</span>
-          <span class="factory-value" id="factSize">18,000 m²</span>
+          <span class="factory-value" id="factSize">Not set</span>
         </div>
         <div class="factory-card">
           <span class="factory-label">Workforce</span>
-          <span class="factory-value" id="factWorkforce">420 staff</span>
+          <span class="factory-value" id="factWorkforce">Not set</span>
         </div>
         <div class="factory-card">
           <span class="factory-label">Monthly capacity</span>
-          <span class="factory-value" id="factCapacity">180,000 units</span>
+          <span class="factory-value" id="factCapacity">Not set</span>
         </div>
         <div class="factory-card">
           <span class="factory-label">Avg. sample lead time</span>
-          <span class="factory-value" id="factSampleTime">7–10 days</span>
+          <span class="factory-value" id="factSampleTime">Not set</span>
         </div>
         <div class="factory-card">
           <span class="factory-label">Main export markets</span>
-          <span class="factory-value" id="factMarkets">USA, EU, Canada</span>
+          <span class="factory-value" id="factMarkets">Not set</span>
         </div>
       </div>
+      <p class="factory-note">These details aren't filled in yet — buyers won't see a complete factory profile until you add them. Profile editing is coming soon.</p>
     </section>
 
     <!-- ===== PRODUCTION LINES ===== -->
@@ -152,6 +153,12 @@
         <span class="section-hint">Live utilization across your factory floor</span>
       </div>
       <div class="lines-grid" id="linesGrid"></div>
+      <div class="empty-state" id="linesEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
+        <h3>No production lines added yet</h3>
+        <p>This is where you'd track utilization across each line on your factory floor. Line tracking is coming soon — for now, focus on adding your first listing so buyers can find you.</p>
+        <a href="Supplier.html#apply" class="btn btn-primary btn-sm">Add your first listing</a>
+      </div>
     </section>
 
     <!-- ===== BUYER RFQs ===== -->
@@ -161,6 +168,12 @@
         <a href="Supplier.html#benefits" class="btn btn-ghost btn-sm">How matching works</a>
       </div>
       <div class="rfq-grid" id="rfqGrid"></div>
+      <div class="empty-state" id="rfqsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" /></svg>
+        <h3>No RFQs yet</h3>
+        <p>When a buyer's request for quotation matches something you make, it'll appear here automatically — you don't need to search for buyers yourself. Add a listing so our AI has something to match against.</p>
+        <a href="Supplier.html#apply" class="btn btn-primary btn-sm">Add your first listing</a>
+      </div>
     </section>
 
     <!-- ===== ORDERS IN PRODUCTION ===== -->
@@ -170,6 +183,11 @@
         <span class="section-hint">Tracked stage by stage</span>
       </div>
       <div class="prod-orders" id="prodOrders"></div>
+      <div class="empty-state" id="prodOrdersEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z" /></svg>
+        <h3>Nothing in production yet</h3>
+        <p>Once a buyer places an order, you'll be able to track it here stage by stage — materials, production, quality check, packaging, and shipping. Nothing to do right now.</p>
+      </div>
     </section>
 
     <!-- ===== CERTIFICATIONS ===== -->
@@ -179,6 +197,11 @@
         <span class="section-hint">Verified once, visible on every listing</span>
       </div>
       <div class="cert-grid" id="certGrid"></div>
+      <div class="empty-state" id="certsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg>
+        <h3>No certifications added yet</h3>
+        <p>Certifications like ISO 9001, BSCI, or RoHS build buyer trust and show up on every listing once verified. Certification upload is coming soon.</p>
+      </div>
     </section>
 
     <!-- ===== PAYOUTS ===== -->
@@ -191,7 +214,7 @@
         <div class="payout-card highlight">
           <span class="payout-label">Escrow balance</span>
           <span class="payout-amt" id="payoutEscrow">$0</span>
-          <p>Released automatically once buyers confirm delivery.</p>
+          <p>Money from orders in progress, held safely until the buyer confirms delivery.</p>
         </div>
         <div class="payout-card">
           <span class="payout-label">Next payout</span>
@@ -205,6 +228,11 @@
         </div>
       </div>
       <div class="payout-history" id="payoutHistory"></div>
+      <div class="empty-state" id="payoutHistoryEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 1v22M17 5.5c0-2-2.2-3.5-5-3.5s-5 1.5-5 3.5 2.2 3 5 3.5c2.8.5 5 1.5 5 3.5s-2.2 3.5-5 3.5-5-1.5-5-3.5" /></svg>
+        <h3>No payouts yet</h3>
+        <p>Once a buyer confirms delivery on a paid order, the money moves from escrow into a payout here — automatically, no action needed from you.</p>
+      </div>
     </section>
 
     <!-- ===== ACCOUNT ===== -->
@@ -217,8 +245,8 @@
           <h3>Business profile</h3>
           <div class="account-row"><span>Factory name</span><span id="acctCompany">Guangzhou Precision Mfg.</span></div>
           <div class="account-row"><span>Email</span><span id="acctEmail">contact@gzprecision.example</span></div>
-          <div class="account-row"><span>Category</span><span id="acctCategory">Electronics &amp; Machinery</span></div>
-          <div class="account-row"><span>Production model</span><span id="acctModel">OEM / ODM</span></div>
+          <div class="account-row"><span>Category</span><span id="acctCategory">Not set</span></div>
+          <div class="account-row"><span>Production model</span><span id="acctModel">Not set</span></div>
           <div class="account-row"><span>Member since</span><span>Jul 2026</span></div>
         </div>
         <div class="account-card">

@@ -67,52 +67,32 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach(el => el.classList.add('in'));
   }
 
-  /* ---------- Demo manufacturer data ---------- */
-  const demoLines = [
-    { name: 'SMT Line 1 — PCB Assembly', product: 'Bluetooth earbuds, IoT boards', utilization: 92, status: 'running' },
-    { name: 'Injection Molding Line A', product: 'Plastic enclosures, housewares', utilization: 78, status: 'running' },
-    { name: 'CNC Machining Cell 3', product: 'Precision metal parts', utilization: 65, status: 'running' },
-    { name: 'Assembly Line 2 — Final Pack', product: 'Solar garden lights', utilization: 40, status: 'maintenance' },
-  ];
-
-  const demoRfqs = [
-    { id: 1, product: 'Bluetooth Earbuds Pro X3 (OEM)', buyer: 'Retail chain', country: 'United States', qty: '10,000 units', budget: '$165,000', status: 'new' },
-    { id: 2, product: 'Custom Injection-Molded Housing', buyer: 'Consumer electronics brand', country: 'Germany', qty: '25,000 units', budget: '$92,500', status: 'new' },
-    { id: 3, product: 'CNC Precision Metal Parts', buyer: 'Auto parts importer', country: 'Canada', qty: '4,000 units', budget: '$148,000', status: 'quoted' },
-    { id: 4, product: 'Solar Garden Lights (ODM)', buyer: 'Home & garden retailer', country: 'India', qty: '15,000 units', budget: '$89,000', status: 'quoted' },
-    { id: 5, product: 'Smart Home Sensor Boards', buyer: 'Tech distributor', country: 'Sri Lanka', qty: '6,000 units', budget: '$54,000', status: 'won' },
-    { id: 6, product: 'IoT Gateway Enclosures', buyer: 'Industrial supplier', country: 'United States', qty: '8,500 units', budget: '$71,200', status: 'new' },
-  ];
-
+  /* ---------- Manufacturer data ----------
+     No production/RFQ/order/certification/payout backend exists
+     yet, so a real new manufacturer account genuinely starts with
+     none of this — everything below fills in on its own once
+     that's built. */
+  const demoLines = [];
+  const demoRfqs = [];
   const rfqLabels = { new: 'New', quoted: 'Quoted', won: 'Won' };
-
   const stageNames = ['Materials sourced', 'In production', 'Quality check', 'Packaging', 'Shipped'];
-
-  const demoProdOrders = [
-    { id: 'OM-81042', buyer: 'Retail chain', country: 'USA', product: 'Bluetooth Earbuds Pro X3', amount: 54200, stage: 1, eta: 'ETA 12 Aug 2026' },
-    { id: 'OM-81030', buyer: 'Consumer electronics brand', country: 'Germany', product: 'Custom Injection-Molded Housing', amount: 38900, stage: 2, eta: 'ETA 08 Aug 2026' },
-    { id: 'OM-80998', buyer: 'Tech distributor', country: 'Sri Lanka', product: 'Smart Home Sensor Boards', amount: 27600, stage: 3, eta: 'ETA 03 Aug 2026' },
-    { id: 'OM-80961', buyer: 'Home & garden retailer', country: 'India', product: 'Solar Garden Lights', amount: 31200, stage: 4, eta: 'Shipped 27 Jul 2026' },
-  ];
-
-  const demoCerts = [
-    { name: 'ISO 9001:2015', issuer: 'Quality Management System', expiry: 'Valid until Mar 2027', status: 'valid' },
-    { name: 'ISO 14001:2015', issuer: 'Environmental Management', expiry: 'Valid until Jun 2027', status: 'valid' },
-    { name: 'BSCI Audit', issuer: 'Business Social Compliance', expiry: 'Valid until Nov 2026', status: 'expiring' },
-    { name: 'RoHS Compliance', issuer: 'Restriction of Hazardous Substances', expiry: 'Valid until Jan 2028', status: 'valid' },
-  ];
-
-  const demoPayouts = [
-    { date: '27 Jul 2026', order: 'OM-80961', amount: 31200 },
-    { date: '14 Jul 2026', order: 'OM-80902', amount: 22750 },
-    { date: '02 Jul 2026', order: 'OM-80840', amount: 48300 },
-    { date: '19 Jun 2026', order: 'OM-80711', amount: 19600 },
-  ];
+  const demoProdOrders = [];
+  const demoCerts = [];
+  const demoPayouts = [];
 
   /* ---------- Render production lines ---------- */
   const linesGrid = document.getElementById('linesGrid');
+  const linesEmpty = document.getElementById('linesEmpty');
   function renderLines() {
     if (!linesGrid) return;
+    if (demoLines.length === 0) {
+      linesGrid.innerHTML = '';
+      linesGrid.style.display = 'none';
+      if (linesEmpty) linesEmpty.hidden = false;
+      return;
+    }
+    linesGrid.style.display = 'grid';
+    if (linesEmpty) linesEmpty.hidden = true;
     linesGrid.innerHTML = demoLines.map(line => `
       <div class="line-card">
         <div class="line-top">
@@ -129,8 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render RFQs ---------- */
   const rfqGrid = document.getElementById('rfqGrid');
+  const rfqsEmpty = document.getElementById('rfqsEmpty');
   function renderRfqs() {
     if (!rfqGrid) return;
+    if (demoRfqs.length === 0) {
+      rfqGrid.innerHTML = '';
+      rfqGrid.style.display = 'none';
+      if (rfqsEmpty) rfqsEmpty.hidden = false;
+      return;
+    }
+    rfqGrid.style.display = 'grid';
+    if (rfqsEmpty) rfqsEmpty.hidden = true;
     rfqGrid.innerHTML = demoRfqs.map(r => `
       <div class="rfq-card">
         <div class="rfq-top">
@@ -156,10 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render production-stage orders ---------- */
   const prodOrders = document.getElementById('prodOrders');
+  const prodOrdersEmpty = document.getElementById('prodOrdersEmpty');
   const checkIcon = '<svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>';
 
   function renderProdOrders() {
     if (!prodOrders) return;
+    if (demoProdOrders.length === 0) {
+      prodOrders.innerHTML = '';
+      if (prodOrdersEmpty) prodOrdersEmpty.hidden = false;
+      return;
+    }
+    if (prodOrdersEmpty) prodOrdersEmpty.hidden = true;
     prodOrders.innerHTML = demoProdOrders.map(o => `
       <div class="prod-order-card">
         <div class="prod-order-top">
@@ -186,8 +182,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render certifications ---------- */
   const certGrid = document.getElementById('certGrid');
+  const certsEmpty = document.getElementById('certsEmpty');
   function renderCerts() {
     if (!certGrid) return;
+    if (demoCerts.length === 0) {
+      certGrid.innerHTML = '';
+      certGrid.style.display = 'none';
+      if (certsEmpty) certsEmpty.hidden = false;
+      return;
+    }
+    certGrid.style.display = 'grid';
+    if (certsEmpty) certsEmpty.hidden = true;
     certGrid.innerHTML = demoCerts.map(c => `
       <div class="cert-card ${c.status === 'valid' ? 'valid' : ''}">
         <div class="cert-icon"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg></div>
@@ -215,7 +220,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (countEl) countEl.textContent = demoPayouts.length;
 
     const historyEl = document.getElementById('payoutHistory');
+    const historyEmptyEl = document.getElementById('payoutHistoryEmpty');
+    if (demoPayouts.length === 0) {
+      if (historyEl) { historyEl.innerHTML = ''; historyEl.style.display = 'none'; }
+      if (historyEmptyEl) historyEmptyEl.hidden = false;
+      return;
+    }
+    if (historyEmptyEl) historyEmptyEl.hidden = true;
     if (historyEl) {
+      historyEl.style.display = '';
       historyEl.innerHTML = `
         <div class="payout-row head"><span>Date</span><span>Order</span><span>Amount</span></div>
         ${demoPayouts.map(p => `
