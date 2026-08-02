@@ -155,107 +155,119 @@
         <strong>United States, Canada, Europe, Sri Lanka and India</strong>.</p>
     </div>
 
-    <div class="reach-map-wrap" data-reveal>
-      <div class="reach-map">
-        <img class="world-map-img" src="../../images/High_resolution_world_map_with_continent_in_different_color_generated.jpg" alt="World map showing Ometong's shipping reach from China">
+    <div class="reach-hub-wrap" data-reveal>
+      <div class="reach-hub">
+        <svg class="reach-hub-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <clipPath id="flagClipOrigin"><circle cx="500" cy="500" r="62" /></clipPath>
+            <clipPath id="flagClip0"><circle cx="500" cy="120" r="46" /></clipPath>
+            <clipPath id="flagClip1"><circle cx="797" cy="263" r="46" /></clipPath>
+            <clipPath id="flagClip2"><circle cx="871" cy="585" r="46" /></clipPath>
+            <clipPath id="flagClip3"><circle cx="665" cy="842" r="46" /></clipPath>
+            <clipPath id="flagClip4"><circle cx="335" cy="842" r="46" /></clipPath>
+            <clipPath id="flagClip5"><circle cx="130" cy="585" r="46" /></clipPath>
+            <clipPath id="flagClip6"><circle cx="203" cy="263" r="46" /></clipPath>
+          </defs>
 
-        <svg class="world-map-overlay" viewBox="0 0 1920 1280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-
-          <!-- ===== shipping routes: China ⇄ highlighted countries ===== -->
+          <!-- ===== shipping routes: China → each destination ===== -->
           <g class="ship-routes">
-            <path class="route-path" id="routeUSA" d="M1555,563 Q900,120 365,627" />
-            <path class="route-path" id="routeUK" d="M1555,563 Q1250,80 845,346" />
-            <path class="route-path" id="routeUAE" d="M1555,563 Q1350,420 1171,576" />
-            <path class="route-path" id="routeIndia" d="M1555,563 Q1440,480 1325,666" />
-            <path class="route-path" id="routeSriLanka" d="M1555,563 Q1480,560 1344,730" />
-            <path class="route-path" id="routeAustralia" d="M1555,563 Q1610,760 1613,1024" />
+            <path class="route-path" id="routeHub0" d="M500,500 L500,120" />
+            <path class="route-path" id="routeHub1" d="M500,500 L797,263" />
+            <path class="route-path" id="routeHub2" d="M500,500 L871,585" />
+            <path class="route-path" id="routeHub3" d="M500,500 L665,842" />
+            <path class="route-path" id="routeHub4" d="M500,500 L335,842" />
+            <path class="route-path" id="routeHub5" d="M500,500 L130,585" />
+            <path class="route-path" id="routeHub6" d="M500,500 L203,263" />
           </g>
 
+          <!-- ===== ships sailing slowly out from Guangzhou and back ===== -->
           <g class="ship-icons">
-            <text class="ship-icon" font-size="46" text-anchor="middle">🚢
-              <animateMotion dur="7s" begin="0s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
-                <mpath href="#routeUSA"/>
+            <text class="ship-icon" font-size="30" text-anchor="middle">🚢
+              <animateMotion dur="20s" begin="0s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear" rotate="auto">
+                <mpath href="#routeHub0"/>
               </animateMotion>
             </text>
-            <text class="ship-icon" font-size="46" text-anchor="middle">🚢
-              <animateMotion dur="6.4s" begin="0.5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
-                <mpath href="#routeUK"/>
+            <text class="ship-icon" font-size="30" text-anchor="middle">🚢
+              <animateMotion dur="22s" begin="1.4s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear" rotate="auto">
+                <mpath href="#routeHub1"/>
               </animateMotion>
             </text>
-            <text class="ship-icon" font-size="46" text-anchor="middle">🚢
-              <animateMotion dur="5s" begin="1s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
-                <mpath href="#routeUAE"/>
+            <text class="ship-icon" font-size="30" text-anchor="middle">🚢
+              <animateMotion dur="18s" begin="2.8s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear" rotate="auto">
+                <mpath href="#routeHub2"/>
               </animateMotion>
             </text>
-            <text class="ship-icon" font-size="46" text-anchor="middle">🚢
-              <animateMotion dur="5.4s" begin="1.5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
-                <mpath href="#routeIndia"/>
+            <text class="ship-icon" font-size="30" text-anchor="middle">🚢
+              <animateMotion dur="21s" begin="4.2s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear" rotate="auto">
+                <mpath href="#routeHub3"/>
               </animateMotion>
             </text>
-            <text class="ship-icon" font-size="46" text-anchor="middle">🚢
-              <animateMotion dur="5.8s" begin="2s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
-                <mpath href="#routeSriLanka"/>
+            <text class="ship-icon" font-size="30" text-anchor="middle">🚢
+              <animateMotion dur="19s" begin="5.6s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear" rotate="auto">
+                <mpath href="#routeHub4"/>
               </animateMotion>
             </text>
-            <text class="ship-icon" font-size="46" text-anchor="middle">🚢
-              <animateMotion dur="6.8s" begin="2.5s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
-                <mpath href="#routeAustralia"/>
+            <text class="ship-icon" font-size="30" text-anchor="middle">🚢
+              <animateMotion dur="23s" begin="7s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear" rotate="auto">
+                <mpath href="#routeHub5"/>
+              </animateMotion>
+            </text>
+            <text class="ship-icon" font-size="30" text-anchor="middle">🚢
+              <animateMotion dur="20s" begin="8.4s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear" rotate="auto">
+                <mpath href="#routeHub6"/>
               </animateMotion>
             </text>
           </g>
 
           <!-- ===== origin: Guangzhou, China ===== -->
-          <g class="map-origin" transform="translate(1555,563)">
-            <circle class="origin-pulse" r="16" style="animation-delay:0s" />
-            <circle class="origin-pulse" r="16" style="animation-delay:1s" />
-            <circle class="origin-dot" r="15" />
-            <text class="map-label origin-label" x="24" y="-22">Guangzhou, China</text>
+          <g class="hub-origin">
+            <circle class="hub-origin-pulse" cx="500" cy="500" r="66" style="animation-delay:0s" />
+            <circle class="hub-origin-pulse" cx="500" cy="500" r="66" style="animation-delay:1.2s" />
+            <circle class="hub-origin-ring" cx="500" cy="500" r="66" />
+            <image href="../../images/Flag-China.webp" x="438" y="438" width="124" height="124" clip-path="url(#flagClipOrigin)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label hub-origin-label" x="500" y="592" text-anchor="middle">Guangzhou, China</text>
+            <text class="hub-sublabel" x="500" y="612" text-anchor="middle">Sourcing &amp; shipping hub</text>
           </g>
 
-          <!-- ===== highlighted destination countries (numbered pins, see legend) ===== -->
-          <g class="map-highlight" transform="translate(365,627)">
-            <circle class="highlight-pulse" r="20" />
-            <circle class="highlight-dot" r="20" />
-            <text class="pin-number" y="9">1</text>
+          <!-- ===== destination flags ===== -->
+          <g class="hub-dest">
+            <circle class="hub-dest-ring" cx="500" cy="120" r="49" />
+            <image href="../../images/flag USA.webp" x="454" y="74" width="92" height="92" clip-path="url(#flagClip0)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label" x="500" y="184" text-anchor="middle">USA</text>
           </g>
-          <g class="map-highlight" transform="translate(845,346)">
-            <circle class="highlight-pulse" r="20" style="animation-delay:.3s" />
-            <circle class="highlight-dot" r="20" />
-            <text class="pin-number" y="9">2</text>
+          <g class="hub-dest">
+            <circle class="hub-dest-ring" cx="797" cy="263" r="49" />
+            <image href="../../images/Flag-United-Kingdom.webp" x="751" y="217" width="92" height="92" clip-path="url(#flagClip1)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label" x="797" y="327" text-anchor="middle">United Kingdom</text>
           </g>
-          <g class="map-highlight" transform="translate(1171,576)">
-            <circle class="highlight-pulse" r="20" style="animation-delay:.6s" />
-            <circle class="highlight-dot" r="20" />
-            <text class="pin-number" y="9">3</text>
+          <g class="hub-dest">
+            <circle class="hub-dest-ring" cx="871" cy="585" r="49" />
+            <image href="../../images/Flag-United-Arab-Emirates.webp" x="825" y="539" width="92" height="92" clip-path="url(#flagClip2)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label" x="871" y="649" text-anchor="middle">UAE</text>
           </g>
-          <g class="map-highlight" transform="translate(1325,666)">
-            <circle class="highlight-pulse" r="20" style="animation-delay:.9s" />
-            <circle class="highlight-dot" r="20" />
-            <text class="pin-number" y="9">4</text>
+          <g class="hub-dest">
+            <circle class="hub-dest-ring" cx="665" cy="842" r="49" />
+            <image href="../../images/Flag_of_Japan.svg.webp" x="619" y="796" width="92" height="92" clip-path="url(#flagClip3)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label" x="665" y="906" text-anchor="middle">Japan</text>
           </g>
-          <g class="map-highlight" transform="translate(1344,730)">
-            <circle class="highlight-pulse" r="20" style="animation-delay:1.2s" />
-            <circle class="highlight-dot" r="20" />
-            <text class="pin-number" y="9">5</text>
+          <g class="hub-dest">
+            <circle class="hub-dest-ring" cx="335" cy="842" r="49" />
+            <image href="../../images/Flag-Australia.webp" x="289" y="796" width="92" height="92" clip-path="url(#flagClip4)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label" x="335" y="906" text-anchor="middle">Australia</text>
           </g>
-          <g class="map-highlight" transform="translate(1613,1024)">
-            <circle class="highlight-pulse" r="20" style="animation-delay:1.5s" />
-            <circle class="highlight-dot" r="20" />
-            <text class="pin-number" y="9">6</text>
+          <g class="hub-dest">
+            <circle class="hub-dest-ring" cx="130" cy="585" r="49" />
+            <image href="../../images/Flag_of_Sri_Lanka.svg.webp" x="84" y="539" width="92" height="92" clip-path="url(#flagClip5)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label" x="130" y="649" text-anchor="middle">Sri Lanka</text>
           </g>
-
+          <g class="hub-dest">
+            <circle class="hub-dest-ring" cx="203" cy="263" r="49" />
+            <image href="../../images/Flag-Canada.webp" x="157" y="217" width="92" height="92" clip-path="url(#flagClip6)" preserveAspectRatio="xMidYMid slice" />
+            <text class="hub-label" x="203" y="327" text-anchor="middle">Canada</text>
+          </g>
         </svg>
 
-        <div class="map-legend">
-          <span class="legend-item"><span class="legend-pin">1</span>USA</span>
-          <span class="legend-item"><span class="legend-pin">2</span>UK</span>
-          <span class="legend-item"><span class="legend-pin">3</span>UAE</span>
-          <span class="legend-item"><span class="legend-pin">4</span>India</span>
-          <span class="legend-item"><span class="legend-pin">5</span>Sri Lanka</span>
-          <span class="legend-item"><span class="legend-pin">6</span>Australia</span>
-        </div>
-
-        <p class="map-caption">Highlighted in orange: the countries we ship to directly, connected to Guangzhou by animated shipping routes.</p>
+        <p class="map-caption">Every shipment starts in Guangzhou — connected directly to the countries we ship to worldwide.</p>
       </div>
     </div>
 
