@@ -235,21 +235,33 @@ document.addEventListener('DOMContentLoaded', () => {
     renderWishlist();
   });
 
-  /* ---------- Recent orders (demo data — no backend/order history exists yet) ---------- */
-  const demoOrders = [
-    { title: 'Samsung Smartphone', supplier: 'Horizon Supply Co.', color: '#FF7431', date: '24 Jul 2026', amount: 512, status: 'transit', statusLabel: 'In Transit' },
-    { title: 'Bosch Gearbox Assembly', supplier: 'Lanka Industrial Group', color: '#3A6FF7', date: '19 Jul 2026', amount: 1240, status: 'processing', statusLabel: 'Processing' },
-    { title: 'Nestlé Spice Blend Pack', supplier: 'Spice Route Exports', color: '#22C55E', date: '11 Jul 2026', amount: 96, status: 'delivered', statusLabel: 'Delivered' },
-    { title: 'Amcor Corrugated Box Lot', supplier: 'Island Manufacturing', color: '#8B5CF6', date: '2 Jul 2026', amount: 168, status: 'delivered', statusLabel: 'Delivered' },
-  ];
+  /* ---------- Recent orders ----------
+     No order-creation flow (real checkout) exists yet, so every new
+     account genuinely starts with zero orders. This list will only
+     ever show real data once orders are created by a real purchase. */
+  const orders = [];
 
   const ordersList = document.getElementById('ordersList');
+  const ordersHead = document.getElementById('ordersHead');
+  const ordersEmpty = document.getElementById('ordersEmpty');
   const statActiveOrders = document.getElementById('statActiveOrders');
   const statInTransit = document.getElementById('statInTransit');
   const statTotalSpent = document.getElementById('statTotalSpent');
 
   function renderOrders() {
-    ordersList.innerHTML = demoOrders.map(o => `
+    if (orders.length === 0) {
+      ordersList.innerHTML = '';
+      if (ordersHead) ordersHead.style.display = 'none';
+      if (ordersEmpty) ordersEmpty.hidden = false;
+      statActiveOrders.textContent = '0';
+      statInTransit.textContent = '0';
+      statTotalSpent.textContent = '$0';
+      return;
+    }
+
+    if (ordersHead) ordersHead.style.display = '';
+    if (ordersEmpty) ordersEmpty.hidden = true;
+    ordersList.innerHTML = orders.map(o => `
       <div class="order-row">
         <div class="order-product">
           <div class="order-thumb" style="background:${o.color}22"></div>
@@ -265,9 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `).join('');
 
-    const active = demoOrders.filter(o => o.status !== 'delivered').length;
-    const inTransit = demoOrders.filter(o => o.status === 'transit').length;
-    const totalSpent = demoOrders.reduce((sum, o) => sum + o.amount, 0);
+    const active = orders.filter(o => o.status !== 'delivered').length;
+    const inTransit = orders.filter(o => o.status === 'transit').length;
+    const totalSpent = orders.reduce((sum, o) => sum + o.amount, 0);
     statActiveOrders.textContent = active;
     statInTransit.textContent = inTransit;
     statTotalSpent.textContent = '$' + totalSpent.toLocaleString();

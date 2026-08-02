@@ -118,8 +118,8 @@
         <h2>Recent orders</h2>
         <a href="marketplace.html" class="btn btn-ghost btn-sm">Browse marketplace</a>
       </div>
-      <div class="orders-card">
-        <div class="order-row head">
+      <div class="orders-card" id="ordersCard">
+        <div class="order-row head" id="ordersHead">
           <span>Product</span>
           <span>Date</span>
           <span>Amount</span>
@@ -127,6 +127,12 @@
           <span></span>
         </div>
         <div id="ordersList"><!-- order rows injected by buyerdashboard.js --></div>
+        <div class="empty-state" id="ordersEmpty" hidden>
+          <svg viewBox="0 0 24 24" width="40" height="40"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6"/></svg>
+          <h3>No orders yet</h3>
+          <p>Once you place an order from the marketplace, it'll show up here with live status and tracking.</p>
+          <a href="marketplace.html" class="btn btn-primary btn-sm">Start shopping</a>
+        </div>
       </div>
     </section>
 
