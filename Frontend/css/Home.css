@@ -334,7 +334,15 @@ button,input,select{font-family:inherit;}
 }
 @keyframes reachDash{to{stroke-dashoffset:-660;}}
 
-.ship-icon{opacity:.95;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));}
+.ship-icon{
+  opacity:.95;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
+  transform-box:fill-box;transform-origin:center;
+  animation-name:shipFlip;animation-iteration-count:infinite;animation-timing-function:steps(1,end);
+}
+@keyframes shipFlip{
+  0%,49.9%{transform:scaleX(1);}
+  50%,100%{transform:scaleX(-1);}
+}
 
 /* ---- origin marker (Guangzhou) ---- */
 .hub-origin-ring{fill:var(--card-bg,#fff);stroke:var(--gold);stroke-width:4;}
