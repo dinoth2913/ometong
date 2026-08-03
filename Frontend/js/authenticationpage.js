@@ -3,6 +3,22 @@
 ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
 
+  /* ---------- Skip the form entirely if already logged in ---------- */
+  (async () => {
+    if (!window.sb) return;
+    const session = await new Promise((resolve) => {
+      const { data: sub } = window.sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'INITIAL_SESSION') {
+          sub.subscription.unsubscribe();
+          resolve(session);
+        }
+      });
+    });
+    if (!session) return;
+    const profile = await window.ometongGetProfile();
+    if (profile) window.location.href = window.ometongDashboardForRole(profile.role);
+  })();
+
   /* ---------- Tab switching ---------- */
   const tabs = document.querySelectorAll('.tab');
   const indicator = document.getElementById('tabIndicator');
