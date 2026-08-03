@@ -68,10 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Manufacturer data ----------
-     No production/RFQ/order/certification/payout backend exists
-     yet, so a real new manufacturer account genuinely starts with
-     none of this — everything below fills in on its own once
-     that's built. */
+     Listings are real, fetched from Supabase for the logged-in
+     account. No production/RFQ/order/certification/payout backend
+     exists yet, so those sections genuinely start empty — they'll
+     fill in on their own once that's built. */
+  let listings = [];
   const demoLines = [];
   const demoRfqs = [];
   const rfqLabels = { new: 'New', quoted: 'Quoted', won: 'Won' };
@@ -79,6 +80,81 @@ document.addEventListener('DOMContentLoaded', () => {
   const demoProdOrders = [];
   const demoCerts = [];
   const demoPayouts = [];
+
+  const listingColors = ['#3A6FF7', '#8B5CF6', '#22C55E', '#FFC24D', '#FF7431', '#EF4444'];
+
+  function thumbSvg(color) {
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'><rect width='200' height='100' fill='${color}22'/><circle cx='40' cy='50' r='22' fill='${color}55'/><rect x='80' y='30' width='100' height='12' rx='6' fill='${color}66'/><rect x='80' y='52' width='70' height='10' rx='5' fill='${color}44'/></svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+
+  /* ---------- Load + render listings ---------- */
+  const listingsGrid = document.getElementById('listingsGrid');
+  const listingsEmpty = document.getElementById('listingsEmpty');
+
+  async function loadListings() {
+    if (!window.sb) return;
+    const user = await window.ometongGetUser();
+    if (!user) return;
+    const { data, error } = await window.sb
+      .from('listings')
+      .select('*')
+      .eq('supplier_id', user.id)
+      .order('created_at', { ascending: false });
+    if (error) {
+      console.error('Ometong: failed to load listings', error);
+      return;
+    }
+    listings = data || [];
+  }
+
+  function renderListings() {
+    if (!listingsGrid) return;
+    if (listings.length === 0) {
+      listingsGrid.innerHTML = '';
+      listingsGrid.style.display = 'none';
+      if (listingsEmpty) listingsEmpty.hidden = false;
+      return;
+    }
+    listingsGrid.style.display = 'grid';
+    if (listingsEmpty) listingsEmpty.hidden = true;
+    listingsGrid.innerHTML = listings.map((item, i) => {
+      const isActive = item.status === 'active';
+      const color = listingColors[i % listingColors.length];
+      const moqLabel = item.moq ? `MOQ ${item.moq.toLocaleString('en-US')}` : 'No MOQ set';
+      return `
+        <div class="listing-card" data-id="${item.id}">
+          <div class="listing-thumb" style="background-image:url('${thumbSvg(color)}');background-size:cover;">
+            <span class="listing-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</span>
+          </div>
+          <div class="listing-body">
+            <div class="listing-title">${item.title}</div>
+            <div class="listing-meta">${item.category} · ${moqLabel}</div>
+            <div class="listing-price">$${Number(item.price).toLocaleString('en-US')} <span style="color:var(--ink-faint);font-weight:600;font-size:.72rem;">/ unit</span></div>
+            <button class="listing-toggle ${isActive ? '' : 'is-paused'}" data-toggle="${item.id}">${isActive ? 'Pause listing' : 'Reactivate listing'}</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    listingsGrid.querySelectorAll('[data-toggle]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-toggle');
+        const item = listings.find(l => String(l.id) === id);
+        if (!item) return;
+        const next = item.status === 'active' ? 'paused' : 'active';
+        btn.disabled = true;
+        const { error } = await window.sb.from('listings').update({ status: next }).eq('id', id);
+        btn.disabled = false;
+        if (error) {
+          console.error('Ometong: failed to update listing', error);
+          return;
+        }
+        item.status = next;
+        renderListings();
+        renderStats();
+      });
+    });
+  }
 
   /* ---------- Render production lines ---------- */
   const linesGrid = document.getElementById('linesGrid');
@@ -254,11 +330,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setNum('statEarnings', '$' + totalEarnings.toLocaleString('en-US'));
   }
 
-  renderLines();
-  renderRfqs();
-  renderProdOrders();
-  renderCerts();
-  renderPayouts();
-  renderStats();
+  (async () => {
+    await loadListings();
+    renderListings();
+    renderLines();
+    renderRfqs();
+    renderProdOrders();
+    renderCerts();
+    renderPayouts();
+    renderStats();
+  })();
 
 });

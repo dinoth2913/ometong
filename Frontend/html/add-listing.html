@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add a Listing | Ometong</title>
+<meta name="description" content="Add a product or service listing to the Ometong marketplace.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/add-listing.css">
+</head>
+<body>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+</div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="Home.html" class="logo">
+      <img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact">
+    </a>
+    <div class="nav-actions">
+      <a href="#" class="link-btn" id="backToDashboard">← Back to dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="listing-card" id="listingCard">
+
+      <form id="listingForm" novalidate>
+        <span class="tag">Add a Listing</span>
+        <h1>List a product or service</h1>
+        <p class="form-sub">This appears in the marketplace for buyers to find. You can pause or edit it any time from your dashboard.</p>
+
+        <p class="form-error" id="listingFormError"></p>
+
+        <label>Product or service name
+          <input type="text" id="title" name="title" required placeholder="e.g. Bluetooth Earbuds Pro X3">
+        </label>
+
+        <div class="field-row">
+          <label>Category
+            <select id="category" name="category" required>
+              <option value="">Select a category</option>
+              <option>Electronics</option>
+              <option>Textiles</option>
+              <option>Machinery</option>
+              <option>Food &amp; Beverage</option>
+              <option>Construction</option>
+              <option>Packaging</option>
+              <option>Services</option>
+              <option>Logistics</option>
+            </select>
+          </label>
+          <label>Price per unit (USD)
+            <input type="number" id="price" name="price" required min="0" step="0.01" placeholder="e.g. 18.50">
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label>Minimum order quantity
+            <input type="number" id="moq" name="moq" min="1" step="1" placeholder="e.g. 200">
+          </label>
+          <label>Lead time (days)
+            <input type="number" id="leadTime" name="leadTime" min="0" step="1" placeholder="e.g. 10">
+          </label>
+        </div>
+
+        <label>Description
+          <textarea id="description" name="description" rows="4" placeholder="Describe the product or service, materials, specs, or what's included…"></textarea>
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-block" id="submitListingBtn">
+          <span>Publish Listing</span>
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+
+      <div class="listing-success" id="listingSuccess">
+        <svg viewBox="0 0 52 52" width="56" height="56"><circle cx="26" cy="26" r="24" /><path d="M15 27l7 7 15-15" /></svg>
+        <h3>Listing published</h3>
+        <p>Your listing is live and buyers can now find it. Redirecting you back to your dashboard…</p>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/supabaseConfig.js"></script>
+<script src="../js/supabaseClient.js"></script>
+<script src="../js/add-listing.js"></script>
+</body>
+</html>

@@ -28,6 +28,7 @@
 
     <nav class="nav-links" id="navLinks">
       <a href="manufacturerdashboard.html" class="active">Dashboard</a>
+      <a href="#listings">My Listings</a>
       <a href="#production">Production</a>
       <a href="#rfqs">Buyer RFQs</a>
       <a href="#certs">Certifications</a>
@@ -53,6 +54,7 @@
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="manufacturerdashboard.html">Dashboard</a>
+  <a href="#listings">My Listings</a>
   <a href="#production">Production</a>
   <a href="#rfqs">Buyer RFQs</a>
   <a href="#certs">Certifications</a>
@@ -146,6 +148,21 @@
       <p class="factory-note">These details aren't filled in yet — buyers won't see a complete factory profile until you add them. Profile editing is coming soon.</p>
     </section>
 
+    <!-- ===== MY LISTINGS ===== -->
+    <section data-reveal id="listings">
+      <div class="section-head">
+        <h2>My listings</h2>
+        <a href="add-listing.html" class="btn btn-primary btn-sm">Add a listing</a>
+      </div>
+      <div class="listings-grid" id="listingsGrid"></div>
+      <div class="empty-state" id="listingsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a4 4 0 018 0v2" /></svg>
+        <h3>You haven't listed anything yet</h3>
+        <p>Listings are the products or services buyers can find and order from you. Add your first one to start showing up in buyer searches and matched RFQs.</p>
+        <a href="add-listing.html" class="btn btn-primary btn-sm">Add your first listing</a>
+      </div>
+    </section>
+
     <!-- ===== PRODUCTION LINES ===== -->
     <section data-reveal id="production">
       <div class="section-head">
@@ -157,7 +174,7 @@
         <svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
         <h3>No production lines added yet</h3>
         <p>This is where you'd track utilization across each line on your factory floor. Line tracking is coming soon — for now, focus on adding your first listing so buyers can find you.</p>
-        <a href="Supplier.html#apply" class="btn btn-primary btn-sm">Add your first listing</a>
+        <a href="add-listing.html" class="btn btn-primary btn-sm">Add your first listing</a>
       </div>
     </section>
 
@@ -172,7 +189,7 @@
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" /></svg>
         <h3>No RFQs yet</h3>
         <p>When a buyer's request for quotation matches something you make, it'll appear here automatically — you don't need to search for buyers yourself. Add a listing so our AI has something to match against.</p>
-        <a href="Supplier.html#apply" class="btn btn-primary btn-sm">Add your first listing</a>
+        <a href="add-listing.html" class="btn btn-primary btn-sm">Add your first listing</a>
       </div>
     </section>
 
