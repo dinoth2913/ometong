@@ -134,6 +134,7 @@ button,input,select{font-family:inherit;}
 .pd-stars{display:flex;align-items:center;gap:4px;font-size:.9rem;font-weight:700;color:var(--ink);}
 .pd-stars svg{fill:var(--accent);stroke:none;}
 .pd-reviews-count{font-size:.84rem;color:var(--ink-faint);}
+.pd-stars-new{background:rgba(255,116,49,.1);color:var(--accent);padding:4px 12px;border-radius:999px;font-size:.82rem;font-weight:700;}
 .pd-supplier-link{font-size:.84rem;font-weight:600;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
 .pd-supplier-link svg{fill:none;stroke:var(--ink-faint);stroke-width:1.8;}
 

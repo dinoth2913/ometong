@@ -1,7 +1,7 @@
 /* =========================================================
    OMETONG — PRODUCT DETAILS SCRIPT
 ========================================================= */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   /* ---------- Theme toggle (shared "theme" key across the site) ---------- */
   const themeToggle = document.getElementById('themeToggle');
@@ -89,6 +89,25 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const categories = Object.keys(productDefs);
 
+  /* Maps the category label used on the Add Listing form to the
+     lowercase slug used internally here (e.g. "Food & Beverage" -> food). */
+  const categoryLabelToSlug = {
+    'Electronics': 'electronics', 'Textiles': 'textiles', 'Machinery': 'machinery',
+    'Food & Beverage': 'food', 'Construction': 'construction', 'Packaging': 'packaging',
+    'Services': 'services', 'Logistics': 'logistics'
+  };
+
+  // Real listing ids are UUID strings, not the numeric ids used by the
+  // generated catalog — this turns any id into a stable number so the
+  // existing thumbnail/hero art generators (which do id % N) still work.
+  function numericSeed(id) {
+    if (typeof id === 'number') return id;
+    let hash = 0;
+    const str = String(id);
+    for (let i = 0; i < str.length; i++) hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+    return hash;
+  }
+
   const brandsByCategory = {
     electronics: ['Samsung', 'Apple', 'Xiaomi', 'Oppo', 'Sony'],
     textiles: ['Raymond', 'Arvind', 'Welspun', 'Vardhman', 'Trident'],
@@ -157,6 +176,45 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const allProducts = buildProducts();
 
+  /* ---------- Real listing lookup (a supplier/manufacturer's own product) ---------- */
+  async function loadRealListing(id) {
+    if (!window.sb) return null;
+    const { data: row, error } = await window.sb
+      .from('listings')
+      .select('*')
+      .eq('id', id)
+      .eq('status', 'active')
+      .eq('is_approved', true)
+      .single();
+    if (error || !row) return null;
+
+    const cat = categoryLabelToSlug[row.category] || 'services';
+    const ci = categories.indexOf(cat);
+    const { data: profile } = await window.sb
+      .from('public_supplier_profiles')
+      .select('business_name, full_name')
+      .eq('id', row.supplier_id)
+      .single();
+    const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
+
+    return {
+      id: row.id,
+      cat,
+      title: row.title,
+      brand: supplierName,
+      supplier: supplierName,
+      price: Number(row.price),
+      rating: null,
+      reviews: 0,
+      color: palette[(ci >= 0 ? ci : 0) % palette.length],
+      badge: 'Verified',
+      description: row.description || descriptions[cat] || '',
+      moq: row.moq || null,
+      leadTime: row.lead_time_days || null,
+      isReal: true
+    };
+  }
+
   /* ---------- Cart (shared with marketplace.js / cart.html) ---------- */
   const CART_KEY = 'ometong_cart';
   function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } }
@@ -188,10 +246,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return idx === -1;
   }
 
-  /* ---------- Resolve product from URL ---------- */
+  /* ---------- Resolve product from URL ----------
+     Numeric ids resolve against the generated catalog; anything else
+     (a UUID) is a real listing, fetched from Supabase. */
   const params = new URLSearchParams(window.location.search);
-  const productId = parseInt(params.get('id'), 10);
-  const product = allProducts.find(p => p.id === productId) || allProducts[0];
+  const rawId = params.get('id');
+  let product = null;
+  if (rawId && /^\d+$/.test(rawId)) {
+    product = allProducts.find(p => p.id === parseInt(rawId, 10)) || null;
+  } else if (rawId) {
+    product = await loadRealListing(rawId);
+  }
+  if (!product) product = allProducts[0];
   const catLabel = product.cat.charAt(0).toUpperCase() + product.cat.slice(1);
 
   /* ---------- Breadcrumb ---------- */
@@ -204,14 +270,14 @@ document.addEventListener('DOMContentLoaded', () => {
   pdGrid.innerHTML = `
     <div class="pd-gallery">
       <div class="pd-main-image" id="pdMainImage" style="background:${product.color}10">
-        ${svgHero(product.color, product.id)}
+        ${svgHero(product.color, numericSeed(product.id))}
         ${product.badge ? `<span class="pd-badge">${product.badge}</span>` : ''}
         <button class="pd-fav${getWishlist().includes(product.id) ? ' saved' : ''}" id="pdFav" aria-label="Save item">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </button>
       </div>
       <div class="pd-thumb-strip" id="pdThumbStrip">
-        ${[0, 1, 2, 3].map(i => `<button class="${i === 0 ? 'active' : ''}" data-thumb="${i}" style="background:${product.color}10">${svgThumb(product.color, product.id + i)}</button>`).join('')}
+        ${[0, 1, 2, 3].map(i => `<button class="${i === 0 ? 'active' : ''}" data-thumb="${i}" style="background:${product.color}10">${svgThumb(product.color, numericSeed(product.id) + i)}</button>`).join('')}
       </div>
     </div>
 
@@ -219,8 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="pd-cat-tag">${catLabel}</span>
       <h1 class="pd-title">${product.title}</h1>
       <div class="pd-rating-row">
-        <span class="pd-stars"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>${product.rating}</span>
-        <span class="pd-reviews-count">${product.reviews} reviews</span>
+        ${product.rating != null
+          ? `<span class="pd-stars"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>${product.rating}</span>
+        <span class="pd-reviews-count">${product.reviews} reviews</span>`
+          : `<span class="pd-stars pd-stars-new">New listing</span>`}
         <span class="pd-supplier-link">
           <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
           ${product.supplier}
@@ -236,12 +304,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="pd-spec-card">
           <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6"/></svg></div>
           <span class="pd-spec-label">MOQ</span>
-          <span class="pd-spec-value">${product.moq} units</span>
+          <span class="pd-spec-value">${product.moq ? product.moq + ' units' : 'Contact seller'}</span>
         </div>
         <div class="pd-spec-card">
           <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
           <span class="pd-spec-label">Lead time</span>
-          <span class="pd-spec-value">${product.leadTime} days</span>
+          <span class="pd-spec-value">${product.leadTime != null ? product.leadTime + ' days' : 'Contact seller'}</span>
         </div>
         <div class="pd-spec-card">
           <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
@@ -280,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const mainImg = document.getElementById('pdMainImage');
       const badge = mainImg.querySelector('.pd-badge');
       const fav = mainImg.querySelector('.pd-fav');
-      mainImg.innerHTML = svgHero(product.color, product.id + i * 3);
+      mainImg.innerHTML = svgHero(product.color, numericSeed(product.id) + i * 3);
       if (badge) mainImg.appendChild(badge);
       if (fav) mainImg.appendChild(fav);
     });

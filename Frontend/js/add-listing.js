@@ -115,7 +115,7 @@
       successEl.classList.add("show");
       setTimeout(() => {
         window.location.href = window.ometongDashboardForRole(currentRole || "supplier");
-      }, 1600);
+      }, 2400);
     });
   });
 })();

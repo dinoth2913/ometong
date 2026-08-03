@@ -98,6 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const categories = Object.keys(productDefs);
 
+  /* Maps the category label used on the Add Listing form to the
+     lowercase slug used internally here (e.g. "Food & Beverage" -> food). */
+  const categoryLabelToSlug = {
+    'Electronics': 'electronics', 'Textiles': 'textiles', 'Machinery': 'machinery',
+    'Food & Beverage': 'food', 'Construction': 'construction', 'Packaging': 'packaging',
+    'Services': 'services', 'Logistics': 'logistics'
+  };
+
   /* Real brands per category, so buyers can filter the way they actually shop. */
   const brandsByCategory = {
     electronics: ['Samsung', 'Apple', 'Xiaomi', 'Oppo', 'Sony'],
@@ -161,6 +169,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const allProducts = buildProducts();
 
+  /* ---------- Real listings from Supabase (suppliers/manufacturers who've added products) ---------- */
+  async function loadRealListings() {
+    if (!window.sb) return [];
+    const { data: rows, error } = await window.sb
+      .from('listings')
+      .select('*')
+      .eq('status', 'active')
+      .eq('is_approved', true)
+      .order('created_at', { ascending: false });
+    if (error || !rows || !rows.length) return [];
+
+    const supplierIds = [...new Set(rows.map(r => r.supplier_id))];
+    const { data: profiles } = await window.sb
+      .from('public_supplier_profiles')
+      .select('id, business_name, full_name')
+      .in('id', supplierIds);
+    const profileMap = {};
+    (profiles || []).forEach(p => { profileMap[p.id] = p; });
+
+    return rows.map(row => {
+      const cat = categoryLabelToSlug[row.category] || 'services';
+      const ci = categories.indexOf(cat);
+      const profile = profileMap[row.supplier_id];
+      const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
+      return {
+        id: row.id,
+        cat,
+        title: row.title,
+        brand: supplierName,
+        supplier: supplierName,
+        price: Number(row.price),
+        rating: null,
+        reviews: 0,
+        color: palette[(ci >= 0 ? ci : 0) % palette.length],
+        badge: 'Verified',
+        description: row.description || descriptions[cat] || '',
+        moq: row.moq || null,
+        leadTime: row.lead_time_days || null,
+        isReal: true
+      };
+    });
+  }
+
   /* ---------- Cart (persisted in localStorage, shared with cart.html) ---------- */
   const CART_KEY = 'ometong_cart';
   function getCart() {
@@ -217,7 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="p-body">
         <div class="p-head">
           <h4 class="p-title">${p.title}</h4>
-          <span class="p-rating"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>${p.rating}<span class="p-reviews">(${p.reviews})</span></span>
+          ${p.rating != null
+            ? `<span class="p-rating"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>${p.rating}<span class="p-reviews">(${p.reviews})</span></span>`
+            : `<span class="p-rating p-rating-new">New</span>`}
         </div>
         <div class="p-meta">
           <svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
@@ -261,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     list = [...list];
     if (sortMode === 'price-low') list.sort((a, b) => a.price - b.price);
     if (sortMode === 'price-high') list.sort((a, b) => b.price - a.price);
-    if (sortMode === 'rating') list.sort((a, b) => b.rating - a.rating);
+    if (sortMode === 'rating') list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     return list;
   }
 
@@ -328,6 +381,15 @@ document.addEventListener('DOMContentLoaded', () => {
   refresh();
   updateCartBadge();
 
+  // Real listings load in the background and get spliced into the
+  // catalog once fetched, so the page shows something immediately
+  // instead of waiting on the network before rendering anything.
+  loadRealListings().then(realProducts => {
+    if (!realProducts.length) return;
+    allProducts.unshift(...realProducts);
+    refresh();
+  });
+
   if (urlCat && categories.includes(urlCat)) {
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -384,8 +446,8 @@ document.addEventListener('DOMContentLoaded', () => {
   grid.addEventListener('click', (e) => {
     const addBtn = e.target.closest('[data-add]');
     if (addBtn) {
-      const id = parseInt(addBtn.dataset.add, 10);
-      const product = allProducts.find(p => p.id === id);
+      const id = addBtn.dataset.add;
+      const product = allProducts.find(p => String(p.id) === id);
       if (product) addToCart(product);
       addBtn.classList.add('added');
       setTimeout(() => addBtn.classList.remove('added'), 700);
@@ -393,8 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const favBtn = e.target.closest('[data-fav]');
     if (favBtn) {
-      const id = parseInt(favBtn.dataset.fav, 10);
-      const product = allProducts.find(p => p.id === id);
+      const id = favBtn.dataset.fav;
+      const product = allProducts.find(p => String(p.id) === id);
       if (product) {
         const nowSaved = toggleWishlist(product);
         favBtn.classList.toggle('saved', nowSaved);

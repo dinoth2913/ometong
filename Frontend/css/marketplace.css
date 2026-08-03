@@ -788,6 +788,14 @@ svg {
   color: var(--ink-faint);
 }
 
+.p-rating-new {
+  color: var(--accent);
+  background: rgba(255, 116, 49, .1);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: .7rem;
+}
+
 .p-meta {
   display: flex;
   align-items: center;

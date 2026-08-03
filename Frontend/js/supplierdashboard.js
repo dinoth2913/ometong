@@ -118,10 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const isActive = item.status === 'active';
       const color = listingColors[i % listingColors.length];
       const moqLabel = item.moq ? `MOQ ${item.moq.toLocaleString('en-US')}` : 'No MOQ set';
+      let statusClass = 'pending', statusLabel = 'Pending review';
+      if (item.is_approved) {
+        statusClass = isActive ? 'active' : 'paused';
+        statusLabel = isActive ? 'Live' : 'Paused';
+      }
       return `
         <div class="listing-card" data-id="${item.id}">
           <div class="listing-thumb" style="background-image:url('${thumbSvg(color)}');background-size:cover;">
-            <span class="listing-status ${isActive ? 'active' : 'paused'}">${isActive ? 'Active' : 'Paused'}</span>
+            <span class="listing-status ${statusClass}">${statusLabel}</span>
           </div>
           <div class="listing-body">
             <div class="listing-title">${item.title}</div>
@@ -258,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render stats ---------- */
   function renderStats() {
-    const activeListings = listings.filter(l => l.status === 'active').length;
+    const activeListings = listings.filter(l => l.status === 'active' && l.is_approved).length;
     const newRequests = demoRequests.filter(r => r.status === 'new').length;
     const ordersInProgress = demoOrders.filter(o => o.status !== 'delivered').length;
     const totalEarnings = demoPayouts.reduce((sum, p) => sum + p.amount, 0)
