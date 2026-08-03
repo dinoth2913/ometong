@@ -1,0 +1,88 @@
+/* ==========================================================================
+   admindashboard.css — Ometong
+   Small addendum on top of supplierdashboard.css (shared nav/stat/listing
+   card/empty-state/orders-card styles reused as-is).
+   ========================================================================== */
+
+.admin-table {
+  border: 1px solid var(--border, #ECECEF);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.admin-row {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  font-size: .88rem;
+  border-bottom: 1px solid var(--border, #ECECEF);
+}
+
+.admin-row:last-child {
+  border-bottom: none;
+}
+
+.admin-row--head {
+  font-weight: 700;
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--ink-faint, #8A8A94);
+  background: var(--surface-2, #FAFAFB);
+}
+
+#usersTable .admin-row {
+  grid-template-columns: 1.6fr 1fr 1.8fr 1fr;
+}
+
+.admin-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.admin-badge.pending { background: #FFF4E5; color: #B26A00; }
+.admin-badge.active { background: #E7F8EE; color: #178A50; }
+.admin-badge.paused { background: #F1F1F4; color: #6B6B76; }
+.admin-badge.buyer { background: #EAF1FF; color: #2554C7; }
+.admin-badge.supplier { background: #F1EAFF; color: #6D28D9; }
+.admin-badge.manufacturer { background: #FFEBEA; color: #C0392B; }
+.admin-badge.admin { background: #111; color: #fff; }
+
+.admin-row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-row-actions button {
+  font-size: .76rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #ECECEF);
+  background: #fff;
+  cursor: pointer;
+}
+
+.admin-row-actions button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.admin-row-actions .btn-approve {
+  background: #178A50;
+  border-color: #178A50;
+  color: #fff;
+}
+
+.admin-row-actions .btn-reject {
+  background: #C0392B;
+  border-color: #C0392B;
+  color: #fff;
+}

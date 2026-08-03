@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Ometong</title>
+  <meta name="description"
+    content="Complete your order on Ometong — escrow-secured checkout for verified suppliers.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../../images/smile-logo-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../css/cart.css">
+  <link rel="stylesheet" href="../css/checkout.css">
+</head>
+
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <div class="loader" id="loader">
+    <div class="loader-ring"></div>
+    <span class="loader-word">ome<em>tong</em></span>
+  </div>
+
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+  </div>
+
+  <!-- ===== NAV ===== -->
+  <header class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="Home.html" class="logo">
+        <img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact">
+      </a>
+      <div class="nav-actions">
+        <a href="cart.html" class="link-btn">← Back to cart</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <section class="cart-hero">
+      <div class="container">
+        <nav class="breadcrumb" data-reveal aria-label="Breadcrumb">
+          <a href="Home.html">Home</a>
+          <span>/</span>
+          <a href="cart.html">Cart</a>
+          <span>/</span>
+          <span aria-current="page">Checkout</span>
+        </nav>
+        <span class="tag" data-reveal>✦ Checkout</span>
+        <h1 data-reveal>Complete your order</h1>
+        <p data-reveal>Your payment is held in escrow until you confirm delivery.</p>
+      </div>
+    </section>
+
+    <section class="section cart-section">
+      <div class="container cart-layout">
+
+        <div class="cart-items-col" data-reveal>
+          <form id="checkoutForm" novalidate>
+            <div class="checkout-block">
+              <h2>Shipping details</h2>
+              <p class="form-error" id="checkoutFormError"></p>
+
+              <label>Full name
+                <input type="text" id="fullName" name="fullName" required placeholder="e.g. Jane Perera">
+              </label>
+              <label>Phone number
+                <input type="tel" id="phone" name="phone" required placeholder="e.g. +94 71 234 5678">
+              </label>
+              <label>Street address
+                <input type="text" id="address" name="address" required placeholder="e.g. 42 Galle Road">
+              </label>
+              <div class="field-row">
+                <label>City
+                  <input type="text" id="city" name="city" required placeholder="e.g. Colombo">
+                </label>
+                <label>Country
+                  <input type="text" id="country" name="country" required placeholder="e.g. Sri Lanka">
+                </label>
+              </div>
+              <label>Notes for the supplier (optional)
+                <textarea id="notes" name="notes" rows="3" placeholder="Delivery instructions, etc."></textarea>
+              </label>
+            </div>
+          </form>
+
+          <div class="checkout-block" id="orderReview">
+            <h2>Order review</h2>
+            <ul class="checkout-review-list" id="checkoutReviewList"></ul>
+          </div>
+        </div>
+
+        <aside class="cart-summary-col" data-reveal>
+          <div class="cart-summary">
+            <h2>Order summary</h2>
+
+            <div class="summary-row">
+              <span>Subtotal (<span id="summaryItemCount">0</span> items)</span>
+              <span id="summarySubtotal">$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span>Estimated tax</span>
+              <span id="summaryTax">$0.00</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping</span>
+              <span id="summaryShipping">$0.00</span>
+            </div>
+            <div class="summary-row summary-row--discount" id="summaryDiscountRow" hidden>
+              <span>Discount (<span id="summaryPromoCode"></span>)</span>
+              <span id="summaryDiscount">−$0.00</span>
+            </div>
+
+            <div class="summary-divider" aria-hidden="true"></div>
+
+            <div class="summary-row summary-row--total">
+              <span>Total</span>
+              <span id="summaryTotal">$0.00</span>
+            </div>
+
+            <button class="btn btn-primary btn-lg magnetic cart-checkout-btn" id="placeOrderBtn" type="submit"
+              form="checkoutForm">
+              Place Order
+            </button>
+
+            <p class="summary-note">✦ Payment is held in escrow and released only when you confirm delivery.</p>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="Home.html" class="logo"><img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact"></a>
+        <p>The marketplace built for global trade — products, services and logistics, matched by AI.</p>
+      </div>
+      <div>
+        <h5>Marketplace</h5><a href="marketplace.html">Products</a><a href="marketplace.html">Services</a><a
+          href="Home.html#categories">Categories</a><a href="Supplier.html">Suppliers</a>
+      </div>
+      <div>
+        <h5>Company</h5><a href="Home.html#how">How it Works</a><a href="advertisement.html">Advertise</a><a
+          href="contactus.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom container">
+      <span>&copy; <span id="year"></span> Ometong. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/supabaseConfig.js"></script>
+  <script src="../js/supabaseClient.js"></script>
+  <script src="../js/navSession.js"></script>
+  <script src="../js/checkout.js"></script>
+</body>
+
+</html>

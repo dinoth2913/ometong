@@ -60,6 +60,7 @@
 
   // Redirects to the correct dashboard for a role.
   window.ometongDashboardForRole = function (role) {
+    if (role === "admin") return "admindashboard.html";
     if (role === "buyer") return "buyerdashboard.html";
     if (role === "manufacturer") return "manufacturerdashboard.html";
     return "supplierdashboard.html";

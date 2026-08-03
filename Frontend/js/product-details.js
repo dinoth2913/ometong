@@ -190,11 +190,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const cat = categoryLabelToSlug[row.category] || 'services';
     const ci = categories.indexOf(cat);
-    const { data: profile } = await window.sb
-      .from('public_supplier_profiles')
-      .select('business_name, full_name')
-      .eq('id', row.supplier_id)
-      .single();
+    const { data: profileRows } = await window.sb
+      .rpc('get_public_supplier_profiles', { supplier_ids: [row.supplier_id] });
+    const profile = profileRows && profileRows[0];
     const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
 
     return {
@@ -203,6 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       title: row.title,
       brand: supplierName,
       supplier: supplierName,
+      supplierId: row.supplier_id,
       price: Number(row.price),
       rating: null,
       reviews: 0,
@@ -215,8 +214,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
   }
 
-  /* ---------- Cart (shared with marketplace.js / cart.html) ---------- */
-  const CART_KEY = 'ometong_cart';
+  /* ---------- Cart (shared with marketplace.js / cart.html / checkout.html) ---------- */
+  const CART_KEY = 'ometongCart';
   function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } }
   function saveCart(items) { localStorage.setItem(CART_KEY, JSON.stringify(items)); }
   function cartTotalQty(items) { return items.reduce((sum, i) => sum + i.qty, 0); }
@@ -224,7 +223,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const items = getCart();
     const existing = items.find(i => i.id === product.id);
     if (existing) existing.qty += qty;
-    else items.push({ id: product.id, title: product.title, cat: product.cat, supplier: product.supplier, price: product.price, color: product.color, qty });
+    else items.push({
+      id: product.id,
+      name: product.title,
+      meta: product.supplier,
+      badge: product.badge || 'New',
+      price: product.price,
+      qty,
+      color: product.color,
+      listingId: product.isReal ? product.id : null,
+      supplierId: product.supplierId || null
+    });
     saveCart(items);
     updateCartBadge();
   }

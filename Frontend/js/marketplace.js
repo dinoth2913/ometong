@@ -182,9 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const supplierIds = [...new Set(rows.map(r => r.supplier_id))];
     const { data: profiles } = await window.sb
-      .from('public_supplier_profiles')
-      .select('id, business_name, full_name')
-      .in('id', supplierIds);
+      .rpc('get_public_supplier_profiles', { supplier_ids: supplierIds });
     const profileMap = {};
     (profiles || []).forEach(p => { profileMap[p.id] = p; });
 
@@ -199,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         title: row.title,
         brand: supplierName,
         supplier: supplierName,
+        supplierId: row.supplier_id,
         price: Number(row.price),
         rating: null,
         reviews: 0,
@@ -212,8 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ---------- Cart (persisted in localStorage, shared with cart.html) ---------- */
-  const CART_KEY = 'ometong_cart';
+  /* ---------- Cart (persisted in localStorage, shared with cart.html / checkout.html) ---------- */
+  const CART_KEY = 'ometongCart';
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
     catch { return []; }
@@ -224,7 +223,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const items = getCart();
     const existing = items.find(i => i.id === product.id);
     if (existing) existing.qty++;
-    else items.push({ id: product.id, title: product.title, cat: product.cat, supplier: product.supplier, price: product.price, color: product.color, qty: 1 });
+    else items.push({
+      id: product.id,
+      name: product.title,
+      meta: product.supplier,
+      badge: product.badge || 'New',
+      price: product.price,
+      qty: 1,
+      color: product.color,
+      listingId: product.isReal ? product.id : null,
+      supplierId: product.supplierId || null
+    });
     saveCart(items);
     updateCartBadge();
   }

@@ -1,0 +1,99 @@
+/* ==========================================================================
+   Checkout.css — Ometong
+   Small addendum on top of cart.css (shared nav/hero/summary styles).
+   ========================================================================== */
+
+.checkout-block {
+  background: var(--c-surface, #fff);
+  border: 1px solid var(--c-border, #ECECEF);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.checkout-block h2 {
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.checkout-block label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--c-ink, #111);
+  margin-bottom: 16px;
+}
+
+.checkout-block .field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.checkout-block input,
+.checkout-block textarea {
+  font-family: inherit;
+  font-size: .95rem;
+  font-weight: 500;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border, #ECECEF);
+  background: #fff;
+  color: var(--c-ink, #111);
+}
+
+.checkout-block input:focus,
+.checkout-block textarea:focus {
+  border-color: var(--c-accent, #FF7431);
+  box-shadow: 0 0 0 4px rgba(255, 116, 49, .12);
+  outline: none;
+}
+
+.form-error {
+  display: none;
+  background: #FEECEC;
+  color: #C0392B;
+  font-size: .84rem;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.form-error.show {
+  display: block;
+}
+
+.checkout-review-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-review-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: .9rem;
+  color: var(--c-ink-soft, #6B6B76);
+}
+
+.checkout-review-row strong {
+  color: var(--c-ink, #111);
+  font-weight: 600;
+}
+
+.checkout-review-row .cri-name {
+  color: var(--c-ink, #111);
+  font-weight: 600;
+}
+
+#placeOrderBtn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}

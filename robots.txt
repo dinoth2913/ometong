@@ -12,5 +12,7 @@ Disallow: /Frontend/html/supplierdashboard.html
 Disallow: /Frontend/html/manufacturerdashboard.html
 Disallow: /Frontend/html/add-listing.html
 Disallow: /Frontend/html/cart.html
+Disallow: /Frontend/html/checkout.html
+Disallow: /Frontend/html/admindashboard.html
 
 Sitemap: https://www.ometong.com/sitemap.xml
