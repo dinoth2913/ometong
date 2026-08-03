@@ -1,0 +1,16 @@
+# Ometong — robots.txt
+# NOTE: update the domain below to your real production domain once deployed.
+
+User-agent: *
+Allow: /
+
+# Private / account-specific pages — never index these
+Disallow: /Frontend/html/authenticationpage.html
+Disallow: /Frontend/html/reset-password.html
+Disallow: /Frontend/html/buyerdashboard.html
+Disallow: /Frontend/html/supplierdashboard.html
+Disallow: /Frontend/html/manufacturerdashboard.html
+Disallow: /Frontend/html/add-listing.html
+Disallow: /Frontend/html/cart.html
+
+Sitemap: https://www.ometong.com/sitemap.xml

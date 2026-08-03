@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ometong — sitemap.xml
+     NOTE: update the domain below (https://www.ometong.com) to your
+     real production domain once deployed. Only public marketing/
+     marketplace pages are listed here — dashboards, login, cart and
+     add-listing are intentionally excluded (see robots.txt). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.ometong.com/Frontend/html/Home.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.ometong.com/Frontend/html/marketplace.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.ometong.com/Frontend/html/Supplier.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ometong.com/Frontend/html/advertisement.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.ometong.com/Frontend/html/contactus.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
