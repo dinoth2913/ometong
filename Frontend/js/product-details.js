@@ -267,11 +267,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* ---------- Render main product panel ---------- */
   const pdGrid = document.getElementById('pdGrid');
+  const esc = window.ometongEscapeHTML;
   pdGrid.innerHTML = `
     <div class="pd-gallery">
       <div class="pd-main-image" id="pdMainImage" style="background:${product.color}10">
         ${svgHero(product.color, numericSeed(product.id))}
-        ${product.badge ? `<span class="pd-badge">${product.badge}</span>` : ''}
+        ${product.badge ? `<span class="pd-badge">${esc(product.badge)}</span>` : ''}
         <button class="pd-fav${getWishlist().includes(product.id) ? ' saved' : ''}" id="pdFav" aria-label="Save item">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </button>
@@ -283,7 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     <div class="pd-info">
       <span class="pd-cat-tag">${catLabel}</span>
-      <h1 class="pd-title">${product.title}</h1>
+      <h1 class="pd-title">${esc(product.title)}</h1>
       <div class="pd-rating-row">
         ${product.rating != null
           ? `<span class="pd-stars"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>${product.rating}</span>
@@ -291,7 +292,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           : `<span class="pd-stars pd-stars-new">New listing</span>`}
         <span class="pd-supplier-link">
           <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-          ${product.supplier}
+          ${esc(product.supplier)}
         </span>
       </div>
 
@@ -314,11 +315,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="pd-spec-card">
           <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
           <span class="pd-spec-label">Condition</span>
-          <span class="pd-spec-value">${product.badge || 'Standard'}</span>
+          <span class="pd-spec-value">${esc(product.badge) || 'Standard'}</span>
         </div>
       </div>
 
-      <p class="pd-desc">${product.description}</p>
+      <p class="pd-desc">${esc(product.description)}</p>
 
       <div class="pd-trust-row">
         <span class="pd-trust-item"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Escrow-protected purchase</span>

@@ -7,6 +7,22 @@
 (function () {
   "use strict";
 
+  // Escapes user-supplied text before it's interpolated into an
+  // innerHTML template (listing titles/descriptions, business names,
+  // etc.) — without this, a listing title like "<img src=x onerror=...>"
+  // would execute for every visitor who views it. Defined before the
+  // Supabase checks below so it's always available regardless of
+  // whether the client itself loads successfully.
+  window.ometongEscapeHTML = function (str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  };
+
   if (!window.supabase || typeof window.supabase.createClient !== "function") {
     console.error("Ometong: Supabase SDK not loaded. Check the script tag order in this page.");
     return;

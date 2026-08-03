@@ -139,6 +139,34 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ometong: Supabase client not available — check that supabaseConfig.js and supabaseClient.js are loaded before authenticationpage.js.');
   }
 
+  /* ---------- Forgot password ---------- */
+  const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+  forgotPasswordBtn?.addEventListener('click', async () => {
+    clearError(loginForm);
+    const email = loginForm.email.value.trim();
+    if (!email) {
+      showError(loginForm, 'Enter your email above first, then click "Forgot password?".');
+      return;
+    }
+
+    forgotPasswordBtn.disabled = true;
+    const originalLabel = forgotPasswordBtn.textContent;
+    forgotPasswordBtn.textContent = 'Sending…';
+
+    const redirectTo = new URL('reset-password.html', window.location.href).href;
+    const { error } = await window.sb.auth.resetPasswordForEmail(email, { redirectTo });
+
+    forgotPasswordBtn.disabled = false;
+    forgotPasswordBtn.textContent = originalLabel;
+
+    if (error) {
+      showError(loginForm, error.message || 'Could not send a reset link. Please try again.');
+      return;
+    }
+
+    showSuccess('Check your email', `We've sent a password reset link to ${email}. Click it to choose a new password.`, null);
+  });
+
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearError(loginForm);

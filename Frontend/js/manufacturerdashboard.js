@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     listingsGrid.style.display = 'grid';
     if (listingsEmpty) listingsEmpty.hidden = true;
+    const esc = window.ometongEscapeHTML;
     listingsGrid.innerHTML = listings.map((item, i) => {
       const isActive = item.status === 'active';
       const color = listingColors[i % listingColors.length];
@@ -133,8 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="listing-status ${statusClass}">${statusLabel}</span>
           </div>
           <div class="listing-body">
-            <div class="listing-title">${item.title}</div>
-            <div class="listing-meta">${item.category} · ${moqLabel}</div>
+            <div class="listing-title">${esc(item.title)}</div>
+            <div class="listing-meta">${esc(item.category)} · ${moqLabel}</div>
             <div class="listing-price">$${Number(item.price).toLocaleString('en-US')} <span style="color:var(--ink-faint);font-weight:600;font-size:.72rem;">/ unit</span></div>
             <button class="listing-toggle ${isActive ? '' : 'is-paused'}" data-toggle="${item.id}">${isActive ? 'Pause listing' : 'Reactivate listing'}</button>
           </div>
