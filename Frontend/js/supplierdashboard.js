@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return `
         <div class="listing-card" data-id="${item.id}">
-          <div class="listing-thumb" style="background-image:url('${thumbSvg(color)}');background-size:cover;">
+          <div class="listing-thumb" style="background-image:url('${item.image_url ? esc(item.image_url) : thumbSvg(color)}');background-size:cover;">
             <span class="listing-status ${statusClass}">${statusLabel}</span>
           </div>
           <div class="listing-body">

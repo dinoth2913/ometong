@@ -202,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rating: null,
         reviews: 0,
         color: palette[(ci >= 0 ? ci : 0) % palette.length],
+        image: row.image_url || null,
         badge: 'Verified',
         description: row.description || descriptions[cat] || '',
         moq: row.moq || null,
@@ -268,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
     <div class="p-card" style="animation-delay:${(index % 12) * 40}ms" data-id="${p.id}">
       <div class="p-thumb" style="background:${p.color}12">
-        ${svgThumb(p.color, index)}
+        ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" style="width:100%;height:100%;object-fit:cover;">` : svgThumb(p.color, index)}
         <span class="p-price-badge">$${p.price}<small> /unit</small></span>
         <button class="p-fav${getWishlist().includes(p.id) ? ' saved' : ''}" aria-label="Save item" data-fav="${p.id}">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>

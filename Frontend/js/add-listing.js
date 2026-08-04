@@ -59,6 +59,41 @@
     const errorEl = document.getElementById("listingFormError");
     const successEl = document.getElementById("listingSuccess");
     const submitBtn = document.getElementById("submitListingBtn");
+    const imageInput = document.getElementById("image");
+    const imagePreview = document.getElementById("imagePreview");
+    const imagePreviewImg = document.getElementById("imagePreviewImg");
+    const imagePreviewRemove = document.getElementById("imagePreviewRemove");
+
+    const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+    const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
+
+    imageInput?.addEventListener("change", () => {
+      const file = imageInput.files && imageInput.files[0];
+      if (!file) {
+        imagePreview.hidden = true;
+        return;
+      }
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        showError("Please choose a JPG, PNG or WEBP image.");
+        imageInput.value = "";
+        imagePreview.hidden = true;
+        return;
+      }
+      if (file.size > MAX_IMAGE_BYTES) {
+        showError("That image is too large — please choose one under 5MB.");
+        imageInput.value = "";
+        imagePreview.hidden = true;
+        return;
+      }
+      clearError();
+      imagePreviewImg.src = URL.createObjectURL(file);
+      imagePreview.hidden = false;
+    });
+
+    imagePreviewRemove?.addEventListener("click", () => {
+      imageInput.value = "";
+      imagePreview.hidden = true;
+    });
 
     function showError(message) {
       errorEl.textContent = message;
@@ -94,6 +129,24 @@
       if (isNaN(price) || price < 0) { showError("Please enter a valid price."); return; }
 
       setLoading(true);
+
+      let imageUrl = null;
+      const file = imageInput?.files && imageInput.files[0];
+      if (file) {
+        const ext = file.name.split(".").pop().toLowerCase();
+        const path = `${user.id}/${Date.now()}.${ext}`;
+        const { error: uploadError } = await window.sb.storage
+          .from("listing-images")
+          .upload(path, file, { cacheControl: "3600", upsert: false });
+        if (uploadError) {
+          setLoading(false);
+          showError(uploadError.message || "Could not upload the photo. Please try again.");
+          return;
+        }
+        const { data: publicUrlData } = window.sb.storage.from("listing-images").getPublicUrl(path);
+        imageUrl = publicUrlData?.publicUrl || null;
+      }
+
       const { error } = await window.sb.from("listings").insert({
         supplier_id: user.id,
         title,
@@ -102,6 +155,7 @@
         moq,
         lead_time_days: leadTime,
         description,
+        image_url: imageUrl,
         status: "active"
       });
       setLoading(false);

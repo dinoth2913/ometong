@@ -206,6 +206,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       rating: null,
       reviews: 0,
       color: palette[(ci >= 0 ? ci : 0) % palette.length],
+      image: row.image_url || null,
       badge: 'Verified',
       description: row.description || descriptions[cat] || '',
       moq: row.moq || null,
@@ -280,15 +281,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   pdGrid.innerHTML = `
     <div class="pd-gallery">
       <div class="pd-main-image" id="pdMainImage" style="background:${product.color}10">
-        ${svgHero(product.color, numericSeed(product.id))}
+        ${product.image ? `<img src="${esc(product.image)}" alt="${esc(product.title)}" style="width:100%;height:100%;object-fit:cover;">` : svgHero(product.color, numericSeed(product.id))}
         ${product.badge ? `<span class="pd-badge">${esc(product.badge)}</span>` : ''}
         <button class="pd-fav${getWishlist().includes(product.id) ? ' saved' : ''}" id="pdFav" aria-label="Save item">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </button>
       </div>
-      <div class="pd-thumb-strip" id="pdThumbStrip">
+      ${product.image ? '' : `<div class="pd-thumb-strip" id="pdThumbStrip">
         ${[0, 1, 2, 3].map(i => `<button class="${i === 0 ? 'active' : ''}" data-thumb="${i}" style="background:${product.color}10">${svgThumb(product.color, numericSeed(product.id) + i)}</button>`).join('')}
-      </div>
+      </div>`}
     </div>
 
     <div class="pd-info">
