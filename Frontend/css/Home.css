@@ -210,11 +210,20 @@ button,input,select{font-family:inherit;}
     linear-gradient(180deg, rgba(10,14,22,.80) 0%, rgba(12,16,26,.62) 40%, rgba(10,14,22,.88) 100%),
     url('../../images/BG image.png') center 60%/cover no-repeat;
 }
-.hero-inner{max-width:1600px;margin:0 auto;padding:0 var(--gutter);display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;min-height:78vh;}
+.hero-inner{max-width:1600px;margin:0 auto;padding:0 var(--gutter);display:flex;justify-content:flex-start;align-items:center;min-height:78vh;}
 .eyebrow{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));font-size:.8rem;font-weight:700;color:var(--accent-dark);margin-bottom:22px;}
 .hero h1{font-size:clamp(2.4rem,4.6vw,3.6rem);letter-spacing:-.02em;color:#fff;}
 .hero h1 span{background:linear-gradient(100deg,var(--accent),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;}
 .hero-copy > p{font-size:1.1rem;max-width:520px;margin-bottom:30px;color:rgba(255,255,255,.82);}
+
+/* ---- Hero copy panel: floats cleanly over the busy background photo ---- */
+.hero-copy--panel{
+  max-width:560px;padding:36px;border-radius:24px;
+  background:rgba(10,14,22,.55);backdrop-filter:blur(18px) saturate(140%);
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 60px rgba(0,0,0,.35);
+}
+.hero-copy--panel .eyebrow{margin-bottom:20px;}
+.hero-copy--panel .hero-actions{margin-bottom:0;}
 
 .hero-search{
   display:flex;align-items:center;gap:10px;max-width:520px;
@@ -580,6 +589,7 @@ button,input,select{font-family:inherit;}
   .hero-visual{height:340px;}
   .float-card{width:150px;padding:7px 10px 7px 7px;}
   .fc-thumb{width:26px;height:26px;}
+  .hero-copy--panel{padding:24px;max-width:100%;}
 }
 
 /* =========================================================
