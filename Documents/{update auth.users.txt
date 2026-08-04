@@ -1,0 +1,7 @@
+     {update auth.users
+	set email_confirmed_at = now()
+	where email = 'the-email-you-used@example.com';}
+	(Email sign up code for admin no need of verify supabase)
+2. update public.profiles set role = 'admin' where email = 'omegoholdings@gmail.com';
+	(add admin username)
+3.

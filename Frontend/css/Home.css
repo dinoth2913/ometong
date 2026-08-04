@@ -208,7 +208,7 @@ button,input,select{font-family:inherit;}
   position:relative;padding:70px 0 0;isolation:isolate;
   background:
     linear-gradient(180deg, rgba(10,14,22,.80) 0%, rgba(12,16,26,.62) 40%, rgba(10,14,22,.88) 100%),
-    url('../../images/harbour-photo.avif') center 60%/cover no-repeat;
+    url('../../images/BG image.png') center 60%/cover no-repeat;
 }
 .hero-inner{max-width:1600px;margin:0 auto;padding:0 var(--gutter);display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;min-height:78vh;}
 .eyebrow{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:blur(var(--glass-blur));font-size:.8rem;font-weight:700;color:var(--accent-dark);margin-bottom:22px;}
