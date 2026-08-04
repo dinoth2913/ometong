@@ -1,6 +1,30 @@
 /* =========================================================
    OMETONG — LOGIN / SIGNUP SCRIPT
 ========================================================= */
+
+/* ---------- hCaptcha (bot/abuse protection on login + signup) ----------
+   Renders two independent widgets. If no site key is configured yet
+   (captchaConfig.js), this never runs and both forms behave exactly
+   as before — no captcha shown, nothing required. */
+let ometongLoginCaptchaId = null;
+let ometongSignupCaptchaId = null;
+
+window.ometongHCaptchaLoaded = function () {
+  if (!window.hcaptcha || !window.HCAPTCHA_SITE_KEY) return;
+  ometongLoginCaptchaId = window.hcaptcha.render('loginCaptcha', { sitekey: window.HCAPTCHA_SITE_KEY });
+  ometongSignupCaptchaId = window.hcaptcha.render('signupCaptcha', { sitekey: window.HCAPTCHA_SITE_KEY });
+};
+
+function ometongGetCaptchaToken(widgetId) {
+  if (!window.HCAPTCHA_SITE_KEY) return { required: false, token: undefined };
+  if (!window.hcaptcha || widgetId === null) return { required: true, token: '' };
+  return { required: true, token: window.hcaptcha.getResponse(widgetId) };
+}
+
+function ometongResetCaptcha(widgetId) {
+  if (window.hcaptcha && widgetId !== null) window.hcaptcha.reset(widgetId);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Skip the form entirely if already logged in ---------- */
@@ -173,9 +197,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = loginForm.email.value.trim();
     const password = loginForm.password.value;
 
+    const captcha = ometongGetCaptchaToken(ometongLoginCaptchaId);
+    if (captcha.required && !captcha.token) {
+      showError(loginForm, 'Please complete the captcha before logging in.');
+      return;
+    }
+
     setLoading(loginForm, true, 'Log in');
-    const { data, error } = await window.sb.auth.signInWithPassword({ email, password });
+    const { data, error } = await window.sb.auth.signInWithPassword({
+      email,
+      password,
+      options: captcha.token ? { captchaToken: captcha.token } : undefined
+    });
     setLoading(loginForm, false, 'Log in');
+    ometongResetCaptcha(ometongLoginCaptchaId);
 
     if (error) {
       showError(loginForm, error.message || 'Could not log in. Check your email and password.');
@@ -202,6 +237,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const category = signupForm.category ? signupForm.category.value : '';
     const details = signupForm.details ? signupForm.details.value.trim() : '';
 
+    const captcha = ometongGetCaptchaToken(ometongSignupCaptchaId);
+    if (captcha.required && !captcha.token) {
+      showError(signupForm, 'Please complete the captcha before creating an account.');
+      return;
+    }
+
     setLoading(signupForm, true, 'Create account');
     const { data, error } = await window.sb.auth.signUp({
       email,
@@ -213,10 +254,12 @@ document.addEventListener('DOMContentLoaded', () => {
           business_name: business,
           category,
           details
-        }
+        },
+        captchaToken: captcha.token || undefined
       }
     });
     setLoading(signupForm, false, 'Create account');
+    ometongResetCaptcha(ometongSignupCaptchaId);
 
     if (error) {
       showError(signupForm, error.message || 'Could not create your account. Please try again.');

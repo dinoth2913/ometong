@@ -127,6 +127,8 @@
                         <button type="button" class="link-inline" id="forgotPasswordBtn">Forgot password?</button>
                     </div>
 
+                    <div id="loginCaptcha"></div>
+
                     <button type="submit" class="btn btn-primary btn-block">Log in</button>
                     <p class="auth-switch">Don't have an account? <button type="button" class="link-inline"
                             data-goto="signup">Create one</button></p>
@@ -219,6 +221,8 @@
                         <span>I agree to the Terms of Service and Privacy Policy</span>
                     </label>
 
+                    <div id="signupCaptcha"></div>
+
                     <button type="submit" class="btn btn-primary btn-block">Create account</button>
                     <p class="auth-switch">Already have an account? <button type="button" class="link-inline"
                             data-goto="login">Log in</button></p>
@@ -242,6 +246,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="../js/supabaseConfig.js"></script>
     <script src="../js/supabaseClient.js"></script>
+    <script src="../js/captchaConfig.js"></script>
+    <script src="https://js.hcaptcha.com/1/api.js?render=explicit&onload=ometongHCaptchaLoaded" async defer></script>
     <script src="../js/authenticationpage.js"></script>
 
 <!-- Liquid glass distortion filter for the navbar (adapted from a displacement-map glass demo) -->
