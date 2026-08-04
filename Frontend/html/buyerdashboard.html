@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/buyerdashboard.css">
+<link rel="stylesheet" href="../css/i18n.css">
 </head>
 <body>
 
@@ -29,13 +30,21 @@
     </a>
 
     <nav class="nav-links" id="navLinks">
-      <a href="buyerdashboard.html" class="active">Dashboard</a>
-      <a href="marketplace.html">Marketplace</a>
-      <a href="cart.html">Cart</a>
-      <a href="contactus.html">Contact</a>
+      <a href="buyerdashboard.html" class="active" data-i18n="common.dashboard">Dashboard</a>
+      <a href="marketplace.html" data-i18n="common.marketplace">Marketplace</a>
+      <a href="cart.html" data-i18n="common.cart">Cart</a>
+      <a href="contactus.html" data-i18n="common.contact">Contact</a>
     </nav>
 
     <div class="nav-actions">
+      <select class="lang-switch" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="es">ES</option>
+        <option value="hi">HI</option>
+        <option value="si">SI</option>
+        <option value="ta">TA</option>
+      </select>
       <div class="theme-switch-wrap">
         <input type="checkbox" class="theme-checkbox" id="themeToggle">
         <label class="theme-switch" for="themeToggle" aria-label="Toggle dark mode">
@@ -46,18 +55,26 @@
         </label>
       </div>
       <span class="user-chip"><span class="user-chip-avatar" id="userAvatarInitials">AM</span><span id="userChipName">Alex Morgan</span></span>
-      <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+      <a href="authenticationpage.html" class="link-btn logout-link" data-i18n="common.logout">Log out</a>
       <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="buyerdashboard.html">Dashboard</a>
-  <a href="marketplace.html">Marketplace</a>
-  <a href="cart.html">Cart</a>
-  <a href="contactus.html">Contact</a>
-  <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+  <a href="buyerdashboard.html" data-i18n="common.dashboard">Dashboard</a>
+  <a href="marketplace.html" data-i18n="common.marketplace">Marketplace</a>
+  <a href="cart.html" data-i18n="common.cart">Cart</a>
+  <a href="contactus.html" data-i18n="common.contact">Contact</a>
+  <select class="lang-switch" aria-label="Language">
+    <option value="en">EN</option>
+    <option value="fr">FR</option>
+    <option value="es">ES</option>
+    <option value="hi">HI</option>
+    <option value="si">SI</option>
+    <option value="ta">TA</option>
+  </select>
+  <a href="authenticationpage.html" class="link-btn logout-link" data-i18n="common.logout">Log out</a>
 </div>
 
 <main>
@@ -66,9 +83,9 @@
     <!-- ===== DASHBOARD HEADER ===== -->
     <div class="dash-header" data-reveal>
       <div>
-        <span class="tag">Buyer Dashboard</span>
-        <h1>Welcome back, <span id="welcomeName">Alex</span></h1>
-        <p>Here's what's happening with your orders and saved items.</p>
+        <span class="tag" data-i18n="buyer.tag">Buyer Dashboard</span>
+        <h1><span data-i18n="buyer.welcome">Welcome back,</span> <span id="welcomeName">Alex</span></h1>
+        <p data-i18n="buyer.subtitle">Here's what's happening with your orders and saved items.</p>
       </div>
       <div class="region-picker">
         <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
@@ -89,51 +106,51 @@
           <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6"/></svg>
         </div>
         <span class="stat-num" id="statActiveOrders">3</span>
-        <span class="stat-label">Active orders</span>
+        <span class="stat-label" data-i18n="buyer.statActiveOrders">Active orders</span>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:var(--blue)">
           <svg viewBox="0 0 24 24" width="18" height="18"><rect x="1" y="7" width="16" height="11" rx="2"/><path d="M17 11h3l3 3v4h-6z"/><circle cx="6" cy="20" r="1.8"/><circle cx="18" cy="20" r="1.8"/></svg>
         </div>
         <span class="stat-num" id="statInTransit">1</span>
-        <span class="stat-label">In transit</span>
+        <span class="stat-label" data-i18n="buyer.statInTransit">In transit</span>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:#178A50">
           <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 1v22M17 5.5c0-2-2.2-3.5-5-3.5s-5 1.5-5 3.5 2.2 3 5 3.5c2.8.5 5 1.5 5 3.5s-2.2 3.5-5 3.5-5-1.5-5-3.5"/></svg>
         </div>
         <span class="stat-num" id="statTotalSpent">$0</span>
-        <span class="stat-label">Total spent (USD)</span>
+        <span class="stat-label" data-i18n="buyer.statTotalSpent">Total spent (USD)</span>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:var(--violet)">
           <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </div>
         <span class="stat-num" id="statSaved">0</span>
-        <span class="stat-label">Saved items</span>
+        <span class="stat-label" data-i18n="buyer.statSaved">Saved items</span>
       </div>
     </div>
 
     <!-- ===== RECENT ORDERS ===== -->
     <section data-reveal>
       <div class="section-head">
-        <h2>Recent orders</h2>
-        <a href="marketplace.html" class="btn btn-ghost btn-sm">Browse marketplace</a>
+        <h2 data-i18n="common.recentOrders">Recent orders</h2>
+        <a href="marketplace.html" class="btn btn-ghost btn-sm" data-i18n="common.browseMarketplace">Browse marketplace</a>
       </div>
       <div class="orders-card" id="ordersCard">
         <div class="order-row head" id="ordersHead">
-          <span>Product</span>
-          <span>Date</span>
-          <span>Amount</span>
-          <span>Status</span>
+          <span data-i18n="common.colProduct">Product</span>
+          <span data-i18n="buyer.colDate">Date</span>
+          <span data-i18n="common.colAmount">Amount</span>
+          <span data-i18n="common.colStatus">Status</span>
           <span></span>
         </div>
         <div id="ordersList"><!-- order rows injected by buyerdashboard.js --></div>
         <div class="empty-state" id="ordersEmpty" hidden>
           <svg viewBox="0 0 24 24" width="40" height="40"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6"/></svg>
-          <h3>No orders yet</h3>
-          <p>Once you place an order from the marketplace, it'll show up here with live status and tracking.</p>
-          <a href="marketplace.html" class="btn btn-primary btn-sm">Start shopping</a>
+          <h3 data-i18n="buyer.noOrdersTitle">No orders yet</h3>
+          <p data-i18n="buyer.noOrdersText">Once you place an order from the marketplace, it'll show up here with live status and tracking.</p>
+          <a href="marketplace.html" class="btn btn-primary btn-sm" data-i18n="buyer.startShopping">Start shopping</a>
         </div>
       </div>
     </section>
@@ -141,16 +158,16 @@
     <!-- ===== WISHLIST ===== -->
     <section data-reveal>
       <div class="section-head">
-        <h2>Saved items</h2>
-        <a href="marketplace.html" class="btn btn-ghost btn-sm">Find more products</a>
+        <h2 data-i18n="buyer.savedItems">Saved items</h2>
+        <a href="marketplace.html" class="btn btn-ghost btn-sm" data-i18n="common.findMoreProducts">Find more products</a>
       </div>
       <div id="wishlistWrap">
         <div class="wishlist-grid" id="wishlistGrid"></div>
         <div class="empty-state" id="wishlistEmpty" hidden>
           <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
-          <h3>Nothing saved yet</h3>
-          <p>Tap the heart icon on any product in the marketplace to save it here for later.</p>
-          <a href="marketplace.html" class="btn btn-primary btn-sm">Explore marketplace</a>
+          <h3 data-i18n="buyer.noSavedTitle">Nothing saved yet</h3>
+          <p data-i18n="buyer.noSavedText">Tap the heart icon on any product in the marketplace to save it here for later.</p>
+          <a href="marketplace.html" class="btn btn-primary btn-sm" data-i18n="buyer.exploreMarketplace">Explore marketplace</a>
         </div>
       </div>
     </section>
@@ -158,44 +175,44 @@
     <!-- ===== ACCOUNT ===== -->
     <section data-reveal>
       <div class="section-head">
-        <h2>Account</h2>
+        <h2 data-i18n="common.account">Account</h2>
       </div>
       <div class="account-grid">
         <div class="account-card">
-          <h3>Profile</h3>
-          <div class="account-row"><span>Name</span><span id="acctName">Alex Morgan</span></div>
-          <div class="account-row"><span>Email</span><span id="acctEmail">alex.morgan@example.com</span></div>
-          <div class="account-row"><span>Shipping region</span><span id="acctRegion">United States</span></div>
-          <div class="account-row"><span>Member since</span><span>Jul 2026</span></div>
+          <h3 data-i18n="buyer.profile">Profile</h3>
+          <div class="account-row"><span data-i18n="buyer.name">Name</span><span id="acctName">Alex Morgan</span></div>
+          <div class="account-row"><span data-i18n="common.email">Email</span><span id="acctEmail">alex.morgan@example.com</span></div>
+          <div class="account-row"><span data-i18n="buyer.shippingRegion">Shipping region</span><span id="acctRegion">United States</span></div>
+          <div class="account-row"><span data-i18n="common.memberSince">Member since</span><span>Jul 2026</span></div>
         </div>
         <div class="account-card">
-          <h3>Manage</h3>
+          <h3 data-i18n="common.manage">Manage</h3>
           <div class="quick-link soon">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-            Shipping addresses<span class="soon-badge">Coming soon</span>
+            <span data-i18n="buyer.shippingAddresses">Shipping addresses</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
           </div>
           <div class="quick-link soon">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
-            Payment methods<span class="soon-badge">Coming soon</span>
+            <span data-i18n="buyer.paymentMethods">Payment methods</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
           </div>
           <a class="quick-link" href="authenticationpage.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span>
-            Password &amp; security
+            <span data-i18n="common.passwordSecurity">Password &amp; security</span>
           </a>
         </div>
         <div class="account-card">
-          <h3>Need help?</h3>
+          <h3 data-i18n="common.needHelp">Need help?</h3>
           <a class="quick-link" href="contactus.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4h16v12H7l-3 3V4z"/></svg></span>
-            Contact support
+            <span data-i18n="common.contactSupport">Contact support</span>
           </a>
           <a class="quick-link" href="Supplier.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M9 9l6 6"/></svg></span>
-            Become a supplier
+            <span data-i18n="buyer.becomeSupplier">Become a supplier</span>
           </a>
           <a class="quick-link" href="advertisement.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M3 11l18-7-7 18-3-8-8-3z"/></svg></span>
-            Advertise with us
+            <span data-i18n="buyer.advertiseWithUs">Advertise with us</span>
           </a>
         </div>
       </div>
@@ -209,13 +226,13 @@
   <div class="container footer-grid">
     <div class="footer-brand">
       <a href="Home.html" class="logo"><img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact"></a>
-      <p>The marketplace built for global trade — products, services and logistics, matched by AI.</p>
+      <p data-i18n="footer.tagline">The marketplace built for global trade — products, services and logistics, matched by AI.</p>
     </div>
-    <div><h5>Marketplace</h5><a href="marketplace.html">Products</a><a href="marketplace.html">Services</a><a href="Home.html#categories">Categories</a><a href="Supplier.html">Suppliers</a></div>
-    <div><h5>Company</h5><a href="Home.html#how">How it Works</a><a href="advertisement.html">Advertise</a><a href="contactus.html">Contact</a></div>
+    <div><h5 data-i18n="footer.marketplaceHeading">Marketplace</h5><a href="marketplace.html" data-i18n="footer.products">Products</a><a href="marketplace.html" data-i18n="footer.services">Services</a><a href="Home.html#categories" data-i18n="footer.categories">Categories</a><a href="Supplier.html" data-i18n="footer.suppliers">Suppliers</a></div>
+    <div><h5 data-i18n="footer.companyHeading">Company</h5><a href="Home.html#how" data-i18n="footer.howItWorks">How it Works</a><a href="advertisement.html" data-i18n="footer.advertise">Advertise</a><a href="contactus.html" data-i18n="common.contact">Contact</a></div>
   </div>
   <div class="footer-bottom container">
-    <span>&copy; <span id="year"></span> Ometong. All rights reserved.</span>
+    <span>&copy; <span id="year"></span> Ometong. <span data-i18n="footer.rights">All rights reserved.</span></span>
   </div>
 </footer>
 
@@ -227,6 +244,7 @@
 <script src="../js/supabaseConfig.js"></script>
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/authGuard.js" data-role="buyer"></script>
+<script src="../js/i18n.js"></script>
 <script src="../js/buyerdashboard.js"></script>
 </body>
 </html>

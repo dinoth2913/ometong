@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/manufacturerdashboard.css">
+<link rel="stylesheet" href="../css/i18n.css">
 </head>
 <body>
 
@@ -29,15 +30,23 @@
     </a>
 
     <nav class="nav-links" id="navLinks">
-      <a href="manufacturerdashboard.html" class="active">Dashboard</a>
-      <a href="#listings">My Listings</a>
-      <a href="#production">Production</a>
-      <a href="#rfqs">Buyer RFQs</a>
-      <a href="#certs">Certifications</a>
-      <a href="#payouts">Payouts</a>
+      <a href="manufacturerdashboard.html" class="active" data-i18n="common.dashboard">Dashboard</a>
+      <a href="#listings" data-i18n="nav.myListings">My Listings</a>
+      <a href="#production" data-i18n="nav.production">Production</a>
+      <a href="#rfqs" data-i18n="nav.buyerRfqs">Buyer RFQs</a>
+      <a href="#certs" data-i18n="nav.certifications">Certifications</a>
+      <a href="#payouts" data-i18n="nav.payouts">Payouts</a>
     </nav>
 
     <div class="nav-actions">
+      <select class="lang-switch" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="es">ES</option>
+        <option value="hi">HI</option>
+        <option value="si">SI</option>
+        <option value="ta">TA</option>
+      </select>
       <div class="theme-switch-wrap">
         <input type="checkbox" class="theme-checkbox" id="themeToggle">
         <label class="theme-switch" for="themeToggle" aria-label="Toggle dark mode">
@@ -48,20 +57,28 @@
         </label>
       </div>
       <span class="user-chip"><span class="user-chip-avatar" id="userAvatarInitials">GP</span><span id="userChipName">Guangzhou Precision Mfg.</span></span>
-      <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+      <a href="authenticationpage.html" class="link-btn logout-link" data-i18n="common.logout">Log out</a>
       <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="manufacturerdashboard.html">Dashboard</a>
-  <a href="#listings">My Listings</a>
-  <a href="#production">Production</a>
-  <a href="#rfqs">Buyer RFQs</a>
-  <a href="#certs">Certifications</a>
-  <a href="#payouts">Payouts</a>
-  <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+  <a href="manufacturerdashboard.html" data-i18n="common.dashboard">Dashboard</a>
+  <a href="#listings" data-i18n="nav.myListings">My Listings</a>
+  <a href="#production" data-i18n="nav.production">Production</a>
+  <a href="#rfqs" data-i18n="nav.buyerRfqs">Buyer RFQs</a>
+  <a href="#certs" data-i18n="nav.certifications">Certifications</a>
+  <a href="#payouts" data-i18n="nav.payouts">Payouts</a>
+  <select class="lang-switch" aria-label="Language">
+    <option value="en">EN</option>
+    <option value="fr">FR</option>
+    <option value="es">ES</option>
+    <option value="hi">HI</option>
+    <option value="si">SI</option>
+    <option value="ta">TA</option>
+  </select>
+  <a href="authenticationpage.html" class="link-btn logout-link" data-i18n="common.logout">Log out</a>
 </div>
 
 <main>
@@ -70,16 +87,16 @@
     <!-- ===== DASHBOARD HEADER ===== -->
     <div class="dash-header" data-reveal>
       <div>
-        <span class="tag">Manufacturer Dashboard</span>
-        <h1>Welcome back, <span id="welcomeName">Guangzhou Precision Mfg.</span></h1>
-        <p>Here's your factory's production, certifications, and buyer activity at a glance.</p>
+        <span class="tag" data-i18n="manufacturer.tag">Manufacturer Dashboard</span>
+        <h1><span data-i18n="admin.welcome">Welcome back,</span> <span id="welcomeName">Guangzhou Precision Mfg.</span></h1>
+        <p data-i18n="manufacturer.subtitle">Here's your factory's production, certifications, and buyer activity at a glance.</p>
       </div>
       <div class="status-pills">
         <span class="status-pill pending" id="verifyPill">
           <svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></svg>
-          Verification pending
+          <span data-i18n="supplier.verificationPending">Verification pending</span>
         </span>
-        <a href="Supplier.html#pricing" class="status-pill plan-cta">Choose a plan</a>
+        <a href="Supplier.html#pricing" class="status-pill plan-cta" data-i18n="supplier.choosePlan">Choose a plan</a>
       </div>
     </div>
 
@@ -90,212 +107,212 @@
           <svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
         </div>
         <span class="stat-num" id="statLines">0</span>
-        <span class="stat-label">Active production lines</span>
+        <span class="stat-label" data-i18n="manufacturer.statLines">Active production lines</span>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:var(--blue)">
           <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" /></svg>
         </div>
         <span class="stat-num" id="statRfqs">0</span>
-        <span class="stat-label">New buyer RFQs</span>
+        <span class="stat-label" data-i18n="manufacturer.statRfqs">New buyer RFQs</span>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:var(--violet)">
           <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z" /></svg>
         </div>
         <span class="stat-num" id="statOrders">0</span>
-        <span class="stat-label">Orders in production</span>
+        <span class="stat-label" data-i18n="manufacturer.statOrders">Orders in production</span>
       </div>
       <div class="stat-card">
         <div class="stat-icon" style="background:#178A50">
           <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 1v22M17 5.5c0-2-2.2-3.5-5-3.5s-5 1.5-5 3.5 2.2 3 5 3.5c2.8.5 5 1.5 5 3.5s-2.2 3.5-5 3.5-5-1.5-5-3.5" /></svg>
         </div>
         <span class="stat-num" id="statEarnings">$0</span>
-        <span class="stat-label">Total earnings (USD)</span>
+        <span class="stat-label" data-i18n="supplier.statEarnings">Total earnings (USD)</span>
       </div>
     </div>
 
     <!-- ===== FACTORY PROFILE ===== -->
     <section data-reveal>
       <div class="section-head">
-        <h2>Factory profile</h2>
-        <span class="section-hint">Shown to buyers once your profile is complete</span>
+        <h2 data-i18n="manufacturer.factoryProfile">Factory profile</h2>
+        <span class="section-hint" data-i18n="manufacturer.shownToBuyers">Shown to buyers once your profile is complete</span>
       </div>
       <div class="factory-grid">
         <div class="factory-card">
-          <span class="factory-label">Established</span>
-          <span class="factory-value" id="factEstablished">Not set</span>
+          <span class="factory-label" data-i18n="manufacturer.established">Established</span>
+          <span class="factory-value" id="factEstablished" data-i18n="common.notSet">Not set</span>
         </div>
         <div class="factory-card">
-          <span class="factory-label">Factory size</span>
-          <span class="factory-value" id="factSize">Not set</span>
+          <span class="factory-label" data-i18n="manufacturer.factorySize">Factory size</span>
+          <span class="factory-value" id="factSize" data-i18n="common.notSet">Not set</span>
         </div>
         <div class="factory-card">
-          <span class="factory-label">Workforce</span>
-          <span class="factory-value" id="factWorkforce">Not set</span>
+          <span class="factory-label" data-i18n="manufacturer.workforce">Workforce</span>
+          <span class="factory-value" id="factWorkforce" data-i18n="common.notSet">Not set</span>
         </div>
         <div class="factory-card">
-          <span class="factory-label">Monthly capacity</span>
-          <span class="factory-value" id="factCapacity">Not set</span>
+          <span class="factory-label" data-i18n="manufacturer.monthlyCapacity">Monthly capacity</span>
+          <span class="factory-value" id="factCapacity" data-i18n="common.notSet">Not set</span>
         </div>
         <div class="factory-card">
-          <span class="factory-label">Avg. sample lead time</span>
-          <span class="factory-value" id="factSampleTime">Not set</span>
+          <span class="factory-label" data-i18n="manufacturer.sampleLeadTime">Avg. sample lead time</span>
+          <span class="factory-value" id="factSampleTime" data-i18n="common.notSet">Not set</span>
         </div>
         <div class="factory-card">
-          <span class="factory-label">Main export markets</span>
-          <span class="factory-value" id="factMarkets">Not set</span>
+          <span class="factory-label" data-i18n="manufacturer.exportMarkets">Main export markets</span>
+          <span class="factory-value" id="factMarkets" data-i18n="common.notSet">Not set</span>
         </div>
       </div>
-      <p class="factory-note">These details aren't filled in yet — buyers won't see a complete factory profile until you add them. Profile editing is coming soon.</p>
+      <p class="factory-note" data-i18n="manufacturer.profileNote">These details aren't filled in yet — buyers won't see a complete factory profile until you add them. Profile editing is coming soon.</p>
     </section>
 
     <!-- ===== MY LISTINGS ===== -->
     <section data-reveal id="listings">
       <div class="section-head">
-        <h2>My listings</h2>
-        <a href="add-listing.html" class="btn btn-primary btn-sm">Add a listing</a>
+        <h2 data-i18n="manufacturer.myListings">My listings</h2>
+        <a href="add-listing.html" class="btn btn-primary btn-sm" data-i18n="common.addListing">Add a listing</a>
       </div>
       <div class="listings-grid" id="listingsGrid"></div>
       <div class="empty-state" id="listingsEmpty" hidden>
         <svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a4 4 0 018 0v2" /></svg>
-        <h3>You haven't listed anything yet</h3>
-        <p>Listings are the products or services buyers can find and order from you. Add your first one to start showing up in buyer searches and matched RFQs.</p>
-        <a href="add-listing.html" class="btn btn-primary btn-sm">Add your first listing</a>
+        <h3 data-i18n="supplier.noListingsTitle">You haven't listed anything yet</h3>
+        <p data-i18n="manufacturer.noListingsText">Listings are the products or services buyers can find and order from you. Add your first one to start showing up in buyer searches and matched RFQs.</p>
+        <a href="add-listing.html" class="btn btn-primary btn-sm" data-i18n="common.addFirstListing">Add your first listing</a>
       </div>
     </section>
 
     <!-- ===== PRODUCTION LINES ===== -->
     <section data-reveal id="production">
       <div class="section-head">
-        <h2>Production lines &amp; capacity</h2>
-        <span class="section-hint">Live utilization across your factory floor</span>
+        <h2 data-i18n="manufacturer.productionLines">Production lines &amp; capacity</h2>
+        <span class="section-hint" data-i18n="manufacturer.liveUtilization">Live utilization across your factory floor</span>
       </div>
       <div class="lines-grid" id="linesGrid"></div>
       <div class="empty-state" id="linesEmpty" hidden>
         <svg viewBox="0 0 24 24" width="40" height="40"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
-        <h3>No production lines added yet</h3>
-        <p>This is where you'd track utilization across each line on your factory floor. Line tracking is coming soon — for now, focus on adding your first listing so buyers can find you.</p>
-        <a href="add-listing.html" class="btn btn-primary btn-sm">Add your first listing</a>
+        <h3 data-i18n="manufacturer.noLinesTitle">No production lines added yet</h3>
+        <p data-i18n="manufacturer.noLinesText">This is where you'd track utilization across each line on your factory floor. Line tracking is coming soon — for now, focus on adding your first listing so buyers can find you.</p>
+        <a href="add-listing.html" class="btn btn-primary btn-sm" data-i18n="common.addFirstListing">Add your first listing</a>
       </div>
     </section>
 
     <!-- ===== BUYER RFQs ===== -->
     <section data-reveal id="rfqs">
       <div class="section-head">
-        <h2>Buyer RFQs (requests for quotation)</h2>
-        <a href="Supplier.html#benefits" class="btn btn-ghost btn-sm">How matching works</a>
+        <h2 data-i18n="manufacturer.buyerRfqs">Buyer RFQs (requests for quotation)</h2>
+        <a href="Supplier.html#benefits" class="btn btn-ghost btn-sm" data-i18n="common.howMatchingWorks">How matching works</a>
       </div>
       <div class="rfq-grid" id="rfqGrid"></div>
       <div class="empty-state" id="rfqsEmpty" hidden>
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" /></svg>
-        <h3>No RFQs yet</h3>
-        <p>When a buyer's request for quotation matches something you make, it'll appear here automatically — you don't need to search for buyers yourself. Add a listing so our AI has something to match against.</p>
-        <a href="add-listing.html" class="btn btn-primary btn-sm">Add your first listing</a>
+        <h3 data-i18n="manufacturer.noRfqsTitle">No RFQs yet</h3>
+        <p data-i18n="manufacturer.noRfqsText">When a buyer's request for quotation matches something you make, it'll appear here automatically — you don't need to search for buyers yourself. Add a listing so our AI has something to match against.</p>
+        <a href="add-listing.html" class="btn btn-primary btn-sm" data-i18n="common.addFirstListing">Add your first listing</a>
       </div>
     </section>
 
     <!-- ===== ORDERS IN PRODUCTION ===== -->
     <section data-reveal>
       <div class="section-head">
-        <h2>Orders in production</h2>
-        <span class="section-hint">Tracked stage by stage</span>
+        <h2 data-i18n="manufacturer.ordersInProduction">Orders in production</h2>
+        <span class="section-hint" data-i18n="manufacturer.trackedStageByStage">Tracked stage by stage</span>
       </div>
       <div class="prod-orders" id="prodOrders"></div>
       <div class="empty-state" id="prodOrdersEmpty" hidden>
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M3 16V9h9v7M12 16h9v-4l-3-3h-6M6 19a2 2 0 100-4 2 2 0 000 4zM17 19a2 2 0 100-4 2 2 0 000 4z" /></svg>
-        <h3>Nothing in production yet</h3>
-        <p>Once a buyer places an order, you'll be able to track it here stage by stage — materials, production, quality check, packaging, and shipping. Nothing to do right now.</p>
+        <h3 data-i18n="manufacturer.noProdOrdersTitle">Nothing in production yet</h3>
+        <p data-i18n="manufacturer.noProdOrdersText">Once a buyer places an order, you'll be able to track it here stage by stage — materials, production, quality check, packaging, and shipping. Nothing to do right now.</p>
       </div>
     </section>
 
     <!-- ===== CERTIFICATIONS ===== -->
     <section data-reveal id="certs">
       <div class="section-head">
-        <h2>Certifications &amp; compliance</h2>
-        <span class="section-hint">Verified once, visible on every listing</span>
+        <h2 data-i18n="manufacturer.certifications">Certifications &amp; compliance</h2>
+        <span class="section-hint" data-i18n="manufacturer.verifiedOnceVisible">Verified once, visible on every listing</span>
       </div>
       <div class="cert-grid" id="certGrid"></div>
       <div class="empty-state" id="certsEmpty" hidden>
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg>
-        <h3>No certifications added yet</h3>
-        <p>Certifications like ISO 9001, BSCI, or RoHS build buyer trust and show up on every listing once verified. Certification upload is coming soon.</p>
+        <h3 data-i18n="manufacturer.noCertsTitle">No certifications added yet</h3>
+        <p data-i18n="manufacturer.noCertsText">Certifications like ISO 9001, BSCI, or RoHS build buyer trust and show up on every listing once verified. Certification upload is coming soon.</p>
       </div>
     </section>
 
     <!-- ===== PAYOUTS ===== -->
     <section data-reveal id="payouts">
       <div class="section-head">
-        <h2>Payouts</h2>
-        <span class="section-hint">Held in escrow until delivery is confirmed</span>
+        <h2 data-i18n="common.payouts">Payouts</h2>
+        <span class="section-hint" data-i18n="common.heldInEscrow">Held in escrow until delivery is confirmed</span>
       </div>
       <div class="payout-grid">
         <div class="payout-card highlight">
-          <span class="payout-label">Escrow balance</span>
+          <span class="payout-label" data-i18n="common.escrowBalance">Escrow balance</span>
           <span class="payout-amt" id="payoutEscrow">$0</span>
-          <p>Money from orders in progress, held safely until the buyer confirms delivery.</p>
+          <p data-i18n="common.escrowDesc">Money from orders in progress, held safely until the buyer confirms delivery.</p>
         </div>
         <div class="payout-card">
-          <span class="payout-label">Next payout</span>
+          <span class="payout-label" data-i18n="common.nextPayout">Next payout</span>
           <span class="payout-amt" id="payoutNext">$0</span>
           <p id="payoutNextDate">—</p>
         </div>
         <div class="payout-card">
-          <span class="payout-label">Paid out (all time)</span>
+          <span class="payout-label" data-i18n="common.paidOutAllTime">Paid out (all time)</span>
           <span class="payout-amt" id="payoutTotal">$0</span>
-          <p>Across <span id="payoutCount">0</span> completed payouts.</p>
+          <p><span data-i18n="supplier.acrossPayouts">Across</span> <span id="payoutCount">0</span> <span data-i18n="supplier.completedPayouts">completed payouts.</span></p>
         </div>
       </div>
       <div class="payout-history" id="payoutHistory"></div>
       <div class="empty-state" id="payoutHistoryEmpty" hidden>
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 1v22M17 5.5c0-2-2.2-3.5-5-3.5s-5 1.5-5 3.5 2.2 3 5 3.5c2.8.5 5 1.5 5 3.5s-2.2 3.5-5 3.5-5-1.5-5-3.5" /></svg>
-        <h3>No payouts yet</h3>
-        <p>Once a buyer confirms delivery on a paid order, the money moves from escrow into a payout here — automatically, no action needed from you.</p>
+        <h3 data-i18n="common.noPayoutsTitle">No payouts yet</h3>
+        <p data-i18n="common.noPayoutsText">Once a buyer confirms delivery on a paid order, the money moves from escrow into a payout here — automatically, no action needed from you.</p>
       </div>
     </section>
 
     <!-- ===== ACCOUNT ===== -->
     <section data-reveal>
       <div class="section-head">
-        <h2>Account</h2>
+        <h2 data-i18n="common.account">Account</h2>
       </div>
       <div class="account-grid">
         <div class="account-card">
-          <h3>Business profile</h3>
-          <div class="account-row"><span>Factory name</span><span id="acctCompany">Guangzhou Precision Mfg.</span></div>
-          <div class="account-row"><span>Email</span><span id="acctEmail">contact@gzprecision.example</span></div>
-          <div class="account-row"><span>Category</span><span id="acctCategory">Not set</span></div>
-          <div class="account-row"><span>Production model</span><span id="acctModel">Not set</span></div>
-          <div class="account-row"><span>Member since</span><span>Jul 2026</span></div>
+          <h3 data-i18n="supplier.businessProfile">Business profile</h3>
+          <div class="account-row"><span data-i18n="manufacturer.factoryName">Factory name</span><span id="acctCompany">Guangzhou Precision Mfg.</span></div>
+          <div class="account-row"><span data-i18n="common.email">Email</span><span id="acctEmail">contact@gzprecision.example</span></div>
+          <div class="account-row"><span data-i18n="common.category">Category</span><span id="acctCategory" data-i18n="common.notSet">Not set</span></div>
+          <div class="account-row"><span data-i18n="manufacturer.productionModel">Production model</span><span id="acctModel" data-i18n="common.notSet">Not set</span></div>
+          <div class="account-row"><span data-i18n="common.memberSince">Member since</span><span>Jul 2026</span></div>
         </div>
         <div class="account-card">
-          <h3>Manage</h3>
+          <h3 data-i18n="common.manage">Manage</h3>
           <div class="quick-link soon">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /></svg></span>
-            Payout bank details<span class="soon-badge">Coming soon</span>
+            <span data-i18n="supplier.payoutBankDetails">Payout bank details</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
           </div>
           <div class="quick-link soon">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg></span>
-            Factory audit reports<span class="soon-badge">Coming soon</span>
+            <span data-i18n="manufacturer.factoryAuditReports">Factory audit reports</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
           </div>
           <a class="quick-link" href="authenticationpage.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 12l2 2 4-4" /><circle cx="12" cy="12" r="9" /></svg></span>
-            Password &amp; security
+            <span data-i18n="common.passwordSecurity">Password &amp; security</span>
           </a>
         </div>
         <div class="account-card">
-          <h3>Need help?</h3>
+          <h3 data-i18n="common.needHelp">Need help?</h3>
           <a class="quick-link" href="contactus.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4h16v12H7l-3 3V4z" /></svg></span>
-            Contact support
+            <span data-i18n="common.contactSupport">Contact support</span>
           </a>
           <a class="quick-link" href="Supplier.html#faq">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg></span>
-            Manufacturer FAQ
+            <span data-i18n="manufacturer.manufacturerFaq">Manufacturer FAQ</span>
           </a>
           <a class="quick-link" href="marketplace.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6" /></svg></span>
-            View the marketplace
+            <span data-i18n="common.viewMarketplace">View the marketplace</span>
           </a>
         </div>
       </div>
@@ -309,13 +326,13 @@
   <div class="container footer-grid">
     <div class="footer-brand">
       <a href="Home.html" class="logo"><img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact"></a>
-      <p>The marketplace built for global trade — products, services and logistics, matched by AI.</p>
+      <p data-i18n="footer.tagline">The marketplace built for global trade — products, services and logistics, matched by AI.</p>
     </div>
-    <div><h5>Marketplace</h5><a href="marketplace.html">Products</a><a href="marketplace.html">Services</a><a href="Home.html#categories">Categories</a><a href="Supplier.html">Suppliers</a></div>
-    <div><h5>Company</h5><a href="Home.html#how">How it Works</a><a href="advertisement.html">Advertise</a><a href="contactus.html">Contact</a></div>
+    <div><h5 data-i18n="footer.marketplaceHeading">Marketplace</h5><a href="marketplace.html" data-i18n="footer.products">Products</a><a href="marketplace.html" data-i18n="footer.services">Services</a><a href="Home.html#categories" data-i18n="footer.categories">Categories</a><a href="Supplier.html" data-i18n="footer.suppliers">Suppliers</a></div>
+    <div><h5 data-i18n="footer.companyHeading">Company</h5><a href="Home.html#how" data-i18n="footer.howItWorks">How it Works</a><a href="advertisement.html" data-i18n="footer.advertise">Advertise</a><a href="contactus.html" data-i18n="common.contact">Contact</a></div>
   </div>
   <div class="footer-bottom container">
-    <span>&copy; <span id="year"></span> Ometong. All rights reserved.</span>
+    <span>&copy; <span id="year"></span> Ometong. <span data-i18n="footer.rights">All rights reserved.</span></span>
   </div>
 </footer>
 
@@ -327,6 +344,7 @@
 <script src="../js/supabaseConfig.js"></script>
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/authGuard.js" data-role="manufacturer"></script>
+<script src="../js/i18n.js"></script>
 <script src="../js/manufacturerdashboard.js"></script>
 </body>
 </html>
