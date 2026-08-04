@@ -149,6 +149,8 @@
       const moq = form.moq.value ? parseInt(form.moq.value, 10) : null;
       const leadTime = form.leadTime.value ? parseInt(form.leadTime.value, 10) : null;
       const description = form.description.value.trim();
+      const countryOfOrigin = form.countryOfOrigin.value.trim() || null;
+      const hsCode = form.hsCode.value.trim() || null;
 
       if (!title) { showError("Please enter a product or service name."); return; }
       if (!category) { showError("Please select a category."); return; }
@@ -182,6 +184,8 @@
         lead_time_days: leadTime,
         description,
         image_url: imageUrl,
+        country_of_origin: countryOfOrigin,
+        hs_code: hsCode,
         status: "active"
       });
       setLoading(false);

@@ -211,6 +211,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       description: row.description || descriptions[cat] || '',
       moq: row.moq || null,
       leadTime: row.lead_time_days || null,
+      countryOfOrigin: row.country_of_origin || null,
+      hsCode: row.hs_code || null,
       isReal: true
     };
   }
@@ -327,6 +329,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           <span class="pd-spec-label">Condition</span>
           <span class="pd-spec-value">${esc(product.badge) || 'Standard'}</span>
         </div>
+        ${product.countryOfOrigin ? `
+        <div class="pd-spec-card">
+          <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+          <span class="pd-spec-label">Origin</span>
+          <span class="pd-spec-value">${esc(product.countryOfOrigin)}${product.hsCode ? ' · HS ' + esc(product.hsCode) : ''}</span>
+        </div>` : ''}
       </div>
 
       <p class="pd-desc">${esc(product.description)}</p>

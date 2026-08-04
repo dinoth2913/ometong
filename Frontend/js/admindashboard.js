@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="listing-body">
             <div class="listing-title">${esc(item.title)}</div>
-            <div class="listing-meta">${esc(sellerName(item.supplier_id))} · ${esc(item.category)} · ${moqLabel}</div>
+            <div class="listing-meta">${esc(sellerName(item.supplier_id))} · ${esc(item.category)} · ${moqLabel}${item.hs_code ? ' · HS ' + esc(item.hs_code) : ''}</div>
             <div class="listing-price">$${Number(item.price).toLocaleString('en-US')} <span style="color:var(--ink-faint);font-weight:600;font-size:.72rem;">/ unit</span></div>
             <div class="admin-row-actions" style="margin-top:10px;">
               <button class="btn-approve" data-approve="${item.id}">Approve</button>

@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="listing-body">
             <div class="listing-title">${esc(item.title)}</div>
-            <div class="listing-meta">${esc(item.category)} · ${moqLabel}</div>
+            <div class="listing-meta">${esc(item.category)} · ${moqLabel}${item.country_of_origin ? ' · Origin: ' + esc(item.country_of_origin) : ''}</div>
             <div class="listing-price">$${Number(item.price).toLocaleString('en-US')} <span style="color:var(--ink-faint);font-weight:600;font-size:.72rem;">/ unit</span></div>
             <button class="listing-toggle ${isActive ? '' : 'is-paused'}" data-toggle="${item.id}">${isActive ? 'Pause listing' : 'Reactivate listing'}</button>
           </div>
