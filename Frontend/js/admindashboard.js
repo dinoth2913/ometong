@@ -61,23 +61,27 @@ document.addEventListener('DOMContentLoaded', () => {
   let listings = [];
   let profiles = [];
   let orders = [];
+  let activity = [];
   const profileMap = {};
 
   async function loadAll() {
     if (!window.sb) return;
-    const [listingsRes, profilesRes, ordersRes] = await Promise.all([
+    const [listingsRes, profilesRes, ordersRes, activityRes] = await Promise.all([
       window.sb.from('listings').select('*').order('created_at', { ascending: false }),
       window.sb.from('profiles').select('*').order('created_at', { ascending: false }),
-      window.sb.from('orders').select('*').order('created_at', { ascending: false })
+      window.sb.from('orders').select('*').order('created_at', { ascending: false }),
+      window.sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(100)
     ]);
 
     if (listingsRes.error) console.error('Ometong: failed to load listings', listingsRes.error);
     if (profilesRes.error) console.error('Ometong: failed to load profiles', profilesRes.error);
     if (ordersRes.error) console.error('Ometong: failed to load orders', ordersRes.error);
+    if (activityRes.error) console.error('Ometong: failed to load activity log', activityRes.error);
 
     listings = listingsRes.data || [];
     profiles = profilesRes.data || [];
     orders = ordersRes.data || [];
+    activity = activityRes.data || [];
     profiles.forEach(p => { profileMap[p.id] = p; });
   }
 
@@ -280,6 +284,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
+  /* ---------- Activity log ---------- */
+  const activityTableBody = document.getElementById('activityTableBody');
+  const activityTable = document.getElementById('activityTable');
+  const activityEmpty = document.getElementById('activityEmpty');
+
+  const actionLabels = {
+    listing_approved: 'Listing approved',
+    listing_status_changed: 'Listing status changed',
+    listing_updated: 'Listing updated',
+    role_changed: 'Role changed'
+  };
+
+  function actorLabel(entry) {
+    if (!entry.actor_id) return 'Site owner (SQL Editor)';
+    const p = profileMap[entry.actor_id];
+    const name = p ? (p.business_name || p.full_name || p.email) : 'Unknown user';
+    return entry.actor_is_admin ? `${name} (admin)` : name;
+  }
+
+  function activityDetails(entry) {
+    if (entry.table_name === 'listings') {
+      const title = listings.find(l => String(l.id) === String(entry.record_id))?.title || entry.record_id;
+      if (entry.action === 'listing_approved') return `Approved "${title}"`;
+      const oldStatus = entry.old_data?.status;
+      const newStatus = entry.new_data?.status;
+      return `"${title}" — ${oldStatus} → ${newStatus}`;
+    }
+    if (entry.table_name === 'profiles') {
+      const oldRole = entry.old_data?.role;
+      const newRole = entry.new_data?.role;
+      return `${oldRole} → ${newRole}`;
+    }
+    return '—';
+  }
+
+  function renderActivity() {
+    if (!activityTableBody) return;
+    if (activity.length === 0) {
+      activityTable.style.display = 'none';
+      if (activityEmpty) activityEmpty.hidden = false;
+      return;
+    }
+    activityTable.style.display = '';
+    if (activityEmpty) activityEmpty.hidden = true;
+
+    activityTableBody.innerHTML = activity.map(entry => {
+      const when = entry.created_at ? new Date(entry.created_at).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—';
+      return `
+        <div class="admin-row admin-row--activity">
+          <span>${when}</span>
+          <span>${esc(actionLabels[entry.action] || entry.action)}</span>
+          <span>${esc(actorLabel(entry))}</span>
+          <span>${esc(activityDetails(entry))}</span>
+        </div>`;
+    }).join('');
+  }
+
   /* ---------- Stats ---------- */
   function renderStats() {
     const pendingCount = listings.filter(l => !l.is_approved).length;
@@ -295,6 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderListingsTable();
     renderUsers();
     renderOrders();
+    renderActivity();
     renderStats();
   }
 
