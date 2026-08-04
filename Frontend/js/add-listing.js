@@ -48,6 +48,7 @@
       const categorySelect = document.getElementById("category");
       if (categorySelect && [...categorySelect.options].some(o => o.value === profile.category)) {
         categorySelect.value = profile.category;
+        categorySelect.dispatchEvent(new Event("change"));
       }
     }
   }
@@ -94,6 +95,31 @@
       imageInput.value = "";
       imagePreview.hidden = true;
     });
+
+    /* ---------- Compliance notice — general guidance per category, not
+       a legal determination. Helps a supplier know upfront that some
+       categories need certification in some destination markets. ---------- */
+    const COMPLIANCE_NOTICES = {
+      "Electronics": "Electronics often require certification before they can be legally imported — e.g. BIS (India), FCC (USA), CE (EU). Check your destination markets' requirements before shipping.",
+      "Food & Beverage": "Food and beverage items are usually subject to additional import inspection and labeling requirements in every destination market.",
+      "Construction": "Construction materials and equipment may require safety/quality certification in some destination markets.",
+      "Machinery": "Industrial machinery may require safety certification (e.g. CE marking in the EU) depending on the destination market."
+    };
+    const categorySelect = document.getElementById("category");
+    const complianceNotice = document.getElementById("complianceNotice");
+    const complianceNoticeText = document.getElementById("complianceNoticeText");
+    function updateComplianceNotice() {
+      if (!categorySelect || !complianceNotice || !complianceNoticeText) return;
+      const notice = COMPLIANCE_NOTICES[categorySelect.value];
+      if (!notice) {
+        complianceNotice.hidden = true;
+        return;
+      }
+      complianceNoticeText.textContent = notice;
+      complianceNotice.hidden = false;
+    }
+    categorySelect?.addEventListener("change", updateComplianceNotice);
+    updateComplianceNotice();
 
     function showError(message) {
       errorEl.textContent = message;

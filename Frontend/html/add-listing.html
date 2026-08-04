@@ -74,6 +74,21 @@
           </label>
         </div>
 
+        <div class="compliance-notice" id="complianceNotice" hidden>
+          <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+          <span id="complianceNoticeText"></span>
+        </div>
+
+        <div class="field-row">
+          <label>Country of origin
+            <input type="text" id="countryOfOrigin" name="countryOfOrigin" value="China" placeholder="e.g. China">
+          </label>
+          <label>HS code <span class="field-hint-inline">(optional)</span>
+            <input type="text" id="hsCode" name="hsCode" placeholder="e.g. 8517.13">
+          </label>
+        </div>
+        <p class="field-hint">Customs classification — helps buyers estimate import duty. Not saved yet; full customs support is coming soon.</p>
+
         <label>Description
           <textarea id="description" name="description" rows="4" placeholder="Describe the product or service, materials, specs, or what's included…"></textarea>
         </label>

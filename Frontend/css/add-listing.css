@@ -73,6 +73,13 @@ select{
 }
 
 .field-hint{font-size:.76rem;font-weight:500;color:var(--ink-faint);}
+.field-hint-inline{font-weight:400;color:var(--ink-faint);}
+
+.compliance-notice{
+  display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;
+  background:#FFF8EC;border:1px solid #FFC24D;color:var(--ink);font-size:.84rem;line-height:1.5;
+}
+.compliance-notice svg{flex-shrink:0;fill:none;stroke:#B26A00;stroke-width:2;margin-top:1px;}
 
 input[type="file"]{
   padding:10px 12px;border-radius:10px;border:1px dashed var(--line);

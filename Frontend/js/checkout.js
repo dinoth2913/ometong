@@ -82,6 +82,37 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 
+  /* ---------------------------------------------------------------------
+     Customs & import notice — general guidance only, per destination
+     country. Not a calculated duty amount (that needs a real backend
+     with HS codes + a customs API), just honest expectation-setting so
+     buyers aren't surprised by a bill after checkout.
+     --------------------------------------------------------------------- */
+  var CUSTOMS_NOTICES = {
+    "United States": "US shipments no longer have a duty-free threshold — every order, regardless of value, may be subject to US import tariffs collected on delivery.",
+    "Canada": "Canadian customs duty and taxes apply to imported goods based on their value and category, collected on delivery.",
+    "United Kingdom": "UK-bound orders may be subject to import VAT and customs duty on delivery, depending on the item's value and category.",
+    "Germany": "As of July 2026, EU imports are subject to a flat customs handling fee plus VAT, regardless of order value.",
+    "France": "As of July 2026, EU imports are subject to a flat customs handling fee plus VAT, regardless of order value.",
+    "Other EU": "As of July 2026, EU imports are subject to a flat customs handling fee plus VAT, regardless of order value.",
+    "Sri Lanka": "Sri Lankan customs duty applies to imported goods based on their value and category, collected on delivery.",
+    "India": "Indian imports are subject to Basic Customs Duty, surcharge, and IGST — commonly 30–55% of the item's value combined, collected on delivery. Some electronics also require BIS certification to clear customs.",
+    "Other": "Import duties and taxes may apply on delivery, depending on your country's customs rules."
+  };
+
+  function updateCustomsNotice() {
+    var notice = document.getElementById("customsNotice");
+    var text = document.getElementById("customsNoticeText");
+    if (!notice || !text || !els.form) return;
+    var country = els.form.country.value;
+    if (!country || !CUSTOMS_NOTICES[country]) {
+      notice.hidden = true;
+      return;
+    }
+    text.textContent = CUSTOMS_NOTICES[country];
+    notice.hidden = false;
+  }
+
   function cacheEls() {
     els.form = document.getElementById("checkoutForm");
     els.formError = document.getElementById("checkoutFormError");
@@ -196,6 +227,8 @@
      --------------------------------------------------------------------- */
   function initForm() {
     if (!els.form) return;
+    els.form.country.addEventListener("change", updateCustomsNotice);
+    updateCustomsNotice();
     els.form.addEventListener("submit", async function (e) {
       e.preventDefault();
       clearError();

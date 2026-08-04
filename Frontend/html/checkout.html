@@ -84,7 +84,18 @@
                   <input type="text" id="city" name="city" required placeholder="e.g. Colombo">
                 </label>
                 <label>Country
-                  <input type="text" id="country" name="country" required placeholder="e.g. Sri Lanka">
+                  <select id="country" name="country" required>
+                    <option value="">Select a country</option>
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Other EU">Other EU country</option>
+                    <option value="Sri Lanka">Sri Lanka</option>
+                    <option value="India">India</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </label>
               </div>
               <label>Notes for the supplier (optional)
@@ -92,6 +103,12 @@
               </label>
             </div>
           </form>
+
+          <div class="checkout-block checkout-notice" id="customsNotice" hidden>
+            <h2>Customs &amp; import notice</h2>
+            <p id="customsNoticeText"></p>
+            <p class="checkout-notice-disclaimer">This is general guidance, not a calculated amount — Ometong does not yet collect duties/VAT at checkout. Final charges are determined by customs in your country.</p>
+          </div>
 
           <div class="checkout-block" id="orderReview">
             <h2>Order review</h2>
