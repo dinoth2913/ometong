@@ -181,16 +181,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (error || !rows || !rows.length) return [];
 
     const supplierIds = [...new Set(rows.map(r => r.supplier_id))];
-    const { data: profiles } = await window.sb
-      .rpc('get_public_supplier_profiles', { supplier_ids: supplierIds });
+    const listingIds = rows.map(r => r.id);
+    const [{ data: profiles }, { data: reviewRows }] = await Promise.all([
+      window.sb.rpc('get_public_supplier_profiles', { supplier_ids: supplierIds }),
+      window.sb.from('reviews').select('listing_id, rating').in('listing_id', listingIds)
+    ]);
     const profileMap = {};
     (profiles || []).forEach(p => { profileMap[p.id] = p; });
+
+    const ratingMap = {};
+    (reviewRows || []).forEach(r => {
+      if (!ratingMap[r.listing_id]) ratingMap[r.listing_id] = { sum: 0, count: 0 };
+      ratingMap[r.listing_id].sum += r.rating;
+      ratingMap[r.listing_id].count += 1;
+    });
 
     return rows.map(row => {
       const cat = categoryLabelToSlug[row.category] || 'services';
       const ci = categories.indexOf(cat);
       const profile = profileMap[row.supplier_id];
       const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
+      const ratingInfo = ratingMap[row.id];
       return {
         id: row.id,
         cat,
@@ -199,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
         supplier: supplierName,
         supplierId: row.supplier_id,
         price: Number(row.price),
-        rating: null,
-        reviews: 0,
+        rating: ratingInfo ? (ratingInfo.sum / ratingInfo.count).toFixed(1) : null,
+        reviews: ratingInfo ? ratingInfo.count : 0,
         color: palette[(ci >= 0 ? ci : 0) % palette.length],
         image: row.image_url || null,
         badge: 'Verified',

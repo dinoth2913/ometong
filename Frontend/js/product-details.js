@@ -195,6 +195,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profile = profileRows && profileRows[0];
     const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
 
+    const { data: reviewRows } = await window.sb
+      .from('reviews')
+      .select('rating, comment, created_at')
+      .eq('listing_id', row.id)
+      .order('created_at', { ascending: false });
+    const reviewList = reviewRows || [];
+    const avgRating = reviewList.length
+      ? (reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewList.length)
+      : null;
+
     return {
       id: row.id,
       cat,
@@ -203,8 +213,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       supplier: supplierName,
       supplierId: row.supplier_id,
       price: Number(row.price),
-      rating: null,
-      reviews: 0,
+      rating: avgRating != null ? avgRating.toFixed(1) : null,
+      reviews: reviewList.length,
+      reviewList,
       color: palette[(ci >= 0 ? ci : 0) % palette.length],
       image: row.image_url || null,
       badge: 'Verified',
@@ -367,6 +378,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     </div>
   `;
+
+  /* ---------- Reviews (real listings only) ---------- */
+  const pdReviewsSection = document.getElementById('pdReviewsSection');
+  const pdReviewsList = document.getElementById('pdReviewsList');
+  if (pdReviewsSection && pdReviewsList) {
+    if (product.isReal && product.reviewList && product.reviewList.length) {
+      pdReviewsSection.hidden = false;
+      pdReviewsList.innerHTML = product.reviewList.map(r => {
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+        return `
+          <div class="pd-review-row">
+            <div class="pd-review-head">
+              <span class="pd-review-stars">${stars}</span>
+              <span class="pd-review-author">Verified Buyer</span>
+              <span class="pd-review-date">${date}</span>
+            </div>
+            ${r.comment ? `<p class="pd-review-comment">${esc(r.comment)}</p>` : ''}
+          </div>`;
+      }).join('');
+    } else {
+      pdReviewsSection.hidden = true;
+      pdReviewsList.innerHTML = '';
+    }
+  }
 
   /* ---------- Thumbnail swap (visual only — different angle tint) ---------- */
   document.querySelectorAll('#pdThumbStrip button').forEach(btn => {

@@ -220,3 +220,12 @@ button,input,select{font-family:inherit;}
   .pd-qty{justify-content:center;}
   .footer-grid{grid-template-columns:1fr;}
 }
+
+/* ===== Buyer reviews ===== */
+.pd-reviews-section{margin:40px 0;}
+.pd-review-row{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+.pd-review-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.pd-review-stars{color:#FFC24D;font-size:1rem;letter-spacing:1px;}
+.pd-review-author{font-weight:700;font-size:.84rem;color:var(--ink);}
+.pd-review-date{font-size:.78rem;color:var(--ink-faint);margin-left:auto;}
+.pd-review-comment{margin:0;font-size:.88rem;color:var(--ink-soft);line-height:1.6;}

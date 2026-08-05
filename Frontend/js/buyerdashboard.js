@@ -289,27 +289,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const esc = window.ometongEscapeHTML || (s => s);
   let orders = [];
+  let reviewedItemIds = new Set();
+  let currentUserId = null;
 
   async function loadOrders() {
     if (!window.sb) return;
     const user = await window.ometongGetUser();
     if (!user) return;
-    const { data, error } = await window.sb
-      .from('orders')
-      .select('*, order_items(*)')
-      .eq('buyer_id', user.id)
-      .order('created_at', { ascending: false });
-    if (error) {
-      console.error('Ometong: failed to load orders', error);
+    currentUserId = user.id;
+
+    const [ordersRes, reviewsRes] = await Promise.all([
+      window.sb.from('orders').select('*, order_items(*)').eq('buyer_id', user.id).order('created_at', { ascending: false }),
+      window.sb.from('reviews').select('order_item_id').eq('buyer_id', user.id)
+    ]);
+
+    if (ordersRes.error) {
+      console.error('Ometong: failed to load orders', ordersRes.error);
       return;
     }
-    orders = (data || []).map((o, i) => {
+    if (reviewsRes.error) console.error('Ometong: failed to load reviews', reviewsRes.error);
+    reviewedItemIds = new Set((reviewsRes.data || []).map(r => r.order_item_id));
+
+    orders = (ordersRes.data || []).map((o, i) => {
       const items = o.order_items || [];
       const firstItem = items[0];
       const title = items.length > 1
         ? `${firstItem ? firstItem.title : 'Order'} +${items.length - 1} more`
         : (firstItem ? firstItem.title : 'Order');
       const statusInfo = ORDER_STATUS_MAP[o.status] || { cls: 'processing', label: o.status };
+      const canReview = (o.status === 'delivered' || o.status === 'completed')
+        && items.some(it => !reviewedItemIds.has(it.id));
       return {
         id: o.id,
         title,
@@ -318,7 +327,9 @@ document.addEventListener('DOMContentLoaded', () => {
         amount: Number(o.total) || 0,
         status: statusInfo.cls,
         statusLabel: statusInfo.label,
-        color: orderColors[i % orderColors.length]
+        color: orderColors[i % orderColors.length],
+        items,
+        canReview
       };
     });
   }
@@ -355,9 +366,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="order-date">${esc(o.date)}</span>
         <span class="order-amount">$${o.amount.toLocaleString()}</span>
         <span class="order-status ${o.status}">${esc(o.statusLabel)}</span>
-        <span></span>
+        <span>${o.canReview ? `<button class="order-track" data-rate="${o.id}">Rate</button>` : ''}</span>
       </div>
     `).join('');
+
+    ordersList.querySelectorAll('[data-rate]').forEach(btn => {
+      btn.addEventListener('click', () => openRateModal(btn.getAttribute('data-rate')));
+    });
 
     const active = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
     const inTransit = orders.filter(o => o.status === 'transit').length;
@@ -368,6 +383,102 @@ document.addEventListener('DOMContentLoaded', () => {
     statInTransit.textContent = inTransit;
     statTotalSpent.textContent = '$' + totalSpent.toLocaleString();
   }
+
+  /* ---------- Rate modal ---------- */
+  const rateModal = document.getElementById('rateModal');
+  const rateModalItems = document.getElementById('rateModalItems');
+  const rateModalError = document.getElementById('rateModalError');
+  const rateModalClose = document.getElementById('rateModalClose');
+  const rateModalSubmit = document.getElementById('rateModalSubmit');
+  let rateModalOrderId = null;
+
+  function starPickerHTML(itemId) {
+    return `<div class="star-picker" data-item="${itemId}">` +
+      [1, 2, 3, 4, 5].map(n => `<button type="button" class="star-btn" data-star="${n}" aria-label="${n} star${n > 1 ? 's' : ''}">★</button>`).join('') +
+      `</div>`;
+  }
+
+  function openRateModal(orderId) {
+    if (!rateModal) return;
+    const order = orders.find(o => String(o.id) === String(orderId));
+    if (!order) return;
+    rateModalOrderId = orderId;
+    const toRate = order.items.filter(it => !reviewedItemIds.has(it.id));
+    rateModalItems.innerHTML = toRate.map(it => `
+      <div class="rate-item" data-order-item="${it.id}">
+        <div class="rate-item-title">${esc(it.title)}</div>
+        ${starPickerHTML(it.id)}
+        <textarea class="rate-comment" rows="2" placeholder="Optional comment…"></textarea>
+      </div>
+    `).join('');
+    rateModalItems.querySelectorAll('.star-picker').forEach(picker => {
+      picker.querySelectorAll('.star-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = Number(btn.dataset.star);
+          picker.dataset.value = val;
+          picker.querySelectorAll('.star-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.star) <= val));
+        });
+      });
+    });
+    if (rateModalError) { rateModalError.textContent = ''; rateModalError.classList.remove('show'); }
+    rateModal.classList.add('show');
+  }
+
+  function closeRateModal() {
+    rateModal?.classList.remove('show');
+    rateModalOrderId = null;
+  }
+  rateModalClose?.addEventListener('click', closeRateModal);
+  rateModal?.addEventListener('click', (e) => { if (e.target === rateModal) closeRateModal(); });
+
+  rateModalSubmit?.addEventListener('click', async () => {
+    if (!rateModalOrderId || !window.sb || !currentUserId) return;
+    const rows = [];
+    let missing = false;
+    rateModalItems.querySelectorAll('.rate-item').forEach(row => {
+      const picker = row.querySelector('.star-picker');
+      const rating = Number(picker.dataset.value || 0);
+      const comment = row.querySelector('.rate-comment').value.trim();
+      if (rating < 1) { missing = true; return; }
+      rows.push({
+        order_id: rateModalOrderId,
+        order_item_id: picker.dataset.item,
+        buyer_id: currentUserId,
+        rating,
+        comment: comment || null
+      });
+    });
+    if (missing || rows.length === 0) {
+      rateModalError.textContent = 'Please choose a star rating for every item before submitting.';
+      rateModalError.classList.add('show');
+      return;
+    }
+
+    // Attach listing_id/supplier_id from the order's items so reviews
+    // can be queried directly without joining back through orders.
+    const order = orders.find(o => String(o.id) === String(rateModalOrderId));
+    rows.forEach(row => {
+      const item = order?.items.find(it => it.id === row.order_item_id);
+      row.listing_id = item?.listing_id || null;
+      row.supplier_id = item?.supplier_id || null;
+    });
+
+    rateModalSubmit.disabled = true;
+    rateModalSubmit.textContent = 'Submitting…';
+    const { error } = await window.sb.from('reviews').insert(rows);
+    rateModalSubmit.disabled = false;
+    rateModalSubmit.textContent = 'Submit rating';
+
+    if (error) {
+      rateModalError.textContent = error.message || 'Could not submit your rating. Please try again.';
+      rateModalError.classList.add('show');
+      return;
+    }
+
+    closeRateModal();
+    await loadOrders();
+    renderOrders();
+  });
 
   (async () => {
     await loadOrders();
