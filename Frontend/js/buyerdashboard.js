@@ -236,10 +236,56 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ---------- Recent orders ----------
-     No order-creation flow (real checkout) exists yet, so every new
-     account genuinely starts with zero orders. This list will only
-     ever show real data once orders are created by a real purchase. */
-  const orders = [];
+     Real orders placed via checkout.js, pulled from Supabase. RLS
+     ("Buyers can view their own orders") already scopes this to the
+     logged-in account, so a fresh account genuinely starts empty. */
+  const ORDER_STATUS_MAP = {
+    pending: { cls: 'processing', label: 'Pending payment' },
+    paid: { cls: 'processing', label: 'Paid' },
+    processing: { cls: 'processing', label: 'Processing' },
+    shipped: { cls: 'transit', label: 'Shipped' },
+    delivered: { cls: 'delivered', label: 'Delivered' },
+    completed: { cls: 'delivered', label: 'Completed' },
+    cancelled: { cls: 'cancelled', label: 'Cancelled' },
+    refunded: { cls: 'cancelled', label: 'Refunded' }
+  };
+  const orderColors = ['#3A6FF7', '#8B5CF6', '#22C55E', '#FFC24D', '#FF7431'];
+
+  const esc = window.ometongEscapeHTML || (s => s);
+  let orders = [];
+
+  async function loadOrders() {
+    if (!window.sb) return;
+    const user = await window.ometongGetUser();
+    if (!user) return;
+    const { data, error } = await window.sb
+      .from('orders')
+      .select('*, order_items(*)')
+      .eq('buyer_id', user.id)
+      .order('created_at', { ascending: false });
+    if (error) {
+      console.error('Ometong: failed to load orders', error);
+      return;
+    }
+    orders = (data || []).map((o, i) => {
+      const items = o.order_items || [];
+      const firstItem = items[0];
+      const title = items.length > 1
+        ? `${firstItem ? firstItem.title : 'Order'} +${items.length - 1} more`
+        : (firstItem ? firstItem.title : 'Order');
+      const statusInfo = ORDER_STATUS_MAP[o.status] || { cls: 'processing', label: o.status };
+      return {
+        id: o.id,
+        title,
+        supplier: items.length ? `${items.length} item${items.length > 1 ? 's' : ''}` : '',
+        date: o.created_at ? new Date(o.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
+        amount: Number(o.total) || 0,
+        status: statusInfo.cls,
+        statusLabel: statusInfo.label,
+        color: orderColors[i % orderColors.length]
+      };
+    });
+  }
 
   const ordersList = document.getElementById('ordersList');
   const ordersHead = document.getElementById('ordersHead');
@@ -266,24 +312,30 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="order-product">
           <div class="order-thumb" style="background:${o.color}22"></div>
           <div>
-            <div class="order-product-name">${o.title}</div>
-            <div class="order-product-sub">${o.supplier}</div>
+            <div class="order-product-name">${esc(o.title)}</div>
+            <div class="order-product-sub">${esc(o.supplier)}</div>
           </div>
         </div>
-        <span class="order-date">${o.date}</span>
+        <span class="order-date">${esc(o.date)}</span>
         <span class="order-amount">$${o.amount.toLocaleString()}</span>
-        <span class="order-status ${o.status}">${o.statusLabel}</span>
+        <span class="order-status ${o.status}">${esc(o.statusLabel)}</span>
         <span></span>
       </div>
     `).join('');
 
-    const active = orders.filter(o => o.status !== 'delivered').length;
+    const active = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
     const inTransit = orders.filter(o => o.status === 'transit').length;
-    const totalSpent = orders.reduce((sum, o) => sum + o.amount, 0);
+    const totalSpent = orders
+      .filter(o => o.status !== 'cancelled')
+      .reduce((sum, o) => sum + o.amount, 0);
     statActiveOrders.textContent = active;
     statInTransit.textContent = inTransit;
     statTotalSpent.textContent = '$' + totalSpent.toLocaleString();
   }
-  renderOrders();
+
+  (async () => {
+    await loadOrders();
+    renderOrders();
+  })();
 
 });
