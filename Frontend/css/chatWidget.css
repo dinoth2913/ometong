@@ -194,3 +194,10 @@
   #ow-root{right:14px;bottom:14px;}
   .ow-panel{width:calc(100vw - 28px);right:-8px;}
 }
+
+/* Disclosure line — visitors are told their chat is stored and may be
+   reviewed, since these conversations are kept server-side. */
+.ow-disclosure{
+  margin:0;padding:0 16px 12px;flex-shrink:0;position:relative;z-index:1;
+  font-size:.66rem;line-height:1.45;color:var(--ow-ink-faint);text-align:center;
+}

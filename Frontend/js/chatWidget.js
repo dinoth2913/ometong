@@ -4,17 +4,29 @@
    builds its own floating launcher + glass panel. No markup needed
    in the page itself.
 
-   This is UI only, same as messages.html was — the assistant's
-   replies below are canned/local, not a real AI or a real human on
-   the other end yet. State (name given, conversation so far) is
-   kept in sessionStorage so it survives navigating between pages
-   in the same browser tab, instead of restarting the intro on
-   every page load.
+   The assistant's replies are still canned — there is no real AI or
+   human on the other end yet. What IS real now is storage: every
+   message is written to Supabase (chat_conversations / chat_messages)
+   so conversations can be read back later for support follow-up and
+   as training data.
+
+   Because that means storing real customer conversations, the panel
+   carries a short disclosure line. That still needs backing up with
+   a privacy policy before going live for real customers.
+
+   Storage split:
+   - sessionStorage keeps the on-screen conversation, so navigating
+     between pages doesn't restart the intro.
+   - localStorage keeps the session/conversation id, so a returning
+     visitor keeps writing to the same server-side thread.
+   Saving is best-effort: if Supabase isn't configured or the insert
+   fails, the widget carries on working and just doesn't persist.
 ========================================================= */
 (function () {
   "use strict";
 
   var STORAGE_KEY = "ometongChatWidget";
+  var SESSION_KEY = "ometongChatSession";
   var LOGO = "../../images/smile-logo-icon.png";
 
   var QUICK_TOPICS = [
@@ -49,6 +61,93 @@
 
   var state = loadState();
 
+  /* ---------------------------------------------------------------------
+     Persistence (best-effort — never blocks or breaks the UI)
+     --------------------------------------------------------------------- */
+  function getSessionId() {
+    try {
+      var id = localStorage.getItem(SESSION_KEY);
+      if (id) return id;
+      id = (window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : "s-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+      localStorage.setItem(SESSION_KEY, id);
+      return id;
+    } catch (e) {
+      // private mode / storage blocked — chat still works, just won't persist
+      return null;
+    }
+  }
+
+  var sessionId = getSessionId();
+  var conversationId = null;
+  var conversationPromise = null;
+
+  // Creates the conversation row once, lazily, on the first message.
+  // Everything funnels through the same promise so parallel sends
+  // can't race and create duplicate conversations.
+  function ensureConversation() {
+    if (conversationPromise) return conversationPromise;
+    if (!window.sb || !sessionId) return Promise.resolve(null);
+
+    conversationPromise = (async function () {
+      try {
+        var user = window.ometongGetUser ? await window.ometongGetUser() : null;
+        var { data, error } = await window.sb
+          .from("chat_conversations")
+          .upsert({
+            session_id: sessionId,
+            user_id: user ? user.id : null,
+            visitor_name: state.name || null,
+            first_page_url: location.pathname
+          }, { onConflict: "session_id" })
+          .select("id")
+          .single();
+        if (error) { console.warn("Ometong chat: could not open conversation", error.message); return null; }
+        conversationId = data.id;
+        return conversationId;
+      } catch (e) {
+        console.warn("Ometong chat: could not open conversation", e);
+        return null;
+      }
+    })();
+
+    return conversationPromise;
+  }
+
+  async function persistMessage(sender, body) {
+    if (!window.sb || !sessionId) return;
+    try {
+      var convId = conversationId || await ensureConversation();
+      if (!convId) return;
+      await window.sb.from("chat_messages").insert({
+        conversation_id: convId,
+        sender: sender,
+        body: body,
+        page_url: location.pathname
+      });
+    } catch (e) {
+      console.warn("Ometong chat: could not save message", e);
+    }
+  }
+
+  // Attach the visitor's name (and their user id, if they're logged in)
+  // to the conversation once we know it.
+  async function persistVisitorName(name) {
+    if (!window.sb || !sessionId) return;
+    try {
+      var convId = conversationId || await ensureConversation();
+      if (!convId) return;
+      var user = window.ometongGetUser ? await window.ometongGetUser() : null;
+      await window.sb
+        .from("chat_conversations")
+        .update({ visitor_name: name || null, user_id: user ? user.id : null })
+        .eq("id", convId);
+    } catch (e) {
+      console.warn("Ometong chat: could not save name", e);
+    }
+  }
+
   function escapeHTML(str) {
     return window.ometongEscapeHTML ? window.ometongEscapeHTML(str) : String(str)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -76,6 +175,7 @@
           '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>' +
         "</button>" +
       "</form>" +
+      '<p class="ow-disclosure" id="owDisclosure">Chats are saved and may be reviewed to improve our service. Please don’t share passwords or card details.</p>' +
     "</div>" +
     '<button class="ow-launcher" id="owLauncher" aria-label="Open chat">' +
       '<span class="ow-launcher-ring"></span>' +
@@ -110,6 +210,9 @@
     if (!opts.silent) {
       state.history.push({ from: from, type: "text", text: text });
       saveState(state);
+      // silent:true means we're replaying saved history on a new page,
+      // so only genuinely new messages get written to the server.
+      persistMessage(from, text);
     }
     scrollToBottom();
   }
@@ -181,6 +284,7 @@
     state.name = name;
     state.stage = "topics";
     saveState(state);
+    persistVisitorName(name);
     nameRowEl.remove();
     if (skipChipEl) skipChipEl.remove();
 
