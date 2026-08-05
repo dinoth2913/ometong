@@ -146,11 +146,25 @@
 
   var currentUser = null;
 
+  // Waits for cartSync.js to finish merging the account's saved cart in
+  // (fires "ometongCartSynced"), with a short fallback timeout in case
+  // cartSync.js isn't present on this page for some reason — otherwise
+  // checkout could redirect to an empty cart page before that merge
+  // ever gets a chance to run.
+  function waitForCartSync() {
+    return new Promise(function (resolve) {
+      var done = false;
+      function finish(detail) {
+        if (done) return;
+        done = true;
+        resolve(detail);
+      }
+      document.addEventListener("ometongCartSynced", function (e) { finish(e.detail); }, { once: true });
+      setTimeout(function () { finish(null); }, 1500);
+    });
+  }
+
   async function guard() {
-    if (!cart.length) {
-      window.location.href = "cart.html";
-      return;
-    }
     if (!window.sb) {
       showError("Checkout is unavailable right now — please try again shortly.");
       return;
@@ -162,6 +176,15 @@
       return;
     }
     currentUser = session.user;
+
+    var synced = await waitForCartSync();
+    if (synced) cart = synced;
+    else cart = loadCart();
+
+    if (!cart.length) {
+      window.location.href = "cart.html";
+      return;
+    }
 
     renderReview();
     updateTotals();

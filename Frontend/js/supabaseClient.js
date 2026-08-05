@@ -66,8 +66,13 @@
     return "supplierdashboard.html";
   };
 
-  // Signs out and sends the user back to the login page.
+  // Signs out and sends the user back to the login page. Clears the
+  // on-screen cart first (if cartSync.js is loaded on this page) so a
+  // different account logging in on this same browser next doesn't see
+  // the previous account's cart — their own saved cart comes back from
+  // Supabase automatically the next time they log in.
   window.ometongLogout = async function () {
+    if (window.ometongClearLocalCartOnLogout) window.ometongClearLocalCartOnLogout();
     await window.sb.auth.signOut();
     window.location.href = "authenticationpage.html";
   };

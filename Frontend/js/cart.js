@@ -85,6 +85,7 @@
 
   function saveCart() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cart)); } catch (e) { /* storage full/unavailable */ }
+    if (window.ometongSyncCartToServer) window.ometongSyncCartToServer(cart);
   }
 
   function loadPromo() {
@@ -217,6 +218,17 @@
     renderCart();
     updateTotals();
     updateNavCount();
+
+    // Fires once cartSync.js finishes merging the account's saved cart
+    // (from Supabase) with whatever was already in this browser. Without
+    // this, the page would keep showing whatever loaded synchronously
+    // before that async merge completed.
+    document.addEventListener("ometongCartSynced", function (e) {
+      cart = e.detail || [];
+      renderCart();
+      updateTotals();
+      updateNavCount();
+    });
 
     if (els.clearCartBtn) {
       els.clearCartBtn.addEventListener("click", function () {

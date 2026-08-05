@@ -220,7 +220,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ---------- Cart (shared with marketplace.js / cart.html / checkout.html) ---------- */
   const CART_KEY = 'ometongCart';
   function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } }
-  function saveCart(items) { localStorage.setItem(CART_KEY, JSON.stringify(items)); }
+  function saveCart(items) {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    if (window.ometongSyncCartToServer) window.ometongSyncCartToServer(items);
+  }
   function cartTotalQty(items) { return items.reduce((sum, i) => sum + i.qty, 0); }
   function addToCart(product, qty) {
     const items = getCart();
@@ -245,6 +248,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (el) el.textContent = cartTotalQty(getCart());
   }
   updateCartBadge();
+  // cartSync.js merges the account's saved cart in after login and
+  // rewrites localStorage — refresh the badge once that's done instead
+  // of leaving it showing whatever loaded before that merge finished.
+  document.addEventListener('ometongCartSynced', updateCartBadge);
 
   /* ---------- Wishlist (shared with marketplace.js / buyerdashboard.js) ---------- */
   const WISHLIST_KEY = 'ometong_wishlist';
