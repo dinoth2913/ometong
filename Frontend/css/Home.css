@@ -575,11 +575,10 @@ button,input,select{font-family:inherit;}
   .why-grid{grid-template-columns:1fr;gap:40px;}
   .team-grid{grid-template-columns:repeat(2,1fr);}
 }
-/* Collapse the nav links to the hamburger a little earlier than the
-   other layout breakpoints: with six links plus the auth buttons the
-   bar runs out of room just above 900px, which used to be hidden by
-   the logo being squeezed to nothing. */
-@media (max-width: 920px){
+/* The nav is down to two links, so it fits comfortably to ~480px.
+   Collapse to the hamburger at the phone breakpoint instead, which is
+   also where the Create Account button drops out of the bar below. */
+@media (max-width: 620px){
   .nav-links{display:none;}
   .hamburger{display:flex;}
 }
