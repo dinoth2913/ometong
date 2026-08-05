@@ -362,9 +362,17 @@ button,input,textarea,select{font-family:inherit;}
   .account-grid{grid-template-columns:1fr;}
   .stage-label{display:none;}
 }
-@media (max-width: 860px){
+/* This is the densest nav on the site (six links plus language,
+   theme, user chip and log out). Measured: it overflowed the bar by
+   145px at 900px, and still overflowed once the full wordmark came
+   back at 1081px — all of which used to be hidden by the logo being
+   squeezed to nothing. It only fits alongside the wordmark from
+   ~1200px, so the links collapse to the hamburger below that. */
+@media (max-width: 1200px){
   .nav-links{display:none;}
   .hamburger{display:flex;}
+}
+@media (max-width: 860px){
   .footer-grid{grid-template-columns:1fr 1fr;}
 }
 @media (max-width: 620px){
@@ -397,3 +405,15 @@ button,input,textarea,select{font-family:inherit;}
 .btn,.back-top,.user-chip{position:relative;overflow:hidden;isolation:isolate;backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);}
 .btn::before,.back-top::before,.user-chip::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);opacity:.6;mix-blend-mode:overlay;}
 .btn:active,.back-top:active{transform:scale(.95);transition:transform .12s var(--ease);}
+
+/* On phones the top bar ran wider than the screen: the user chip
+   carries the full business name, and the language switcher and
+   log-out link sit alongside it. All three already appear in the
+   hamburger menu, so on small screens keep only the avatar circle,
+   the theme toggle and the hamburger in the bar itself. */
+@media (max-width: 620px){
+  .nav-actions .user-chip span:not(.user-chip-avatar){display:none;}
+  .nav-actions .user-chip{padding:6px;}
+  .nav-actions > .logout-link{display:none;}
+  .nav-actions > .lang-switch{display:none;}
+}

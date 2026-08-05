@@ -575,9 +575,15 @@ button,input,select{font-family:inherit;}
   .why-grid{grid-template-columns:1fr;gap:40px;}
   .team-grid{grid-template-columns:repeat(2,1fr);}
 }
-@media (max-width: 860px){
+/* Collapse the nav links to the hamburger a little earlier than the
+   other layout breakpoints: with six links plus the auth buttons the
+   bar runs out of room just above 900px, which used to be hidden by
+   the logo being squeezed to nothing. */
+@media (max-width: 920px){
   .nav-links{display:none;}
   .hamburger{display:flex;}
+}
+@media (max-width: 860px){
   .stats-inner{grid-template-columns:repeat(2,1fr);gap:30px;}
   .footer-grid{grid-template-columns:1fr 1fr;}
 }

@@ -272,9 +272,14 @@ button,input,textarea,select{font-family:inherit;}
   .order-row{grid-template-columns:1.6fr 1fr .9fr auto;}
   .order-row .order-date{display:none;}
 }
-@media (max-width: 860px){
+/* Collapse the nav links to the hamburger at the same width the logo
+   swaps to the smiley mark, so the bar never has to squeeze the logo
+   to fit — and so longer translated nav labels still have room. */
+@media (max-width: 1080px){
   .nav-links{display:none;}
   .hamburger{display:flex;}
+}
+@media (max-width: 860px){
   .footer-grid{grid-template-columns:1fr 1fr;}
 }
 @media (max-width: 620px){
@@ -360,4 +365,16 @@ button,input,textarea,select{font-family:inherit;}
 .rate-comment{
   width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
   font-family:inherit;font-size:.86rem;resize:vertical;color:var(--ink);background:var(--bg);
+}
+
+/* On phones the top bar ran wider than the screen: the user chip
+   carries the full business name, and the language switcher and
+   log-out link sit alongside it. All three already appear in the
+   hamburger menu, so on small screens keep only the avatar circle,
+   the theme toggle and the hamburger in the bar itself. */
+@media (max-width: 620px){
+  .nav-actions .user-chip span:not(.user-chip-avatar){display:none;}
+  .nav-actions .user-chip{padding:6px;}
+  .nav-actions > .logout-link{display:none;}
+  .nav-actions > .lang-switch{display:none;}
 }

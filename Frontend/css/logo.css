@@ -1,0 +1,33 @@
+/* =========================================================
+   OMETONG — LOGO SIZING & RESPONSIVE SWAP (shared, site-wide)
+   Loaded after each page's own stylesheet, so this file is the
+   single source of truth for how the logo behaves everywhere.
+
+   Fixes two real problems:
+
+   1. The logo sits in a flex nav but had no flex-shrink:0, so a
+      crowded nav squeezed the wordmark instead of leaving it alone.
+      Measured on Home at a 900px viewport: the wordmark was crushed
+      from 137px wide down to 0.7px — effectively invisible.
+
+   2. The wordmark only swapped to the smiley icon at 560px, so
+      across the whole ~560px–1080px range it was being squashed
+      rather than swapped. It now swaps while there is still room,
+      so the full wordmark is never distorted at any width.
+
+   Height is deliberately not set here — each page's own .logo-img
+   rule owns that, and it applies to both the wordmark and the
+   smiley since both carry the .logo-img class.
+========================================================= */
+
+.logo { flex-shrink: 0; }
+.logo-img { flex-shrink: 0; }
+
+/* Below this width the nav is too tight for the wordmark on the
+   densest pages (measured: Home overflows under ~1000px, and the
+   dashboards are denser still once translated nav labels are used),
+   so show the smiley mark instead of a squeezed wordmark. */
+@media (max-width: 1080px) {
+  .logo-img-full { display: none; }
+  .logo-img-compact { display: block; }
+}

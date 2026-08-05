@@ -410,3 +410,13 @@ ul { list-style: none; margin: 0; padding: 0; }
   transform: scale(.94);
   transition: transform .12s ease;
 }
+/* On phones the top bar ran ~20px wider than the screen (language
+   switcher + Login + "Become a Supplier" + hamburger), causing a
+   sideways scroll. Login and the CTA both already live in the
+   hamburger menu, so drop them from the bar here and keep just the
+   globe icon for the language switcher. */
+@media (max-width: 620px) {
+  .nav-actions .btn-sm { display: none; }
+  .nav-actions > .link-btn { display: none; }
+  .lang-switch-btn span { display: none; }
+}
