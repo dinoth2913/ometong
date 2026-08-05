@@ -195,16 +195,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profile = profileRows && profileRows[0];
     const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
 
-    const { data: reviewRows } = await window.sb
-      .from('reviews')
-      .select('rating, comment, created_at')
-      .eq('listing_id', row.id)
-      .order('created_at', { ascending: false });
-    const reviewList = reviewRows || [];
-    const avgRating = reviewList.length
-      ? (reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewList.length)
-      : null;
-
     return {
       id: row.id,
       cat,
@@ -213,9 +203,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       supplier: supplierName,
       supplierId: row.supplier_id,
       price: Number(row.price),
-      rating: avgRating != null ? avgRating.toFixed(1) : null,
-      reviews: reviewList.length,
-      reviewList,
+      rating: null,
+      reviews: 0,
       color: palette[(ci >= 0 ? ci : 0) % palette.length],
       image: row.image_url || null,
       badge: 'Verified',
@@ -292,6 +281,46 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   if (!product) product = allProducts[0];
   const catLabel = product.cat.charAt(0).toUpperCase() + product.cat.slice(1);
+
+  /* ---------- Reviews (open to any logged-in user, on any product) ----------
+     Keyed by product_ref, which is just the product's id as text, so this
+     works for both real listings (uuid) and the generated demo catalog. */
+  const productRef = String(product.id);
+  let reviewList = [];
+  let currentUser = null;
+  let myReview = null;
+
+  async function loadReviews() {
+    if (!window.sb) return;
+    const { data: rows, error } = await window.sb
+      .from('product_reviews')
+      .select('*')
+      .eq('product_ref', productRef)
+      .order('created_at', { ascending: false });
+    if (error) { console.error('Ometong: failed to load reviews', error); return; }
+    reviewList = rows || [];
+
+    // profiles are private, so names come from a function that exposes
+    // only a display name for exactly these reviewers
+    const ids = [...new Set(reviewList.map(r => r.user_id))];
+    if (ids.length) {
+      const { data: authors } = await window.sb.rpc('get_review_authors', { user_ids: ids });
+      const nameById = {};
+      (authors || []).forEach(a => { nameById[a.id] = a.display_name; });
+      reviewList.forEach(r => { r.authorName = nameById[r.user_id] || 'Ometong user'; });
+    }
+    myReview = currentUser ? reviewList.find(r => r.user_id === currentUser.id) || null : null;
+  }
+
+  if (window.ometongGetUser) currentUser = await window.ometongGetUser();
+  await loadReviews();
+
+  // Real ratings replace the demo catalog's generated ones as soon as
+  // anyone actually reviews the product.
+  if (reviewList.length) {
+    product.rating = (reviewList.reduce((s, r) => s + r.rating, 0) / reviewList.length).toFixed(1);
+    product.reviews = reviewList.length;
+  }
 
   /* ---------- Breadcrumb ---------- */
   document.getElementById('crumbCat').textContent = catLabel;
@@ -382,26 +411,136 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ---------- Reviews (real listings only) ---------- */
   const pdReviewsSection = document.getElementById('pdReviewsSection');
   const pdReviewsList = document.getElementById('pdReviewsList');
-  if (pdReviewsSection && pdReviewsList) {
-    if (product.isReal && product.reviewList && product.reviewList.length) {
-      pdReviewsSection.hidden = false;
-      pdReviewsList.innerHTML = product.reviewList.map(r => {
-        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-        const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-        return `
-          <div class="pd-review-row">
-            <div class="pd-review-head">
-              <span class="pd-review-stars">${stars}</span>
-              <span class="pd-review-author">Verified Buyer</span>
-              <span class="pd-review-date">${date}</span>
-            </div>
-            ${r.comment ? `<p class="pd-review-comment">${esc(r.comment)}</p>` : ''}
-          </div>`;
-      }).join('');
-    } else {
-      pdReviewsSection.hidden = true;
-      pdReviewsList.innerHTML = '';
+  const pdReviewForm = document.getElementById('pdReviewForm');
+  const pdReviewSummary = document.getElementById('pdReviewSummary');
+
+  function renderReviewSummary() {
+    if (!pdReviewSummary) return;
+    if (!reviewList.length) {
+      pdReviewSummary.textContent = 'No reviews yet — be the first to rate this.';
+      return;
     }
+    const avg = (reviewList.reduce((s, r) => s + r.rating, 0) / reviewList.length).toFixed(1);
+    pdReviewSummary.innerHTML =
+      `<span class="pd-review-avg">${'★'.repeat(Math.round(avg))}${'☆'.repeat(5 - Math.round(avg))}</span>` +
+      `<strong>${avg}</strong> out of 5 · ${reviewList.length} review${reviewList.length === 1 ? '' : 's'}`;
+  }
+
+  function renderReviewList() {
+    if (!pdReviewsList) return;
+    if (!reviewList.length) { pdReviewsList.innerHTML = ''; return; }
+    pdReviewsList.innerHTML = reviewList.map(r => {
+      const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+      const date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+      const isMine = currentUser && r.user_id === currentUser.id;
+      return `
+        <div class="pd-review-row">
+          <div class="pd-review-head">
+            <span class="pd-review-stars">${stars}</span>
+            <span class="pd-review-author">${esc(r.authorName || 'Ometong user')}</span>
+            ${r.is_verified_purchase ? '<span class="pd-review-verified">Verified Buyer</span>' : ''}
+            ${isMine ? '<span class="pd-review-mine">You</span>' : ''}
+            <span class="pd-review-date">${date}</span>
+          </div>
+          ${r.comment ? `<p class="pd-review-comment">${esc(r.comment)}</p>` : ''}
+          ${isMine ? '<button type="button" class="pd-review-delete" id="pdReviewDelete">Delete my review</button>' : ''}
+        </div>`;
+    }).join('');
+
+    const del = document.getElementById('pdReviewDelete');
+    if (del) del.addEventListener('click', deleteMyReview);
+  }
+
+  function renderReviewForm() {
+    if (!pdReviewForm) return;
+    if (!currentUser) {
+      pdReviewForm.innerHTML =
+        `<p class="pd-review-signin">
+           <a href="authenticationpage.html">Log in</a> to rate this product and leave a comment.
+         </p>`;
+      return;
+    }
+    const existing = myReview;
+    const startRating = existing ? existing.rating : 0;
+    pdReviewForm.innerHTML = `
+      <h3>${existing ? 'Edit your review' : 'Write a review'}</h3>
+      <p class="pd-review-error" id="pdReviewError"></p>
+      <div class="pd-star-picker" id="pdStarPicker" data-value="${startRating}">
+        ${[1, 2, 3, 4, 5].map(n => `<button type="button" class="pd-star-btn${n <= startRating ? ' active' : ''}" data-star="${n}" aria-label="${n} star${n > 1 ? 's' : ''}">★</button>`).join('')}
+      </div>
+      <textarea id="pdReviewComment" rows="3" placeholder="Share what you thought of this product (optional)…">${existing && existing.comment ? esc(existing.comment) : ''}</textarea>
+      <button type="button" class="btn-primary-sm" id="pdReviewSubmit">${existing ? 'Update review' : 'Submit review'}</button>
+    `;
+
+    const picker = document.getElementById('pdStarPicker');
+    picker.querySelectorAll('.pd-star-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = Number(btn.dataset.star);
+        picker.dataset.value = val;
+        picker.querySelectorAll('.pd-star-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.star) <= val));
+      });
+    });
+    document.getElementById('pdReviewSubmit').addEventListener('click', submitReview);
+  }
+
+  async function submitReview() {
+    const picker = document.getElementById('pdStarPicker');
+    const errorEl = document.getElementById('pdReviewError');
+    const submitBtn = document.getElementById('pdReviewSubmit');
+    const rating = Number(picker.dataset.value || 0);
+    const comment = document.getElementById('pdReviewComment').value.trim();
+
+    if (rating < 1) {
+      errorEl.textContent = 'Please choose a star rating first.';
+      errorEl.classList.add('show');
+      return;
+    }
+    errorEl.classList.remove('show');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving…';
+
+    // one review per person per product, so re-submitting edits theirs
+    const { error } = await window.sb
+      .from('product_reviews')
+      .upsert({
+        product_ref: productRef,
+        user_id: currentUser.id,
+        rating,
+        comment: comment || null
+      }, { onConflict: 'product_ref,user_id' });
+
+    submitBtn.disabled = false;
+    if (error) {
+      errorEl.textContent = error.message || 'Could not save your review. Please try again.';
+      errorEl.classList.add('show');
+      renderReviewForm();
+      return;
+    }
+    await loadReviews();
+    renderAllReviews();
+  }
+
+  async function deleteMyReview() {
+    if (!currentUser || !window.confirm('Delete your review?')) return;
+    const { error } = await window.sb
+      .from('product_reviews')
+      .delete()
+      .eq('product_ref', productRef)
+      .eq('user_id', currentUser.id);
+    if (error) { console.error('Ometong: failed to delete review', error); return; }
+    await loadReviews();
+    renderAllReviews();
+  }
+
+  function renderAllReviews() {
+    renderReviewSummary();
+    renderReviewList();
+    renderReviewForm();
+  }
+
+  if (pdReviewsSection) {
+    pdReviewsSection.hidden = false;
+    renderAllReviews();
   }
 
   /* ---------- Thumbnail swap (visual only — different angle tint) ---------- */

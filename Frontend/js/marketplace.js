@@ -181,27 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (error || !rows || !rows.length) return [];
 
     const supplierIds = [...new Set(rows.map(r => r.supplier_id))];
-    const listingIds = rows.map(r => r.id);
-    const [{ data: profiles }, { data: reviewRows }] = await Promise.all([
-      window.sb.rpc('get_public_supplier_profiles', { supplier_ids: supplierIds }),
-      window.sb.from('reviews').select('listing_id, rating').in('listing_id', listingIds)
-    ]);
+    const { data: profiles } = await window.sb
+      .rpc('get_public_supplier_profiles', { supplier_ids: supplierIds });
     const profileMap = {};
     (profiles || []).forEach(p => { profileMap[p.id] = p; });
-
-    const ratingMap = {};
-    (reviewRows || []).forEach(r => {
-      if (!ratingMap[r.listing_id]) ratingMap[r.listing_id] = { sum: 0, count: 0 };
-      ratingMap[r.listing_id].sum += r.rating;
-      ratingMap[r.listing_id].count += 1;
-    });
 
     return rows.map(row => {
       const cat = categoryLabelToSlug[row.category] || 'services';
       const ci = categories.indexOf(cat);
       const profile = profileMap[row.supplier_id];
       const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
-      const ratingInfo = ratingMap[row.id];
       return {
         id: row.id,
         cat,
@@ -210,8 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
         supplier: supplierName,
         supplierId: row.supplier_id,
         price: Number(row.price),
-        rating: ratingInfo ? (ratingInfo.sum / ratingInfo.count).toFixed(1) : null,
-        reviews: ratingInfo ? ratingInfo.count : 0,
+        rating: null,
+        reviews: 0,
         color: palette[(ci >= 0 ? ci : 0) % palette.length],
         image: row.image_url || null,
         badge: 'Verified',
@@ -429,10 +418,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // catalog once fetched, so the page shows something immediately
   // instead of waiting on the network before rendering anything.
   loadRealListings().then(realProducts => {
-    if (!realProducts.length) return;
-    allProducts.unshift(...realProducts);
-    refresh();
+    if (realProducts.length) {
+      allProducts.unshift(...realProducts);
+      refresh();
+    }
+    return applyRealRatings();
   });
+
+  /* ---------- Real ratings on every card ----------
+     One query for all reviews, averaged per product, so the cards
+     agree with what the product page shows. Products nobody has
+     reviewed keep whatever rating they already had (the demo
+     catalog's generated one, or "New" for real listings). */
+  async function applyRealRatings() {
+    if (!window.sb) return;
+    const { data: rows, error } = await window.sb
+      .from('product_reviews')
+      .select('product_ref, rating');
+    if (error || !rows || !rows.length) return;
+
+    const agg = {};
+    rows.forEach(r => {
+      if (!agg[r.product_ref]) agg[r.product_ref] = { sum: 0, count: 0 };
+      agg[r.product_ref].sum += r.rating;
+      agg[r.product_ref].count += 1;
+    });
+
+    let changed = false;
+    allProducts.forEach(p => {
+      const a = agg[String(p.id)];
+      if (!a) return;
+      p.rating = (a.sum / a.count).toFixed(1);
+      p.reviews = a.count;
+      changed = true;
+    });
+    if (changed) refresh();
+  }
 
   if (urlCat && categories.includes(urlCat)) {
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
