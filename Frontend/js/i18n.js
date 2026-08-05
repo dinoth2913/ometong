@@ -44,7 +44,7 @@
       "footer.howItWorks": "How it Works", "footer.advertise": "Advertise", "footer.rights": "All rights reserved.",
 
       "nav.myListings": "My Listings", "nav.buyerRequests": "Buyer Requests", "nav.payouts": "Payouts",
-      "nav.support": "Support", "nav.production": "Production", "nav.buyerRfqs": "Buyer RFQs",
+      "nav.support": "Support", "nav.messages": "Messages", "nav.production": "Production", "nav.buyerRfqs": "Buyer RFQs",
       "nav.certifications": "Certifications", "nav.pendingApproval": "Pending Approval",
       "nav.allListings": "All Listings", "nav.users": "Users", "nav.orders": "Orders", "nav.activityLog": "Activity Log",
 
@@ -151,7 +151,7 @@
       "footer.howItWorks": "Comment ça marche", "footer.advertise": "Faire de la publicité", "footer.rights": "Tous droits réservés.",
 
       "nav.myListings": "Mes annonces", "nav.buyerRequests": "Demandes d'acheteurs", "nav.payouts": "Paiements",
-      "nav.support": "Assistance", "nav.production": "Production", "nav.buyerRfqs": "Demandes de devis",
+      "nav.support": "Assistance", "nav.messages": "Messages", "nav.production": "Production", "nav.buyerRfqs": "Demandes de devis",
       "nav.certifications": "Certifications", "nav.pendingApproval": "En attente d'approbation",
       "nav.allListings": "Toutes les annonces", "nav.users": "Utilisateurs", "nav.orders": "Commandes", "nav.activityLog": "Journal d'activité",
 
@@ -258,7 +258,7 @@
       "footer.howItWorks": "Cómo funciona", "footer.advertise": "Anunciarse", "footer.rights": "Todos los derechos reservados.",
 
       "nav.myListings": "Mis anuncios", "nav.buyerRequests": "Solicitudes de compradores", "nav.payouts": "Pagos",
-      "nav.support": "Soporte", "nav.production": "Producción", "nav.buyerRfqs": "Solicitudes de cotización",
+      "nav.support": "Soporte", "nav.messages": "Mensajes", "nav.production": "Producción", "nav.buyerRfqs": "Solicitudes de cotización",
       "nav.certifications": "Certificaciones", "nav.pendingApproval": "Pendiente de aprobación",
       "nav.allListings": "Todos los anuncios", "nav.users": "Usuarios", "nav.orders": "Pedidos", "nav.activityLog": "Registro de actividad",
 
@@ -365,7 +365,7 @@
       "footer.howItWorks": "यह कैसे काम करता है", "footer.advertise": "विज्ञापन दें", "footer.rights": "सर्वाधिकार सुरक्षित।",
 
       "nav.myListings": "मेरी लिस्टिंग", "nav.buyerRequests": "खरीदार अनुरोध", "nav.payouts": "भुगतान",
-      "nav.support": "सहायता", "nav.production": "उत्पादन", "nav.buyerRfqs": "खरीदार RFQ",
+      "nav.support": "सहायता", "nav.messages": "संदेश", "nav.production": "उत्पादन", "nav.buyerRfqs": "खरीदार RFQ",
       "nav.certifications": "प्रमाणन", "nav.pendingApproval": "स्वीकृति लंबित",
       "nav.allListings": "सभी लिस्टिंग", "nav.users": "उपयोगकर्ता", "nav.orders": "ऑर्डर", "nav.activityLog": "गतिविधि लॉग",
 
@@ -472,7 +472,7 @@
       "footer.howItWorks": "එය ක්‍රියා කරන ආකාරය", "footer.advertise": "ප්‍රචාරය කරන්න", "footer.rights": "සියලුම හිමිකම් ඇවිරිණි.",
 
       "nav.myListings": "මගේ ලැයිස්තු", "nav.buyerRequests": "ගැනුම්කරු ඉල්ලීම්", "nav.payouts": "ගෙවීම්",
-      "nav.support": "සහාය", "nav.production": "නිෂ්පාදනය", "nav.buyerRfqs": "මිල ඉල්ලීම්",
+      "nav.support": "සහාය", "nav.messages": "පණිවිඩ", "nav.production": "නිෂ්පාදනය", "nav.buyerRfqs": "මිල ඉල්ලීම්",
       "nav.certifications": "සහතික", "nav.pendingApproval": "අනුමැතිය බලාපොරොත්තුවෙන්",
       "nav.allListings": "සියලුම ලැයිස්තු", "nav.users": "පරිශීලකයින්", "nav.orders": "ඇණවුම්", "nav.activityLog": "ක්‍රියාකාරකම් ලොගය",
 
@@ -579,7 +579,7 @@
       "footer.howItWorks": "இது எப்படி செயல்படுகிறது", "footer.advertise": "விளம்பரப்படுத்துங்கள்", "footer.rights": "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
 
       "nav.myListings": "எனது பட்டியல்கள்", "nav.buyerRequests": "வாங்குபவர் கோரிக்கைகள்", "nav.payouts": "கட்டணங்கள்",
-      "nav.support": "ஆதரவு", "nav.production": "உற்பத்தி", "nav.buyerRfqs": "விலை கோரிக்கைகள்",
+      "nav.support": "ஆதரவு", "nav.messages": "செய்திகள்", "nav.production": "உற்பத்தி", "nav.buyerRfqs": "விலை கோரிக்கைகள்",
       "nav.certifications": "சான்றிதழ்கள்", "nav.pendingApproval": "ஒப்புதலுக்காக காத்திருக்கிறது",
       "nav.allListings": "அனைத்து பட்டியல்களும்", "nav.users": "பயனர்கள்", "nav.orders": "ஆர்டர்கள்", "nav.activityLog": "செயல்பாட்டு பதிவு",
 
