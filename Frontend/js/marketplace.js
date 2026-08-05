@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const esc = window.ometongEscapeHTML;
     const catLabel = p.cat.charAt(0).toUpperCase() + p.cat.slice(1);
     return `
-    <div class="p-card" style="animation-delay:${(index % 12) * 40}ms" data-id="${p.id}">
+    <div class="p-card" data-id="${p.id}">
       <div class="p-thumb" style="background:${p.color}12">
         ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" style="width:100%;height:100%;object-fit:cover;">` : svgThumb(p.color, index)}
         <span class="p-price-badge">$${p.price}<small> /unit</small></span>
@@ -508,8 +508,73 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const card = e.target.closest('.p-card');
     if (card) {
-      window.location.href = `product-details.html?id=${card.dataset.id}`;
+      const product = allProducts.find(p => String(p.id) === card.dataset.id);
+      if (product) openQuickView(product);
     }
   });
+
+  /* ---------- Quick-view popup (opens on card click, instead of
+     navigating straight away) ---------- */
+  const qv = document.createElement('div');
+  qv.className = 'qv-overlay';
+  qv.innerHTML = `
+    <div class="qv-modal" role="dialog" aria-modal="true">
+      <button class="qv-close" id="qvClose" aria-label="Close">&times;</button>
+      <div class="qv-thumb" id="qvThumb"></div>
+      <div class="qv-body">
+        <div class="qv-head">
+          <h3 id="qvTitle"></h3>
+          <span class="qv-rating" id="qvRating"></span>
+        </div>
+        <div class="qv-meta" id="qvMeta"></div>
+        <p class="qv-desc" id="qvDesc"></p>
+        <div class="qv-specs" id="qvSpecs"></div>
+        <div class="qv-price" id="qvPrice"></div>
+        <div class="qv-actions">
+          <button class="p-add" id="qvAddBtn">
+            <svg viewBox="0 0 24 24" width="15" height="15"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+            Add to Cart
+          </button>
+          <a class="qv-details-link" id="qvDetailsLink">View full details →</a>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(qv);
+
+  function openQuickView(p) {
+    const esc = window.ometongEscapeHTML;
+    const catLabel = p.cat.charAt(0).toUpperCase() + p.cat.slice(1);
+
+    qv.querySelector('#qvThumb').style.background = `${p.color}12`;
+    qv.querySelector('#qvThumb').innerHTML = p.image
+      ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" style="width:100%;height:100%;object-fit:cover;">`
+      : svgThumb(p.color, p.id);
+    qv.querySelector('#qvTitle').textContent = p.title;
+    qv.querySelector('#qvRating').innerHTML = p.rating != null
+      ? `<svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>${p.rating} <span class="p-reviews">(${p.reviews})</span>`
+      : `<span class="p-rating-new">New</span>`;
+    qv.querySelector('#qvMeta').textContent = `${p.supplier}, ${catLabel}`;
+    qv.querySelector('#qvDesc').textContent = p.description || '';
+    qv.querySelector('#qvSpecs').innerHTML =
+      (p.moq ? `<span class="p-spec">MOQ ${p.moq.toLocaleString('en-US')}</span>` : '') +
+      (p.leadTime != null ? `<span class="p-spec">${p.leadTime}d lead time</span>` : '') +
+      (p.badge ? `<span class="p-spec">${esc(p.badge)}</span>` : '');
+    qv.querySelector('#qvPrice').textContent = `$${p.price} / unit`;
+    qv.querySelector('#qvDetailsLink').href = `product-details.html?id=${p.id}`;
+
+    const addBtn = qv.querySelector('#qvAddBtn');
+    addBtn.onclick = () => {
+      addToCart(p);
+      addBtn.classList.add('added');
+      setTimeout(() => addBtn.classList.remove('added'), 700);
+    };
+
+    qv.classList.add('show');
+  }
+  function closeQuickView() { qv.classList.remove('show'); }
+
+  qv.querySelector('#qvClose').addEventListener('click', closeQuickView);
+  qv.addEventListener('click', (e) => { if (e.target === qv) closeQuickView(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQuickView(); });
 
 });
