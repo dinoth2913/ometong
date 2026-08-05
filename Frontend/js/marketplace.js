@@ -256,7 +256,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try { return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; }
     catch { return []; }
   }
-  function saveWishlist(ids) { localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids)); }
+  function saveWishlist(ids) {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids));
+    if (window.ometongSyncWishlistToServer) window.ometongSyncWishlistToServer(ids);
+  }
   function toggleWishlist(product) {
     const ids = getWishlist();
     const idx = ids.indexOf(product.id);
@@ -265,6 +268,17 @@ document.addEventListener('DOMContentLoaded', () => {
     saveWishlist(ids);
     return idx === -1;
   }
+  // cartSync.js merges the account's saved wishlist in after login —
+  // refresh which cards show as "saved" instead of leaving whatever
+  // rendered before that merge finished.
+  function refreshWishlistUI() {
+    const ids = getWishlist();
+    document.querySelectorAll('[data-fav]').forEach(btn => {
+      const saved = ids.some(x => String(x) === String(btn.dataset.fav));
+      btn.classList.toggle('saved', saved);
+    });
+  }
+  document.addEventListener('ometongWishlistSynced', refreshWishlistUI);
 
   /* ---------- Render ---------- */
   const grid = document.getElementById('productGrid');

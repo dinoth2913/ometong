@@ -256,7 +256,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ---------- Wishlist (shared with marketplace.js / buyerdashboard.js) ---------- */
   const WISHLIST_KEY = 'ometong_wishlist';
   function getWishlist() { try { return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; } catch { return []; } }
-  function saveWishlist(ids) { localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids)); }
+  function saveWishlist(ids) {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids));
+    if (window.ometongSyncWishlistToServer) window.ometongSyncWishlistToServer(ids);
+  }
   function toggleWishlist(product) {
     const ids = getWishlist();
     const idx = ids.indexOf(product.id);
@@ -384,6 +387,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('pdFav').addEventListener('click', (e) => {
     const nowSaved = toggleWishlist(product);
     e.currentTarget.classList.toggle('saved', nowSaved);
+  });
+  // cartSync.js merges the account's saved wishlist in after login —
+  // reflect that on this product's heart icon instead of leaving
+  // whatever rendered before that merge finished.
+  document.addEventListener('ometongWishlistSynced', (e) => {
+    const ids = e.detail || [];
+    const fav = document.getElementById('pdFav');
+    if (fav) fav.classList.toggle('saved', ids.some(x => String(x) === String(product.id)));
   });
 
   /* ---------- Quantity stepper ---------- */

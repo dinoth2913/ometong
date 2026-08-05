@@ -190,15 +190,46 @@ document.addEventListener('DOMContentLoaded', () => {
     try { return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; }
     catch { return []; }
   }
-  function saveWishlist(ids) { localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids)); }
+  function saveWishlist(ids) {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(ids));
+    if (window.ometongSyncWishlistToServer) window.ometongSyncWishlistToServer(ids);
+  }
+
+  // Ids from the generated demo catalog are numbers; real listings use
+  // Supabase UUID strings and aren't in allProducts, so they need a
+  // separate lookup — without this, a saved real product would silently
+  // never appear here.
+  async function loadRealWishlistItems(ids) {
+    if (!window.sb || !ids.length) return [];
+    const { data, error } = await window.sb
+      .from('listings')
+      .select('id, title, price, image_url')
+      .in('id', ids);
+    if (error || !data) return [];
+    return data.map((row, i) => ({
+      id: row.id,
+      title: row.title,
+      price: Number(row.price),
+      color: palette[i % palette.length],
+      image: row.image_url || null
+    }));
+  }
 
   const wishlistGrid = document.getElementById('wishlistGrid');
   const wishlistEmpty = document.getElementById('wishlistEmpty');
   const statSaved = document.getElementById('statSaved');
 
-  function renderWishlist() {
+  async function renderWishlist() {
     const ids = getWishlist();
-    const items = ids.map(id => allProducts.find(p => p.id === id)).filter(Boolean);
+    const demoItems = ids.map(id => allProducts.find(p => p.id === id)).filter(Boolean);
+    const realIds = ids.filter(id => !allProducts.some(p => p.id === id));
+    const realItems = await loadRealWishlistItems(realIds);
+
+    const byId = new Map();
+    demoItems.forEach(p => byId.set(String(p.id), p));
+    realItems.forEach(p => byId.set(String(p.id), p));
+    const items = ids.map(id => byId.get(String(id))).filter(Boolean);
+
     statSaved.textContent = items.length;
 
     if (items.length === 0) {
@@ -209,16 +240,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     wishlistGrid.style.display = 'grid';
     wishlistEmpty.hidden = true;
+    const esc2 = window.ometongEscapeHTML || (s => s);
     wishlistGrid.innerHTML = items.map(p => `
       <div class="wish-card" data-id="${p.id}">
         <div class="wish-thumb" style="background:${p.color}12">
-          ${svgThumb(p.color)}
+          ${p.image ? `<img src="${esc2(p.image)}" alt="${esc2(p.title)}" style="width:100%;height:100%;object-fit:cover;">` : svgThumb(p.color)}
           <button class="wish-remove" data-remove="${p.id}" aria-label="Remove from saved items">
             <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
         </div>
         <div class="wish-body">
-          <div class="wish-title">${p.title}</div>
+          <div class="wish-title">${esc2(p.title)}</div>
           <div class="wish-price">$${p.price} <small>/unit</small></div>
         </div>
       </div>
@@ -226,11 +258,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   renderWishlist();
 
+  // cartSync.js merges the account's saved wishlist in after login —
+  // refresh instead of leaving whatever rendered before that finished.
+  document.addEventListener('ometongWishlistSynced', renderWishlist);
+
   wishlistGrid.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-remove]');
     if (!btn) return;
-    const id = parseInt(btn.dataset.remove, 10);
-    const ids = getWishlist().filter(x => x !== id);
+    const removeId = btn.dataset.remove;
+    const ids = getWishlist().filter(x => String(x) !== removeId);
     saveWishlist(ids);
     renderWishlist();
   });
