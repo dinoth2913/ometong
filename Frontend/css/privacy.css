@@ -1,0 +1,91 @@
+/* =========================================================
+   OMETONG — PRIVACY POLICY PAGE
+   Layered on top of contactus.css's shared chrome (nav, blobs,
+   footer, buttons). This file only styles the policy body.
+========================================================= */
+
+.privacy-layout{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:56px;
+  align-items:start;
+  padding:20px 0 80px;
+}
+
+/* ---- table of contents ---- */
+.privacy-toc{
+  position:sticky;
+  top:96px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.toc-label{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:10px;
+}
+.privacy-toc a{
+  font-size:.86rem;
+  font-weight:600;
+  color:var(--ink-soft);
+  padding:7px 0 7px 14px;
+  border-left:2px solid var(--line);
+  transition:color .2s, border-color .2s;
+}
+.privacy-toc a:hover{color:var(--ink);}
+.privacy-toc a.active{color:var(--accent-dark);border-left-color:var(--accent);}
+
+/* ---- policy body ---- */
+.privacy-content{max-width:720px;}
+.privacy-section{
+  padding:22px 0;
+  border-bottom:1px solid var(--line);
+  scroll-margin-top:96px;
+}
+.privacy-section:last-child{border-bottom:none;}
+.privacy-section h2{font-size:1.28rem;letter-spacing:-.01em;}
+.privacy-section p{font-size:.96rem;}
+.privacy-section ul{margin:0 0 1em;padding-left:1.2em;}
+.privacy-section li{margin-bottom:.6em;font-size:.96rem;color:var(--ink-soft);line-height:1.7;}
+.privacy-section code{background:var(--glass-bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.86em;}
+.privacy-section a{color:var(--accent-dark);font-weight:600;text-decoration:underline;text-underline-offset:2px;}
+
+/* ---- back to top ---- */
+.back-top{
+  position:fixed;bottom:26px;right:26px;width:46px;height:46px;border-radius:50%;
+  background:var(--glass-bg-strong);backdrop-filter:blur(var(--glass-blur));
+  -webkit-backdrop-filter:blur(var(--glass-blur));border:1px solid var(--glass-border);
+  color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:var(--shadow-sm);opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .3s var(--ease), transform .3s var(--ease);z-index:400;
+}
+.back-top.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+.back-top:hover{color:var(--accent);}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width:860px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .privacy-layout{grid-template-columns:1fr;gap:28px;}
+  .privacy-toc{
+    position:static;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:8px 16px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--line);
+  }
+  .toc-label{width:100%;margin-bottom:2px;}
+  .privacy-toc a{border-left:none;padding:4px 10px;border-radius:999px;background:var(--glass-bg);}
+  .privacy-toc a.active{background:var(--accent);color:#fff;border-color:transparent;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:560px){
+  .footer-grid{grid-template-columns:1fr;}
+}
