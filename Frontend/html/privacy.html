@@ -12,8 +12,16 @@
   <link rel="stylesheet" href="../css/i18n.css">
   <link rel="stylesheet" href="../css/logo.css">
   <link rel="stylesheet" href="../css/contactus.css">
+  <link rel="stylesheet" href="../css/chatWidget.css">
 </head>
 <body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+  </div>
 
   <header class="nav" id="mainNav">
     <div class="nav-inner">
@@ -33,6 +41,14 @@
     </div>
   </header>
 
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="Home.html">Home</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="contactus.html">Contact</a>
+    <a href="authenticationpage.html" class="link-btn">Login</a>
+    <a href="marketplace.html" class="btn btn-primary">Explore Marketplace</a>
+  </div>
+
   <main>
     <section class="section container">
       <div class="section-head">
@@ -48,7 +64,7 @@
         <p>We use data to provide and improve the service, process orders, communicate with you, detect fraud, and comply with legal obligations. We may use aggregated or anonymized data for analytics.</p>
 
         <h2>Payments</h2>
-        <p>We use third-party payment processors (for pilot: Stripe) to handle payments. Payment information is processed by the payment provider and is not stored on our servers except for transaction references required to reconcile orders. See provider terms for details.</p>
+        <p>We use third-party payment processors to handle payments. Payment information is processed by the payment provider and is not stored on our servers except for transaction references required to reconcile orders. See the provider's terms for details.</p>
 
         <h2>Cookies & local storage</h2>
         <p>We use cookies and localStorage for session management, cart persistence, preferences (language, theme) and analytics. You can clear or block cookies through your browser settings, but some features may stop working.</p>
@@ -86,8 +102,11 @@
     <svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 3v12M4 8l5-5 5 5"/></svg>
   </button>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/supabaseConfig.js"></script>
+  <script src="../js/supabaseClient.js"></script>
   <script src="../js/navSession.js"></script>
+  <script src="../js/privacy.js"></script>
   <script src="../js/chatWidget.js"></script>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
