@@ -3,6 +3,12 @@
 ========================================================= */
 document.addEventListener('DOMContentLoaded', async () => {
 
+  /* ---------- Mobile menu ---------- */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger?.addEventListener('click', () => mobileMenu?.classList.toggle('open'));
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
   /* ---------- Theme toggle (shared "theme" key across the site) ---------- */
   const themeToggle = document.getElementById('themeToggle');
   const sunIcon = themeToggle?.querySelector('.sun-icon');
