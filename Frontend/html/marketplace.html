@@ -96,17 +96,14 @@
 
   <!-- ===== CATEGORY LIST ===== -->
   <section class="categories" aria-label="Category list">
+    <!-- Chips are rendered from taxonomy.js so they can't drift out of
+         sync with the Add Listing form or the database seed -->
     <div class="cat-scroll" id="catScroll">
       <button class="cat-chip active" data-cat="all"><span class="cat-ic">✦</span>All</button>
-      <button class="cat-chip" data-cat="electronics"><span class="cat-ic">🔌</span>Electronics</button>
-      <button class="cat-chip" data-cat="textiles"><span class="cat-ic">🧵</span>Textiles</button>
-      <button class="cat-chip" data-cat="machinery"><span class="cat-ic">⚙</span>Machinery</button>
-      <button class="cat-chip" data-cat="food"><span class="cat-ic">🍽</span>Food &amp; Beverage</button>
-      <button class="cat-chip" data-cat="construction"><span class="cat-ic">🏗</span>Construction</button>
-      <button class="cat-chip" data-cat="packaging"><span class="cat-ic">📦</span>Packaging</button>
-      <button class="cat-chip" data-cat="services"><span class="cat-ic">🛠</span>Services</button>
-      <button class="cat-chip" data-cat="logistics"><span class="cat-ic">🚚</span>Logistics</button>
     </div>
+
+    <!-- Subcategory row: only appears once a category is picked -->
+    <div class="subcat-scroll" id="subcatScroll" hidden></div>
   </section>
 
   <!-- ===== MARKETPLACE GRID ===== -->
@@ -143,6 +140,7 @@
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/navSession.js"></script>
 <script src="../js/cartSync.js"></script>
+<script src="../js/taxonomy.js"></script>
 <script src="../js/marketplace.js"></script>
 
 <!-- Liquid glass distortion filter for the navbar (adapted from a displacement-map glass demo) -->

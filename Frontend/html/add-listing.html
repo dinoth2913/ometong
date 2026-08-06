@@ -51,16 +51,17 @@
           <label>Category
             <select id="category" name="category" required>
               <option value="">Select a category</option>
-              <option>Electronics</option>
-              <option>Textiles</option>
-              <option>Machinery</option>
-              <option>Food &amp; Beverage</option>
-              <option>Construction</option>
-              <option>Packaging</option>
-              <option>Services</option>
-              <option>Logistics</option>
+              <!-- filled from taxonomy.js -->
             </select>
           </label>
+          <label>Subcategory
+            <select id="subcategory" name="subcategory">
+              <option value="">Select a category first</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-row">
           <label>Price per unit (USD)
             <input type="number" id="price" name="price" required min="0" step="0.01" placeholder="e.g. 18.50">
           </label>
@@ -122,6 +123,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="../js/supabaseConfig.js"></script>
 <script src="../js/supabaseClient.js"></script>
+<script src="../js/taxonomy.js"></script>
 <script src="../js/add-listing.js"></script>
 </body>
 </html>

@@ -121,6 +121,40 @@
     categorySelect?.addEventListener("change", updateComplianceNotice);
     updateComplianceNotice();
 
+    /* ---------- Category + subcategory dropdowns ----------
+       Both come from the shared taxonomy, so the options here always
+       match the filters buyers see in the marketplace. */
+    const subcategorySelect = document.getElementById("subcategory");
+    const taxonomy = window.ometongTaxonomy;
+
+    function populateCategories() {
+      if (!categorySelect || !taxonomy) return;
+      const current = categorySelect.value;
+      categorySelect.innerHTML = '<option value="">Select a category</option>' +
+        taxonomy.categories
+          .map(c => `<option value="${c.label}">${c.label}</option>`)
+          .join("");
+      if (current) categorySelect.value = current;
+    }
+
+    function populateSubcategories() {
+      if (!subcategorySelect || !taxonomy) return;
+      const catSlug = taxonomy.categoryLabelToSlug[categorySelect.value];
+      const subs = catSlug ? taxonomy.subcategoriesFor(catSlug) : [];
+      if (!subs.length) {
+        subcategorySelect.innerHTML = '<option value="">Select a category first</option>';
+        subcategorySelect.disabled = true;
+        return;
+      }
+      subcategorySelect.disabled = false;
+      subcategorySelect.innerHTML = '<option value="">All / not specified</option>' +
+        subs.map(s => `<option value="${s.slug}">${s.label}</option>`).join("");
+    }
+
+    populateCategories();
+    populateSubcategories();
+    categorySelect?.addEventListener("change", populateSubcategories);
+
     function showError(message) {
       errorEl.textContent = message;
       errorEl.classList.add("show");
@@ -145,6 +179,7 @@
 
       const title = form.title.value.trim();
       const category = form.category.value;
+      const subcategory = form.subcategory ? form.subcategory.value || null : null;
       const price = parseFloat(form.price.value);
       const moq = form.moq.value ? parseInt(form.moq.value, 10) : null;
       const leadTime = form.leadTime.value ? parseInt(form.leadTime.value, 10) : null;
@@ -179,6 +214,7 @@
         supplier_id: user.id,
         title,
         category,
+        subcategory,
         price,
         moq,
         lead_time_days: leadTime,

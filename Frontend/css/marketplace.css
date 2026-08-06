@@ -942,3 +942,40 @@ svg {
 .p-details-link:hover {
   text-decoration: underline;
 }
+
+/* ===== Subcategory filter row (appears under a chosen category) ===== */
+.subcat-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 var(--gutter) 12px;
+  scrollbar-width: none;
+}
+
+.subcat-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.subcat-chip {
+  flex: 0 0 auto;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: .76rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.subcat-chip:hover {
+  color: var(--ink);
+  border-color: var(--ink-soft);
+}
+
+.subcat-chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}

@@ -38,69 +38,87 @@ document.addEventListener('DOMContentLoaded', () => {
   const palette = ['#FF7431', '#3A6FF7', '#FFC24D', '#22C55E', '#8B5CF6'];
 
   /* Each category lists its product types with a realistic price band (USD). */
+  /* `sub` is the subcategory slug from taxonomy.js, so the demo catalog
+     responds to the subcategory filters the same way real listings do. */
   const productDefs = {
     electronics: [
-      { title: 'Smartphone', min: 250, max: 1300 },
-      { title: 'Laptop', min: 450, max: 2200 },
-      { title: 'Industrial Sensor Kit', min: 40, max: 320 },
-      { title: 'LED Panel Array', min: 60, max: 450 },
-      { title: 'Smart Meter Unit', min: 90, max: 500 },
+      { title: 'Smartphone', min: 250, max: 1300, sub: 'smartphones-tablets' },
+      { title: 'Laptop', min: 450, max: 2200, sub: 'computers-laptops' },
+      { title: 'Industrial Sensor Kit', min: 40, max: 320, sub: 'industrial-electronics' },
+      { title: 'LED Panel Array', min: 60, max: 450, sub: 'lighting-led' },
+      { title: 'Smart Meter Unit', min: 90, max: 500, sub: 'components-semiconductors' },
+    ],
+    apparel: [
+      { title: 'Cotton Crew T-Shirt', min: 4, max: 18, sub: 'mens-t-shirts' },
+      { title: 'Oxford Formal Shirt', min: 9, max: 34, sub: 'mens-shirts' },
+      { title: 'Slim-Fit Chino Trousers', min: 12, max: 42, sub: 'mens-trousers' },
+      { title: 'Padded Winter Jacket', min: 22, max: 95, sub: 'mens-outerwear' },
+      { title: 'Performance Training Tee', min: 6, max: 24, sub: 'mens-activewear' },
+      { title: 'Silk-Blend Blouse', min: 11, max: 40, sub: 'womens-tops' },
+      { title: 'Printed Summer Dress', min: 14, max: 55, sub: 'womens-dresses' },
+      { title: 'High-Waist Trousers', min: 13, max: 46, sub: 'womens-trousers' },
+      { title: 'Seamless Gym Leggings', min: 8, max: 30, sub: 'womens-activewear' },
+      { title: 'Tailored Office Blazer', min: 25, max: 90, sub: 'womens-officewear' },
+      { title: 'Kids Cotton Set', min: 5, max: 20, sub: 'kids-clothing' },
+      { title: 'Industrial Work Uniform', min: 10, max: 38, sub: 'uniforms-workwear' },
+      { title: 'Canvas Sneakers', min: 9, max: 36, sub: 'footwear' },
+      { title: 'Leather Tote Bag', min: 16, max: 70, sub: 'bags-accessories' },
     ],
     textiles: [
-      { title: 'Cotton Fabric Roll', min: 15, max: 120 },
-      { title: 'Woven Poly Bags', min: 10, max: 80 },
-      { title: 'Denim Bulk Lot', min: 200, max: 900 },
-      { title: 'Technical Mesh Cloth', min: 25, max: 150 },
-      { title: 'Dye-Ready Yarn', min: 30, max: 200 },
+      { title: 'Cotton Fabric Roll', min: 15, max: 120, sub: 'woven-fabrics' },
+      { title: 'Jersey Knit Roll', min: 18, max: 130, sub: 'knitted-fabrics' },
+      { title: 'Denim Bulk Lot', min: 200, max: 900, sub: 'denim' },
+      { title: 'Technical Mesh Cloth', min: 25, max: 150, sub: 'technical-textiles' },
+      { title: 'Dye-Ready Yarn', min: 30, max: 200, sub: 'yarn-thread' },
     ],
     machinery: [
-      { title: 'CNC Spindle Unit', min: 800, max: 4500 },
-      { title: 'Hydraulic Press', min: 1200, max: 6000 },
-      { title: 'Conveyor Motor', min: 250, max: 1400 },
-      { title: 'Industrial Compressor', min: 600, max: 3200 },
-      { title: 'Gearbox Assembly', min: 300, max: 1800 },
+      { title: 'CNC Spindle Unit', min: 800, max: 4500, sub: 'cnc-machine-tools' },
+      { title: 'Hydraulic Press', min: 1200, max: 6000, sub: 'construction-machinery' },
+      { title: 'Conveyor Motor', min: 250, max: 1400, sub: 'motors-drives' },
+      { title: 'Industrial Compressor', min: 600, max: 3200, sub: 'pumps-compressors' },
+      { title: 'Gearbox Assembly', min: 300, max: 1800, sub: 'spare-parts' },
     ],
     food: [
-      { title: 'Ceylon Cinnamon Bulk', min: 30, max: 220 },
-      { title: 'Roasted Cashew Lot', min: 60, max: 380 },
-      { title: 'Coconut Oil Drums', min: 80, max: 500 },
-      { title: 'Spice Blend Pack', min: 20, max: 150 },
-      { title: 'Tea Leaf Crates', min: 40, max: 300 },
+      { title: 'Ceylon Cinnamon Bulk', min: 30, max: 220, sub: 'spices-seasonings' },
+      { title: 'Roasted Cashew Lot', min: 60, max: 380, sub: 'nuts-dried-fruit' },
+      { title: 'Coconut Oil Drums', min: 80, max: 500, sub: 'edible-oils' },
+      { title: 'Spice Blend Pack', min: 20, max: 150, sub: 'spices-seasonings' },
+      { title: 'Tea Leaf Crates', min: 40, max: 300, sub: 'tea-coffee' },
     ],
     construction: [
-      { title: 'Steel Rebar Bundle', min: 150, max: 900 },
-      { title: 'Cement Pallet', min: 60, max: 400 },
-      { title: 'PVC Pipe Set', min: 30, max: 220 },
-      { title: 'Roofing Sheet Lot', min: 100, max: 700 },
-      { title: 'Aggregate Supply', min: 50, max: 380 },
+      { title: 'Steel Rebar Bundle', min: 150, max: 900, sub: 'steel-rebar' },
+      { title: 'Cement Pallet', min: 60, max: 400, sub: 'cement-aggregates' },
+      { title: 'PVC Pipe Set', min: 30, max: 220, sub: 'pipes-fittings' },
+      { title: 'Roofing Sheet Lot', min: 100, max: 700, sub: 'roofing-cladding' },
+      { title: 'Aggregate Supply', min: 50, max: 380, sub: 'cement-aggregates' },
     ],
     packaging: [
-      { title: 'Corrugated Box Lot', min: 20, max: 180 },
-      { title: 'Stretch Film Rolls', min: 15, max: 110 },
-      { title: 'Pallet Wrap Set', min: 18, max: 130 },
-      { title: 'Custom Carton Batch', min: 40, max: 260 },
-      { title: 'Foam Insert Pack', min: 25, max: 160 },
+      { title: 'Corrugated Box Lot', min: 20, max: 180, sub: 'corrugated-boxes' },
+      { title: 'Stretch Film Rolls', min: 15, max: 110, sub: 'flexible-packaging' },
+      { title: 'Pallet Wrap Set', min: 18, max: 130, sub: 'pallets-crates' },
+      { title: 'Custom Carton Batch', min: 40, max: 260, sub: 'corrugated-boxes' },
+      { title: 'Foam Insert Pack', min: 25, max: 160, sub: 'protective-packaging' },
     ],
     services: [
-      { title: 'Customs Documentation', min: 50, max: 400 },
-      { title: 'Freight Insurance Plan', min: 80, max: 600 },
-      { title: 'Warehousing Package', min: 100, max: 900 },
-      { title: 'Quality Inspection', min: 60, max: 500 },
-      { title: 'Supplier Vetting', min: 40, max: 350 },
+      { title: 'Customs Documentation', min: 50, max: 400, sub: 'customs-documentation' },
+      { title: 'Freight Insurance Plan', min: 80, max: 600, sub: 'warehousing' },
+      { title: 'Warehousing Package', min: 100, max: 900, sub: 'warehousing' },
+      { title: 'Quality Inspection', min: 60, max: 500, sub: 'quality-inspection' },
+      { title: 'Supplier Vetting', min: 40, max: 350, sub: 'sourcing-vetting' },
     ],
     logistics: [
-      { title: 'FCL Sea Freight Slot', min: 500, max: 3500 },
-      { title: 'Air Cargo Booking', min: 300, max: 2200 },
-      { title: 'Last-Mile Delivery', min: 15, max: 120 },
-      { title: 'Cross-Border Trucking', min: 200, max: 1500 },
-      { title: 'Cold Chain Transport', min: 250, max: 1800 },
+      { title: 'FCL Sea Freight Slot', min: 500, max: 3500, sub: 'sea-freight' },
+      { title: 'Air Cargo Booking', min: 300, max: 2200, sub: 'air-freight' },
+      { title: 'Last-Mile Delivery', min: 15, max: 120, sub: 'last-mile' },
+      { title: 'Cross-Border Trucking', min: 200, max: 1500, sub: 'road-freight' },
+      { title: 'Cold Chain Transport', min: 250, max: 1800, sub: 'cold-chain' },
     ],
   };
   const categories = Object.keys(productDefs);
 
   /* Maps the category label used on the Add Listing form to the
      lowercase slug used internally here (e.g. "Food & Beverage" -> food). */
-  const categoryLabelToSlug = {
+  const categoryLabelToSlug = (window.ometongTaxonomy && window.ometongTaxonomy.categoryLabelToSlug) || {
     'Electronics': 'electronics', 'Textiles': 'textiles', 'Machinery': 'machinery',
     'Food & Beverage': 'food', 'Construction': 'construction', 'Packaging': 'packaging',
     'Services': 'services', 'Logistics': 'logistics'
@@ -109,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Real brands per category, so buyers can filter the way they actually shop. */
   const brandsByCategory = {
     electronics: ['Samsung', 'Apple', 'Xiaomi', 'Oppo', 'Sony'],
+    apparel: ['Shahi Exports', 'Epic Group', 'Crystal Intl', 'Youngor', 'Esquel'],
     textiles: ['Raymond', 'Arvind', 'Welspun', 'Vardhman', 'Trident'],
     machinery: ['Caterpillar', 'Bosch', 'Siemens', 'Hitachi', 'Komatsu'],
     food: ['Nestlé', 'Unilever', 'Tata Consumer', 'Britannia', 'Olam'],
@@ -120,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const descriptions = {
     electronics: 'Precision-tested components sourced from certified manufacturing lines, ready for bulk industrial integration.',
+    apparel: 'Factory-direct garments made to spec, with size grading, fabric options and private-label branding available on bulk orders.',
     textiles: 'Mill-direct material, quality-checked for weight, weave and colorfastness before it ever leaves the warehouse.',
     machinery: 'Heavy-duty industrial equipment built for continuous operation, with full spec sheets available on request.',
     food: 'Export-grade produce handled under cold-chain and food-safety compliance from farm to freight.',
@@ -157,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reviews: 8 + (id * 5) % 240,
             color: palette[ci % palette.length],
             badge: id % 6 === 0 ? 'New' : (id % 5 === 0 ? 'Verified' : null),
+            subcategory: def.sub || null,
             description: descriptions[cat],
             moq: 10 + (id * 17) % 190,
             leadTime: 3 + (id * 3) % 18,
@@ -201,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         price: Number(row.price),
         rating: null,
         reviews: 0,
+        subcategory: row.subcategory || null,
         color: palette[(ci >= 0 ? ci : 0) % palette.length],
         image: row.image_url || null,
         badge: 'Verified',
@@ -328,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- State ---------- */
   let activeCat = 'all';
+  let activeSub = 'all';
   let activeBrand = 'all';
   let query = '';
   let sortMode = 'relevance';
@@ -337,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function currentList() {
     let list = allProducts;
     if (activeCat !== 'all') list = list.filter(p => p.cat === activeCat);
+    if (activeSub !== 'all') list = list.filter(p => p.subcategory === activeSub);
     if (activeBrand !== 'all') list = list.filter(p => p.brand === activeBrand);
     if (priceMinVal !== null) list = list.filter(p => p.price >= priceMinVal);
     if (priceMaxVal !== null) list = list.filter(p => p.price <= priceMaxVal);
@@ -386,6 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Clear filters ---------- */
   document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
     activeCat = 'all';
+    activeSub = 'all';
     activeBrand = 'all';
     query = '';
     sortMode = 'relevance';
@@ -398,6 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (priceMaxInput) priceMaxInput.value = '';
     if (sortEl) sortEl.value = 'relevance';
     document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'all'));
+    renderSubcategoryChips();
     populateBrandOptions();
     refresh();
   });
@@ -459,16 +485,55 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  /* ---------- Category chips ---------- */
-  document.querySelectorAll('.cat-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      activeCat = chip.dataset.cat;
-      populateBrandOptions();
-      refresh();
+  /* ---------- Category chips (rendered from the shared taxonomy) ---------- */
+  const catScroll = document.getElementById('catScroll');
+  const taxonomy = window.ometongTaxonomy;
+  if (catScroll && taxonomy) {
+    catScroll.insertAdjacentHTML('beforeend', taxonomy.categories.map(c =>
+      `<button class="cat-chip" data-cat="${c.slug}"><span class="cat-ic">${c.icon}</span>${c.label}</button>`
+    ).join(''));
+  }
+
+  function bindCategoryChips() {
+    document.querySelectorAll('.cat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeCat = chip.dataset.cat;
+        activeSub = 'all';           // a new category clears the old subcategory
+        renderSubcategoryChips();
+        populateBrandOptions();
+        refresh();
+      });
     });
-  });
+  }
+  bindCategoryChips();
+
+  /* ---------- Subcategory chips ----------
+     Second filter row, only shown once a real category is picked. */
+  const subcatScroll = document.getElementById('subcatScroll');
+  function renderSubcategoryChips() {
+    if (!subcatScroll || !taxonomy) return;
+    const subs = activeCat === 'all' ? [] : taxonomy.subcategoriesFor(activeCat);
+    if (!subs.length) {
+      subcatScroll.hidden = true;
+      subcatScroll.innerHTML = '';
+      return;
+    }
+    subcatScroll.hidden = false;
+    subcatScroll.innerHTML =
+      `<button class="subcat-chip${activeSub === 'all' ? ' active' : ''}" data-sub="all">All ${taxonomy.categorySlugToLabel[activeCat] || ''}</button>` +
+      subs.map(s => `<button class="subcat-chip${activeSub === s.slug ? ' active' : ''}" data-sub="${s.slug}">${s.label}</button>`).join('');
+
+    subcatScroll.querySelectorAll('.subcat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        activeSub = chip.dataset.sub;
+        renderSubcategoryChips();
+        refresh();
+      });
+    });
+  }
+  renderSubcategoryChips();
 
   /* ---------- Search ---------- */
   const searchInput = document.getElementById('searchInput');
@@ -501,6 +566,8 @@ document.addEventListener('DOMContentLoaded', () => {
         activeCat = 'all';
         document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'all'));
       }
+      activeSub = 'all';
+      renderSubcategoryChips();
       populateBrandOptions();
       refresh();
       document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });

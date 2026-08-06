@@ -37,12 +37,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       { title: 'LED Panel Array', min: 60, max: 450 },
       { title: 'Smart Meter Unit', min: 90, max: 500 },
     ],
+    apparel: [
+      { title: 'Cotton Crew T-Shirt', min: 4, max: 18, sub: 'mens-t-shirts' },
+      { title: 'Oxford Formal Shirt', min: 9, max: 34, sub: 'mens-shirts' },
+      { title: 'Slim-Fit Chino Trousers', min: 12, max: 42, sub: 'mens-trousers' },
+      { title: 'Padded Winter Jacket', min: 22, max: 95, sub: 'mens-outerwear' },
+      { title: 'Performance Training Tee', min: 6, max: 24, sub: 'mens-activewear' },
+      { title: 'Silk-Blend Blouse', min: 11, max: 40, sub: 'womens-tops' },
+      { title: 'Printed Summer Dress', min: 14, max: 55, sub: 'womens-dresses' },
+      { title: 'High-Waist Trousers', min: 13, max: 46, sub: 'womens-trousers' },
+      { title: 'Seamless Gym Leggings', min: 8, max: 30, sub: 'womens-activewear' },
+      { title: 'Tailored Office Blazer', min: 25, max: 90, sub: 'womens-officewear' },
+      { title: 'Kids Cotton Set', min: 5, max: 20, sub: 'kids-clothing' },
+      { title: 'Industrial Work Uniform', min: 10, max: 38, sub: 'uniforms-workwear' },
+      { title: 'Canvas Sneakers', min: 9, max: 36, sub: 'footwear' },
+      { title: 'Leather Tote Bag', min: 16, max: 70, sub: 'bags-accessories' },
+    ],
     textiles: [
-      { title: 'Cotton Fabric Roll', min: 15, max: 120 },
-      { title: 'Woven Poly Bags', min: 10, max: 80 },
-      { title: 'Denim Bulk Lot', min: 200, max: 900 },
-      { title: 'Technical Mesh Cloth', min: 25, max: 150 },
-      { title: 'Dye-Ready Yarn', min: 30, max: 200 },
+      { title: 'Cotton Fabric Roll', min: 15, max: 120, sub: 'woven-fabrics' },
+      { title: 'Jersey Knit Roll', min: 18, max: 130, sub: 'knitted-fabrics' },
+      { title: 'Denim Bulk Lot', min: 200, max: 900, sub: 'denim' },
+      { title: 'Technical Mesh Cloth', min: 25, max: 150, sub: 'technical-textiles' },
+      { title: 'Dye-Ready Yarn', min: 30, max: 200, sub: 'yarn-thread' },
     ],
     machinery: [
       { title: 'CNC Spindle Unit', min: 800, max: 4500 },
@@ -110,6 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const brandsByCategory = {
     electronics: ['Samsung', 'Apple', 'Xiaomi', 'Oppo', 'Sony'],
+    apparel: ['Shahi Exports', 'Epic Group', 'Crystal Intl', 'Youngor', 'Esquel'],
     textiles: ['Raymond', 'Arvind', 'Welspun', 'Vardhman', 'Trident'],
     machinery: ['Caterpillar', 'Bosch', 'Siemens', 'Hitachi', 'Komatsu'],
     food: ['Nestlé', 'Unilever', 'Tata Consumer', 'Britannia', 'Olam'],
@@ -121,6 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const descriptions = {
     electronics: 'Precision-tested components sourced from certified manufacturing lines, ready for bulk industrial integration. Every batch is inspected before it leaves the factory, and full spec sheets are available on request so your engineering team can verify fit before you commit to a bulk order.',
+    apparel: 'Factory-direct garments made to spec, with full size grading, fabric and colour options, and private-label branding available on bulk orders. Pre-production samples can be requested so you can approve fit and finish before committing to a run.',
     textiles: 'Mill-direct material, quality-checked for weight, weave and colorfastness before it ever leaves the warehouse. Sample swatches can be requested ahead of a bulk purchase so you can confirm hand-feel and color match under your own lighting.',
     machinery: 'Heavy-duty industrial equipment built for continuous operation, with full spec sheets, wiring diagrams, and maintenance schedules available on request. Installation guidance is provided by the manufacturer\'s technical team.',
     food: 'Export-grade produce handled under cold-chain and food-safety compliance from farm to freight, with batch-level traceability documentation supplied for every shipment.',
