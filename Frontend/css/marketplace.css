@@ -979,3 +979,79 @@ svg {
   border-color: var(--accent);
   color: #fff;
 }
+
+/* ===== Horizontal scroll controls for the chip rows =====
+   The rows scroll but the scrollbar is hidden, so without these a
+   mouse user has no way to reach chips past the right edge. */
+.scroller-wrap {
+  position: relative;
+}
+
+.scroll-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  box-shadow: var(--shadow-sm);
+  padding: 0;
+}
+
+.scroll-arrow svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.scroll-arrow:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.scroll-arrow[hidden] {
+  display: none;
+}
+
+.scroll-arrow.left { left: 2px; }
+.scroll-arrow.right { right: 2px; }
+
+/* Fades hint that there is more to either side */
+.scroller-wrap::before,
+.scroller-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 8px;
+  width: 56px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+  z-index: 4;
+}
+
+.scroller-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-color), transparent);
+}
+
+.scroller-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-color), transparent);
+}
+
+.scroller-wrap.fade-left::before { opacity: 1; }
+.scroller-wrap.fade-right::after { opacity: 1; }

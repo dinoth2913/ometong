@@ -485,6 +485,61 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  /* ---------- Horizontal scrollers ----------
+     The chip rows overflow on narrower screens. They were already
+     `overflow-x: auto`, but with the scrollbar hidden a mouse user had
+     no way to reach the chips past the right edge — no scrollbar to
+     drag, and a vertical wheel doesn't scroll sideways. This adds
+     arrow buttons, edge fades, and wheel-to-horizontal so the hidden
+     chips are actually reachable however you're navigating. */
+  function enableHorizontalScroll(scroller) {
+    const wrap = document.createElement('div');
+    wrap.className = 'scroller-wrap';
+    scroller.parentNode.insertBefore(wrap, scroller);
+    wrap.appendChild(scroller);
+
+    function arrow(dir, label) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'scroll-arrow ' + (dir < 0 ? 'left' : 'right');
+      b.setAttribute('aria-label', label);
+      b.innerHTML = dir < 0
+        ? '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg>';
+      b.addEventListener('click', () => {
+        scroller.scrollBy({ left: dir * scroller.clientWidth * 0.7, behavior: 'smooth' });
+      });
+      wrap.appendChild(b);
+      return b;
+    }
+    const leftBtn = arrow(-1, 'Scroll categories left');
+    const rightBtn = arrow(1, 'Scroll categories right');
+
+    function update() {
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      const canLeft = scroller.scrollLeft > 4;
+      const canRight = scroller.scrollLeft < max - 4;
+      leftBtn.hidden = !canLeft;
+      rightBtn.hidden = !canRight;
+      wrap.classList.toggle('fade-left', canLeft);
+      wrap.classList.toggle('fade-right', canRight);
+    }
+
+    scroller.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    // let a normal vertical wheel move the row sideways
+    scroller.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      if (max <= 0) return;
+      scroller.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }, { passive: false });
+
+    update();
+    return { update: update, wrap: wrap };
+  }
+
   /* ---------- Category chips (rendered from the shared taxonomy) ---------- */
   const catScroll = document.getElementById('catScroll');
   const taxonomy = window.ometongTaxonomy;
@@ -493,6 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `<button class="cat-chip" data-cat="${c.slug}"><span class="cat-ic">${c.icon}</span>${c.label}</button>`
     ).join(''));
   }
+  const catScroller = catScroll ? enableHorizontalScroll(catScroll) : null;
 
   function bindCategoryChips() {
     document.querySelectorAll('.cat-chip').forEach(chip => {
@@ -512,15 +568,21 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Subcategory chips ----------
      Second filter row, only shown once a real category is picked. */
   const subcatScroll = document.getElementById('subcatScroll');
+  // Unhide before wrapping so the wrapper measures a real width; the
+  // wrapper is what gets hidden from here on, so the arrows hide with it.
+  if (subcatScroll) subcatScroll.hidden = false;
+  const subScroller = subcatScroll ? enableHorizontalScroll(subcatScroll) : null;
+  if (subScroller) subScroller.wrap.hidden = true;
+
   function renderSubcategoryChips() {
     if (!subcatScroll || !taxonomy) return;
     const subs = activeCat === 'all' ? [] : taxonomy.subcategoriesFor(activeCat);
     if (!subs.length) {
-      subcatScroll.hidden = true;
+      if (subScroller) subScroller.wrap.hidden = true;
       subcatScroll.innerHTML = '';
       return;
     }
-    subcatScroll.hidden = false;
+    if (subScroller) subScroller.wrap.hidden = false;
     subcatScroll.innerHTML =
       `<button class="subcat-chip${activeSub === 'all' ? ' active' : ''}" data-sub="all">All ${taxonomy.categorySlugToLabel[activeCat] || ''}</button>` +
       subs.map(s => `<button class="subcat-chip${activeSub === s.slug ? ' active' : ''}" data-sub="${s.slug}">${s.label}</button>`).join('');
@@ -532,6 +594,11 @@ document.addEventListener('DOMContentLoaded', () => {
         refresh();
       });
     });
+
+    // new chips mean a new width — re-check whether arrows are needed,
+    // and start this row back at the left
+    subcatScroll.scrollLeft = 0;
+    if (subScroller) subScroller.update();
   }
   renderSubcategoryChips();
 
