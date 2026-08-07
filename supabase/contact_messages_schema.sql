@@ -41,6 +41,7 @@ alter table public.contact_messages enable row level security;
 
 -- Anyone can send one — including a logged-out visitor filling out
 -- the form, which is the normal case for this page.
+drop policy if exists "Anyone can submit a contact message" on public.contact_messages;
 create policy "Anyone can submit a contact message"
   on public.contact_messages for insert
   with check (true);
@@ -48,10 +49,12 @@ create policy "Anyone can submit a contact message"
 -- Reading is admin-only: a visitor never needs to read these back
 -- (there's no inbox for them — a real reply comes as an email or a
 -- phone call, not through the site).
+drop policy if exists "Admins can view contact messages" on public.contact_messages;
 create policy "Admins can view contact messages"
   on public.contact_messages for select
   using (public.is_admin());
 
+drop policy if exists "Admins can update contact messages" on public.contact_messages;
 create policy "Admins can update contact messages"
   on public.contact_messages for update
   using (public.is_admin())
