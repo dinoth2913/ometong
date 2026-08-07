@@ -146,3 +146,136 @@
     border-top: none;
   }
 }
+
+/* =========================================================
+   INQUIRIES TABS (Buyer <-> Supplier vs Contact Us messages)
+========================================================= */
+.inq-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.inq-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--card-bg);
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: .84rem;
+  cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+}
+
+.inq-tab:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.inq-tab.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.inq-tab-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   CONTACT US MESSAGE DETAIL
+========================================================= */
+.contact-msg-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-msg-text {
+  white-space: pre-wrap;
+  font-size: .92rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 0;
+}
+
+.contact-msg-reach {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.contact-msg-reach svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.contact-msg-status {
+  margin-left: auto;
+  font-size: .76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-alt);
+  color: var(--ink-faint);
+}
+
+.contact-msg-status.replied {
+  background: rgba(34, 197, 94, .15);
+  color: #178A50;
+}
+
+.contact-msg-status.closed {
+  background: rgba(21, 24, 31, .1);
+  color: var(--ink-faint);
+}
+
+.contact-msg-note-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.contact-msg-note-label textarea {
+  font-family: inherit;
+  font-size: .86rem;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--card-bg);
+  resize: vertical;
+}
+
+.contact-msg-actions {
+  display: flex;
+  gap: 10px;
+}

@@ -70,16 +70,55 @@ document.addEventListener('DOMContentLoaded', () => {
   const contactForm = document.getElementById('contactForm');
   const formSuccess = document.getElementById('formSuccess');
   const sendBtn = document.getElementById('sendBtn');
+  const formError = document.getElementById('formError');
+  const activeRouteCard = () => document.querySelector('.route-card.active');
 
-  contactForm?.addEventListener('submit', (e) => {
+  contactForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (formError) formError.hidden = true;
     sendBtn.querySelector('span').textContent = 'Sending…';
     sendBtn.disabled = true;
 
-    setTimeout(() => {
-      contactForm.style.display = 'none';
-      formSuccess.classList.add('show');
-    }, 700);
+    const fd = new FormData(contactForm);
+    const route = activeRouteCard()?.dataset.route || 'general';
+
+    let userId = null;
+    if (window.sb) {
+      const { data: { session } } = await window.sb.auth.getSession();
+      userId = session?.user?.id || null;
+    }
+
+    const payload = {
+      name: (fd.get('name') || '').trim(),
+      email: (fd.get('email') || '').trim(),
+      phone: (fd.get('phone') || '').trim() || null,
+      company: (fd.get('company') || '').trim() || null,
+      route,
+      subject: (fd.get('subject') || '').trim() || (routeLabels[route] || 'General Enquiry'),
+      message: (fd.get('message') || '').trim(),
+      user_id: userId
+    };
+
+    if (!window.sb) {
+      sendBtn.querySelector('span').textContent = 'Send Message';
+      sendBtn.disabled = false;
+      if (formError) { formError.textContent = 'Sorry — we can\'t send this right now. Please try again shortly.'; formError.hidden = false; }
+      return;
+    }
+
+    const { error } = await window.sb.from('contact_messages').insert(payload);
+
+    sendBtn.querySelector('span').textContent = 'Send Message';
+    sendBtn.disabled = false;
+
+    if (error) {
+      console.error('Ometong: failed to submit contact message', error);
+      if (formError) { formError.textContent = 'Something went wrong sending your message. Please try again.'; formError.hidden = false; }
+      return;
+    }
+
+    contactForm.style.display = 'none';
+    formSuccess.classList.add('show');
   });
 
   document.getElementById('sendAnother')?.addEventListener('click', () => {
