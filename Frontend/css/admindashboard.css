@@ -45,6 +45,10 @@
   grid-template-columns: .9fr 1.1fr 1.8fr .9fr 1fr 1.6fr;
 }
 
+.admin-row--applications {
+  grid-template-columns: 1.3fr 1fr 2fr 1fr 1.6fr;
+}
+
 .admin-badge {
   display: inline-block;
   padding: 3px 10px;

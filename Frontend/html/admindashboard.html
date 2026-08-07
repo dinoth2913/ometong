@@ -39,6 +39,7 @@
       <a href="#users" data-i18n="nav.users">Users</a>
       <a href="#orders" data-i18n="nav.orders">Orders</a>
       <a href="#refunds">Refunds</a>
+      <a href="#applications">Applications</a>
       <a href="#inquiries">Inquiries</a>
       <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
     </nav>
@@ -75,6 +76,7 @@
   <a href="#users" data-i18n="nav.users">Users</a>
   <a href="#orders" data-i18n="nav.orders">Orders</a>
   <a href="#refunds">Refunds</a>
+  <a href="#applications">Applications</a>
   <a href="#inquiries">Inquiries</a>
   <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
   <select class="lang-switch" aria-label="Language">
@@ -234,6 +236,29 @@
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 8v5l3 3"/><circle cx="12" cy="12" r="9"/></svg>
         <h3>No refund requests</h3>
         <p>When a buyer requests a refund from their dashboard, it'll show up here for review.</p>
+      </div>
+    </section>
+
+    <!-- ===== SUPPLIER APPLICATIONS ===== -->
+    <section data-reveal id="applications">
+      <div class="section-head">
+        <h2>Supplier applications</h2>
+        <span class="section-hint" id="applicationsPendingHint">Nothing pending</span>
+      </div>
+      <div class="admin-table" id="applicationsTable">
+        <div class="admin-row admin-row--applications admin-row--head">
+          <span>Company</span>
+          <span>Category</span>
+          <span>Details</span>
+          <span>Status</span>
+          <span></span>
+        </div>
+        <div id="applicationsTableBody"></div>
+      </div>
+      <div class="empty-state" id="applicationsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <h3>No supplier applications</h3>
+        <p>Submissions from the "Become a Supplier" form will show up here for review.</p>
       </div>
     </section>
 
@@ -415,5 +440,6 @@
 <script src="../js/adminInquiries.js"></script>
 <script src="../js/adminContactMessages.js"></script>
 <script src="../js/adminRefunds.js"></script>
+<script src="../js/adminSupplierApplications.js"></script>
 </body>
 </html>

@@ -10,7 +10,6 @@
 (function () {
   "use strict";
 
-  var LEADS_STORAGE_KEY = "ometongSupplierLeads";
   var ANNOUNCE_STORAGE_KEY = "ometongSuppliersAnnounceDismissed";
   var LANG_STORAGE_KEY = "ometong_lang";
 
@@ -105,6 +104,7 @@
       "footer.rights": "Ometong. All rights reserved.",
       "js.errCompany": "Company name is required.", "js.errEmail": "Enter a valid business email.", "js.errCategory": "Please select a category.",
       "js.errFix": "Please fix the highlighted fields.",
+      "js.errServer": "Something went wrong submitting this — please try again.",
       "js.success": "Application received! Our team will follow up by email within 2–3 business days.",
       "js.subscribed": "Thanks — you're subscribed!"
     },
@@ -184,6 +184,7 @@
       "footer.rights": "Ometong. 保留所有权利。",
       "js.errCompany": "请填写公司名称。", "js.errEmail": "请输入有效的企业邮箱。", "js.errCategory": "请选择一个品类。",
       "js.errFix": "请检查并修正标红的字段。",
+      "js.errServer": "提交时出现问题，请重试。",
       "js.success": "申请已收到！我们的团队将在2-3个工作日内通过邮件与您联系。",
       "js.subscribed": "感谢订阅！"
     },
@@ -263,6 +264,7 @@
       "footer.rights": "Ometong. Todos los derechos reservados.",
       "js.errCompany": "El nombre de la empresa es obligatorio.", "js.errEmail": "Ingresa un correo empresarial válido.", "js.errCategory": "Selecciona una categoría.",
       "js.errFix": "Corrige los campos marcados.",
+      "js.errServer": "Algo salió mal al enviar esto — inténtalo de nuevo.",
       "js.success": "¡Solicitud recibida! Nuestro equipo te contactará por correo en 2–3 días hábiles.",
       "js.subscribed": "¡Gracias! Ya estás suscrito."
     },
@@ -342,6 +344,7 @@
       "footer.rights": "Ometong. Tous droits réservés.",
       "js.errCompany": "Le nom de l'entreprise est requis.", "js.errEmail": "Saisissez un e-mail professionnel valide.", "js.errCategory": "Veuillez choisir une catégorie.",
       "js.errFix": "Merci de corriger les champs signalés.",
+      "js.errServer": "Une erreur est survenue lors de l'envoi — veuillez réessayer.",
       "js.success": "Candidature reçue ! Notre équipe vous recontactera par e-mail sous 2 à 3 jours ouvrés.",
       "js.subscribed": "Merci — vous êtes inscrit !"
     },
@@ -421,6 +424,7 @@
       "footer.rights": "Ometong. सर्वाधिकार सुरक्षित।",
       "js.errCompany": "कंपनी का नाम आवश्यक है।", "js.errEmail": "एक मान्य बिज़नेस ईमेल दर्ज करें।", "js.errCategory": "कृपया एक श्रेणी चुनें।",
       "js.errFix": "कृपया हाइलाइट किए गए फ़ील्ड ठीक करें।",
+      "js.errServer": "सबमिट करने में कुछ गड़बड़ हुई — कृपया फिर से प्रयास करें।",
       "js.success": "आवेदन प्राप्त हुआ! हमारी टीम 2–3 कार्यदिवसों में ईमेल से संपर्क करेगी।",
       "js.subscribed": "धन्यवाद — आप सब्सक्राइब हो गए हैं!"
     },
@@ -500,6 +504,7 @@
       "footer.rights": "Ometong. සියලුම හිමිකම් ඇවිරිණි.",
       "js.errCompany": "සමාගමේ නම අවශ්‍යයි.", "js.errEmail": "වලංගු ව්‍යාපාරික ඊමේල් එකක් ඇතුළත් කරන්න.", "js.errCategory": "කරුණාකර කාණ්ඩයක් තෝරන්න.",
       "js.errFix": "කරුණාකර සලකුණු කළ ක්ෂේත්‍ර නිවැරදි කරන්න.",
+      "js.errServer": "මෙය ඉදිරිපත් කිරීමේදී දෝෂයක් ඇති විය — කරුණාකර නැවත උත්සාහ කරන්න.",
       "js.success": "අයදුම්පත ලැබී ඇත! අපගේ කණ්ඩායම දින 2–3ක් තුළ ඊමේල් මගින් සම්බන්ධ වනු ඇත.",
       "js.subscribed": "ස්තූතියි — ඔබ දායක වී ඇත!"
     }
@@ -740,7 +745,7 @@
     var msgEl = document.getElementById("applyFormMsg");
     if (!form) return;
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
       clearFieldErrors(form);
 
@@ -748,6 +753,7 @@
       var contactEmail = form.querySelector("#contactEmail");
       var category = form.querySelector("#category");
       var details = form.querySelector("#details");
+      var submitBtn = form.querySelector('button[type="submit"]');
 
       var isValid = true;
 
@@ -769,14 +775,36 @@
         return;
       }
 
-      var lead = {
-        companyName: companyName.value.trim(),
-        contactEmail: contactEmail.value.trim(),
+      if (!window.sb) {
+        showFormMsg(t("js.errServer"), false);
+        return;
+      }
+
+      if (submitBtn) submitBtn.disabled = true;
+
+      var userId = null;
+      try {
+        var sessionRes = await window.sb.auth.getSession();
+        userId = sessionRes && sessionRes.data && sessionRes.data.session
+          ? sessionRes.data.session.user.id
+          : null;
+      } catch (err) { /* not logged in — applying before signing up is the normal case */ }
+
+      var { error } = await window.sb.from("supplier_applications").insert({
+        company_name: companyName.value.trim(),
+        contact_email: contactEmail.value.trim(),
         category: category.value,
-        details: details.value.trim(),
-        submittedAt: new Date().toISOString()
-      };
-      saveLead(lead);
+        details: details.value.trim() || null,
+        user_id: userId
+      });
+
+      if (submitBtn) submitBtn.disabled = false;
+
+      if (error) {
+        console.error("Ometong: failed to submit supplier application", error);
+        showFormMsg(t("js.errServer"), false);
+        return;
+      }
 
       form.reset();
       showFormMsg(t("js.success"), true);
@@ -804,16 +832,6 @@
 
   function isValidEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  }
-
-  function saveLead(lead) {
-    var leads = [];
-    try {
-      var raw = localStorage.getItem(LEADS_STORAGE_KEY);
-      if (raw) leads = JSON.parse(raw);
-    } catch (e) { leads = []; }
-    leads.push(lead);
-    try { localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(leads)); } catch (e) { /* storage unavailable */ }
   }
 
   function showFormMsg(message, success) {
