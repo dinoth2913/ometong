@@ -178,6 +178,15 @@ button,input,select{font-family:inherit;}
 .pd-add-btn:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(255,116,49,.4);}
 .pd-add-btn.added{background:linear-gradient(135deg,#22C55E,#178A50);}
 .pd-add-btn svg{fill:none;stroke:#fff;stroke-width:1.8;}
+.pd-contact-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;height:46px;
+  border-radius:999px;border:1.5px solid var(--line);background:var(--card-bg);color:var(--ink);
+  font-weight:700;font-size:.88rem;cursor:pointer;white-space:nowrap;transition:border-color .2s, color .2s;
+}
+.pd-contact-btn:hover{border-color:var(--accent);color:var(--accent);}
+.pd-contact-btn:disabled{opacity:.6;cursor:default;}
+.pd-contact-btn svg{fill:none;stroke:currentColor;stroke-width:1.8;flex-shrink:0;}
+@media (max-width:520px){.pd-actions{flex-wrap:wrap;} .pd-contact-btn{flex:1 1 100%;}}
 
 /* =========================================================
    RELATED PRODUCTS

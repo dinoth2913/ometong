@@ -90,3 +90,59 @@
   border-color: #C0392B;
   color: #fff;
 }
+
+/* =========================================================
+   INQUIRIES (admin's two-channel mediated inbox)
+   Reuses .msg-shell/.msg-list/.msg-thread/.msg-bubbles from
+   messages.css, wider here since the admin dashboard has the
+   full page width to work with instead of a narrow single-pane
+   inbox, and adds the buyer/supplier side-by-side split.
+========================================================= */
+#adminMsgShell {
+  height: min(680px, 78vh);
+}
+
+.admin-msg-split {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.admin-msg-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--line);
+}
+
+.admin-msg-col:first-child {
+  border-left: none;
+}
+
+.admin-msg-col-head {
+  padding: 10px 18px;
+  font-size: .76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  .admin-msg-split {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  .admin-msg-col {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    min-height: 260px;
+  }
+  .admin-msg-col:first-child {
+    border-top: none;
+  }
+}

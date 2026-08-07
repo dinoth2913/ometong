@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages | Ometong</title>
+<meta name="description" content="Your Ometong inquiries — every message with a buyer or supplier is routed through Ometong staff.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../images/smile-logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/supplierdashboard.css">
+<link rel="stylesheet" href="../css/messages.css">
+<link rel="stylesheet" href="../css/chatWidget.css">
+<link rel="stylesheet" href="../css/logo.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+</div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="Home.html" class="logo">
+      <img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact">
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#" id="dashboardLink">Dashboard</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contactus.html">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <span class="user-chip"><span class="user-chip-avatar" id="userAvatarInitials">?</span><span id="userChipName">Account</span></span>
+      <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" id="dashboardLinkMobile">Dashboard</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="contactus.html">Contact</a>
+  <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+</div>
+
+<main>
+  <div class="container section first">
+
+    <div class="dash-header" data-reveal>
+      <div>
+        <span class="tag">Messages</span>
+        <h1>Your inquiries</h1>
+        <p class="msg-policy-note">
+          <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          For everyone's protection, buyers and suppliers never message each other directly on Ometong — every message here goes through our team, who relay what's needed between the two sides.
+        </p>
+      </div>
+    </div>
+
+    <div class="msg-shell" id="msgShell" data-reveal>
+
+      <!-- ===== INQUIRY LIST ===== -->
+      <aside class="msg-list" id="msgList">
+        <div class="msg-list-head">
+          <span>Inquiries</span>
+        </div>
+        <div class="msg-list-body" id="msgListBody"></div>
+        <div class="empty-state" id="msgListEmpty" hidden>
+          <svg viewBox="0 0 24 24" width="36" height="36"><path d="M4 4h16v12H7l-3 3V4z"/></svg>
+          <h3>No inquiries yet</h3>
+          <p>Message a supplier from any product page — it'll show up here, and our team will take it from there.</p>
+        </div>
+      </aside>
+
+      <!-- ===== THREAD ===== -->
+      <section class="msg-thread" id="msgThread">
+        <div class="msg-thread-empty" id="msgThreadEmpty">
+          <svg viewBox="0 0 24 24" width="40" height="40"><path d="M4 4h16v12H7l-3 3V4z"/></svg>
+          <p>Select an inquiry to see the conversation.</p>
+        </div>
+
+        <div class="msg-thread-active" id="msgThreadActive" hidden>
+          <div class="msg-thread-head">
+            <button class="msg-back" id="msgBack" aria-label="Back to list">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+            <div>
+              <strong id="msgThreadSubject">Subject</strong>
+              <span id="msgThreadWith">With Ometong, re: —</span>
+            </div>
+          </div>
+
+          <div class="msg-bubbles" id="msgBubbles"></div>
+
+          <form class="msg-composer" id="msgComposer">
+            <textarea id="msgComposerInput" rows="1" placeholder="Message our team about this inquiry…" required></textarea>
+            <button type="submit" class="btn btn-primary btn-sm" id="msgSendBtn">
+              <svg viewBox="0 0 24 24" width="15" height="15"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/supabaseConfig.js"></script>
+<script src="../js/supabaseClient.js"></script>
+<script src="../js/messages.js"></script>
+<script src="../js/chatWidget.js"></script>
+</body>
+</html>

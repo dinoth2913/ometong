@@ -428,6 +428,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
           Add to Cart
         </button>
+        ${product.isReal ? `
+        <button class="pd-contact-btn" id="pdContactBtn" type="button" title="Sent to our team, who relay it to the seller — buyers and sellers don't message each other directly on Ometong">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 4h16v12H7l-3 3V4z"/></svg>
+          Contact Supplier
+        </button>` : ''}
       </div>
     </div>
   `;
@@ -617,6 +622,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     const original = btn.innerHTML;
     btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M5 12l4 4 10-10" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Added to cart';
     setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = original; }, 1400);
+  });
+
+  /* ---------- Contact Supplier (mediated — never a direct line) ----------
+     Buyers and suppliers don't message each other on Ometong; this opens
+     (or reuses) an inquiry routed through Ometong staff, then hands off
+     to messages.html where the buyer types their first message. See
+     supabase/marketplace_enhancements_schema.sql section 1. */
+  const pdContactBtn = document.getElementById('pdContactBtn');
+  pdContactBtn?.addEventListener('click', async () => {
+    if (!window.sb) return;
+    const { data: { session } } = await window.sb.auth.getSession();
+    if (!session) {
+      window.location.href = 'authenticationpage.html';
+      return;
+    }
+    pdContactBtn.disabled = true;
+    const original = pdContactBtn.innerHTML;
+    pdContactBtn.innerHTML = 'Opening…';
+    const { data: inquiryId, error } = await window.sb.rpc('start_inquiry', {
+      p_supplier_id: product.supplierId,
+      p_listing_ref: String(product.id),
+      p_order_id: null,
+      p_subject: `Re: ${product.title}`,
+      p_first_message: null
+    });
+    if (error) {
+      console.error('Ometong: failed to start inquiry', error);
+      pdContactBtn.disabled = false;
+      pdContactBtn.innerHTML = original;
+      return;
+    }
+    window.location.href = `messages.html?inquiry=${inquiryId}`;
   });
 
   /* ---------- Related products (same category) ---------- */

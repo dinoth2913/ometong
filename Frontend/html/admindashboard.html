@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/supplierdashboard.css">
 <link rel="stylesheet" href="../css/admindashboard.css">
+<link rel="stylesheet" href="../css/messages.css">
 <link rel="stylesheet" href="../css/i18n.css">
 <link rel="stylesheet" href="../css/logo.css">
 </head>
@@ -37,6 +38,7 @@
       <a href="#listings" data-i18n="nav.allListings">All Listings</a>
       <a href="#users" data-i18n="nav.users">Users</a>
       <a href="#orders" data-i18n="nav.orders">Orders</a>
+      <a href="#inquiries">Inquiries</a>
       <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
     </nav>
 
@@ -71,6 +73,7 @@
   <a href="#listings" data-i18n="nav.allListings">All Listings</a>
   <a href="#users" data-i18n="nav.users">Users</a>
   <a href="#orders" data-i18n="nav.orders">Orders</a>
+  <a href="#inquiries">Inquiries</a>
   <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
   <select class="lang-switch" aria-label="Language">
     <option value="en">EN</option>
@@ -208,6 +211,68 @@
       </div>
     </section>
 
+    <!-- ===== INQUIRIES ===== -->
+    <section data-reveal id="inquiries">
+      <div class="section-head">
+        <h2>Inquiries</h2>
+        <span class="section-hint">Buyers and suppliers never message each other directly — read both sides here and relay what's needed</span>
+      </div>
+      <div class="msg-shell" id="adminMsgShell">
+        <aside class="msg-list" id="adminMsgList">
+          <div class="msg-list-head"><span>Open cases</span></div>
+          <div class="msg-list-body" id="adminMsgListBody"></div>
+          <div class="empty-state" id="adminMsgListEmpty" hidden>
+            <svg viewBox="0 0 24 24" width="36" height="36"><path d="M4 4h16v12H7l-3 3V4z"/></svg>
+            <h3>No inquiries yet</h3>
+            <p>Cases opened by buyers from a product page will show up here.</p>
+          </div>
+        </aside>
+
+        <section class="msg-thread" id="adminMsgThread">
+          <div class="msg-thread-empty" id="adminMsgThreadEmpty">
+            <svg viewBox="0 0 24 24" width="40" height="40"><path d="M4 4h16v12H7l-3 3V4z"/></svg>
+            <p>Select a case to see both channels.</p>
+          </div>
+
+          <div class="msg-thread-active" id="adminMsgThreadActive" hidden>
+            <div class="msg-thread-head">
+              <button class="msg-back" id="adminMsgBack" aria-label="Back to list">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 6l-6 6 6 6"/></svg>
+              </button>
+              <div>
+                <strong id="adminMsgSubject">Subject</strong>
+                <span id="adminMsgWith">Buyer ↔ Supplier</span>
+              </div>
+              <button class="btn btn-ghost btn-sm" id="adminMsgCloseBtn" style="margin-left:auto;">Close case</button>
+            </div>
+
+            <div class="admin-msg-split">
+              <div class="admin-msg-col">
+                <div class="admin-msg-col-head">Buyer channel</div>
+                <div class="msg-bubbles" id="adminMsgBuyerBubbles"></div>
+                <form class="msg-composer" data-channel="buyer_admin">
+                  <textarea rows="1" placeholder="Reply to the buyer…" required></textarea>
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    <svg viewBox="0 0 24 24" width="15" height="15"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+                  </button>
+                </form>
+              </div>
+              <div class="admin-msg-col">
+                <div class="admin-msg-col-head">Supplier channel</div>
+                <div class="msg-bubbles" id="adminMsgSupplierBubbles"></div>
+                <form class="msg-composer" data-channel="supplier_admin">
+                  <textarea rows="1" placeholder="Reply to the supplier…" required></textarea>
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    <svg viewBox="0 0 24 24" width="15" height="15"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
     <!-- ===== ACTIVITY LOG ===== -->
     <section data-reveal id="activity">
       <div class="section-head">
@@ -240,7 +305,7 @@
       <a href="Home.html" class="logo"><img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact"></a>
       <p data-i18n="footer.tagline">The marketplace built for global trade — products, services and logistics, matched by AI.</p>
       <div>
-        <h5>Company</h5><a href="Home.html#how">How it Works</a><a href="advertisement.html">Advertise</a><a href="contactus.html">Contact</a><a href="privacy.html">Privacy Policy</a>
+        <h5>Company</h5><a href="Home.html#how">How it Works</a><a href="advertisement.html">Advertise</a><a href="contactus.html">Contact</a>
       </div>
   </div>
   <div class="footer-bottom container">
@@ -258,5 +323,6 @@
 <script src="../js/authGuard.js" data-role="admin"></script>
 <script src="../js/i18n.js"></script>
 <script src="../js/admindashboard.js"></script>
+<script src="../js/adminInquiries.js"></script>
 </body>
 </html>

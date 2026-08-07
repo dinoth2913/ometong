@@ -64,7 +64,14 @@ create table if not exists public.inquiries (
   last_message_at timestamptz not null default now(),
   buyer_unread_count integer not null default 0,
   supplier_unread_count integer not null default 0,
-  created_at timestamptz not null default now()
+  -- Snapshotted display names (set once, at insert, below) so the
+  -- inbox list can show "who this case is with" on both sides
+  -- without a second round-trip or a broader name-lookup RPC than
+  -- get_public_supplier_profiles already allows.
+  buyer_name text,
+  supplier_name text,
+  created_at timestamptz not null default now(),
+  check (buyer_id <> supplier_id)
 );
 
 alter table public.inquiries enable row level security;
@@ -175,6 +182,105 @@ drop trigger if exists touch_inquiry_trigger on public.inquiry_messages;
 create trigger touch_inquiry_trigger
   after insert on public.inquiry_messages
   for each row execute function public.touch_inquiry();
+
+-- Snapshot both parties' display names once, at creation. Read-only
+-- reference data from here on — if a business renames later, past
+-- inquiries keep showing the name it had at the time, same way an
+-- order keeps its shipping_address as it was when placed.
+create or replace function public.set_inquiry_party_names()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  select coalesce(nullif(business_name, ''), nullif(full_name, ''), 'Ometong user')
+    into new.buyer_name
+    from public.profiles where id = new.buyer_id;
+  select coalesce(nullif(business_name, ''), nullif(full_name, ''), 'Ometong user')
+    into new.supplier_name
+    from public.profiles where id = new.supplier_id;
+  return new;
+end;
+$$;
+
+drop trigger if exists set_inquiry_party_names_trigger on public.inquiries;
+create trigger set_inquiry_party_names_trigger
+  before insert on public.inquiries
+  for each row execute function public.set_inquiry_party_names();
+
+-- ---------- start_inquiry() ----------
+-- Find-or-create in one round trip: reuses an already-open inquiry
+-- between the same buyer/supplier/listing instead of spawning a new
+-- case every time someone clicks "Contact Supplier" on the same
+-- product, and optionally posts the buyer's first message straight
+-- into the buyer_admin channel. SECURITY DEFINER only to save the
+-- client a lookup-then-insert race; it never acts as anyone but the
+-- caller (auth.uid()) and enforces the same buyer_id = caller rule
+-- the plain insert policy above does.
+create or replace function public.start_inquiry(
+  p_supplier_id uuid, p_listing_ref text, p_order_id uuid, p_subject text, p_first_message text
+)
+returns uuid
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  v_buyer_id uuid := auth.uid();
+  v_inquiry_id uuid;
+begin
+  if v_buyer_id is null then
+    raise exception 'Must be logged in to start an inquiry.';
+  end if;
+  if v_buyer_id = p_supplier_id then
+    raise exception 'Cannot start an inquiry with yourself.';
+  end if;
+
+  select id into v_inquiry_id
+  from public.inquiries
+  where buyer_id = v_buyer_id
+    and supplier_id = p_supplier_id
+    and coalesce(listing_ref, '') = coalesce(p_listing_ref, '')
+    and status = 'open'
+  limit 1;
+
+  if v_inquiry_id is null then
+    insert into public.inquiries (buyer_id, supplier_id, listing_ref, order_id, subject)
+    values (v_buyer_id, p_supplier_id, p_listing_ref, p_order_id, p_subject)
+    returning id into v_inquiry_id;
+  end if;
+
+  if p_first_message is not null and length(trim(p_first_message)) > 0 then
+    insert into public.inquiry_messages (inquiry_id, channel, sender_id, sender_role, body)
+    values (v_inquiry_id, 'buyer_admin', v_buyer_id, 'buyer', p_first_message);
+  end if;
+
+  return v_inquiry_id;
+end;
+$$;
+
+grant execute on function public.start_inquiry(uuid, text, uuid, text, text) to authenticated;
+
+-- ---------- mark_inquiry_read() ----------
+-- Resets only the caller's own unread counter on a case they're
+-- actually part of. A narrow function instead of a general UPDATE
+-- policy on inquiries, so opening an inbox can never be used to
+-- rewrite anything else on the row (subject, status, the other
+-- party's counter, etc).
+create or replace function public.mark_inquiry_read(p_inquiry_id uuid)
+returns void
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  update public.inquiries
+     set buyer_unread_count = case when buyer_id = auth.uid() then 0 else buyer_unread_count end,
+         supplier_unread_count = case when supplier_id = auth.uid() then 0 else supplier_unread_count end
+   where id = p_inquiry_id
+     and (buyer_id = auth.uid() or supplier_id = auth.uid());
+end;
+$$;
+
+grant execute on function public.mark_inquiry_read(uuid) to authenticated;
 
 -- =========================================================
 -- 2. RFQs — "Request for Quote"
