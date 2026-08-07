@@ -219,6 +219,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profile = profileRows && profileRows[0];
     const supplierName = (profile && (profile.business_name || profile.full_name)) || 'Verified Seller';
 
+    const { data: tierRows } = await window.sb
+      .from('listing_price_tiers')
+      .select('min_qty, price_per_unit')
+      .eq('listing_id', row.id)
+      .order('min_qty', { ascending: true });
+
     return {
       id: row.id,
       cat,
@@ -237,8 +243,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       leadTime: row.lead_time_days || null,
       countryOfOrigin: row.country_of_origin || null,
       hsCode: row.hs_code || null,
+      priceTiers: tierRows || [],
       isReal: true
     };
+  }
+
+  /* ---------- Bulk pricing: resolve the unit price for a given qty ----------
+     Mirrors get_bulk_unit_price() in bulk_pricing_schema.sql — kept as a
+     plain client-side lookup here since the tiers are already loaded,
+     rather than a round-trip per quantity change. */
+  function unitPriceForQty(product, qty) {
+    if (!product.priceTiers || !product.priceTiers.length) return product.price;
+    let applicable = null;
+    for (const tier of product.priceTiers) {
+      if (tier.min_qty <= qty) applicable = tier;
+      else break; // tiers are sorted ascending — nothing further qualifies
+    }
+    return applicable ? Number(applicable.price_per_unit) : product.price;
   }
 
   /* ---------- Cart (shared with marketplace.js / cart.html / checkout.html) ---------- */
@@ -252,13 +273,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   function addToCart(product, qty) {
     const items = getCart();
     const existing = items.find(i => i.id === product.id);
-    if (existing) existing.qty += qty;
-    else items.push({
+    if (existing) {
+      existing.qty += qty;
+      // Re-resolve the unit price for the new total quantity — a
+      // buyer adding more of the same bulk item may have just
+      // crossed into a cheaper price tier.
+      existing.price = unitPriceForQty(product, existing.qty);
+    } else items.push({
       id: product.id,
       name: product.title,
       meta: product.supplier,
       badge: product.badge || 'New',
-      price: product.price,
+      price: unitPriceForQty(product, qty),
       qty,
       color: product.color,
       listingId: product.isReal ? product.id : null,
@@ -383,9 +409,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
 
       <div class="pd-price-row">
-        <span class="pd-price">$${product.price}</span>
+        <span class="pd-price" id="pdPrice">$${product.price}</span>
         <span class="pd-price-unit">/ unit</span>
       </div>
+
+      ${product.priceTiers && product.priceTiers.length ? `
+      <div class="pd-bulk-pricing">
+        <span class="pd-bulk-pricing-label">
+          <svg viewBox="0 0 24 24" width="14" height="14"><path d="M20.6 12l-8-8H4v8.6l8 8 8.6-8.6z"/><circle cx="8" cy="8" r="1.4"/></svg>
+          Bulk pricing
+        </span>
+        <div class="pd-bulk-tiers" id="pdBulkTiers">
+          <div class="pd-bulk-tier" data-min-qty="1">
+            <span>1${product.priceTiers[0].min_qty > 1 ? '–' + (product.priceTiers[0].min_qty - 1) : ''}</span>
+            <strong>$${product.price}</strong>
+          </div>
+          ${product.priceTiers.map((t, i) => {
+            const next = product.priceTiers[i + 1];
+            const range = next ? `${t.min_qty}–${next.min_qty - 1}` : `${t.min_qty}+`;
+            return `<div class="pd-bulk-tier" data-min-qty="${t.min_qty}"><span>${range}</span><strong>$${Number(t.price_per_unit)}</strong></div>`;
+          }).join('')}
+        </div>
+      </div>` : ''}
 
       <div class="pd-specs-grid">
         <div class="pd-spec-card">
@@ -601,17 +646,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (fav) fav.classList.toggle('saved', ids.some(x => String(x) === String(product.id)));
   });
 
-  /* ---------- Quantity stepper ---------- */
+  /* ---------- Quantity stepper (+ live bulk-price update) ---------- */
   const qtyInput = document.getElementById('pdQtyInput');
+  const pdPriceEl = document.getElementById('pdPrice');
+  const pdBulkTiers = document.getElementById('pdBulkTiers');
+
+  function refreshPriceForQty() {
+    const qty = Math.max(1, parseInt(qtyInput.value || '1', 10));
+    if (pdPriceEl) pdPriceEl.textContent = '$' + unitPriceForQty(product, qty);
+    if (pdBulkTiers) {
+      const tierEls = [...pdBulkTiers.querySelectorAll('.pd-bulk-tier')];
+      let activeEl = tierEls[0];
+      tierEls.forEach(el => {
+        if (parseInt(el.dataset.minQty, 10) <= qty) activeEl = el;
+      });
+      tierEls.forEach(el => el.classList.toggle('active', el === activeEl));
+    }
+  }
+
   document.getElementById('pdQtyMinus').addEventListener('click', () => {
     qtyInput.value = Math.max(1, parseInt(qtyInput.value || '1', 10) - 1);
+    refreshPriceForQty();
   });
   document.getElementById('pdQtyPlus').addEventListener('click', () => {
     qtyInput.value = parseInt(qtyInput.value || '1', 10) + 1;
+    refreshPriceForQty();
   });
   qtyInput.addEventListener('change', () => {
     if (!qtyInput.value || parseInt(qtyInput.value, 10) < 1) qtyInput.value = 1;
+    refreshPriceForQty();
   });
+  qtyInput.addEventListener('input', refreshPriceForQty);
+  refreshPriceForQty();
 
   /* ---------- Add to cart ---------- */
   document.getElementById('pdAddBtn').addEventListener('click', (e) => {

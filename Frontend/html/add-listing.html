@@ -76,6 +76,15 @@
           </label>
         </div>
 
+        <div class="tiers-section">
+          <div class="tiers-head">
+            <label class="tiers-label">Bulk pricing <span class="field-hint-inline">(optional)</span></label>
+            <button type="button" class="tiers-add-btn" id="addTierBtn">+ Add price tier</button>
+          </div>
+          <p class="field-hint">Offer a lower per-unit price at higher quantities — e.g. $8/unit from 50 units, $6/unit from 200. Leave empty to sell at one flat price.</p>
+          <div id="tiersContainer"></div>
+        </div>
+
         <div class="compliance-notice" id="complianceNotice" hidden>
           <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
           <span id="complianceNoticeText"></span>

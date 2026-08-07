@@ -149,6 +149,20 @@ button,input,select{font-family:inherit;}
 .pd-price{font-family:var(--font-display);font-size:2.1rem;font-weight:700;color:var(--ink);}
 .pd-price-unit{font-size:.9rem;color:var(--ink-faint);font-weight:600;}
 
+.pd-bulk-pricing{margin-bottom:22px;}
+.pd-bulk-pricing-label{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);margin-bottom:10px;}
+.pd-bulk-pricing-label svg{fill:none;stroke:var(--accent);stroke-width:1.8;}
+.pd-bulk-tiers{display:flex;gap:8px;flex-wrap:wrap;}
+.pd-bulk-tier{
+  display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 14px;border-radius:12px;
+  border:1.5px solid var(--line);background:var(--card-bg);transition:border-color .2s, background .2s;
+}
+.pd-bulk-tier span{font-size:.72rem;color:var(--ink-faint);font-weight:600;}
+.pd-bulk-tier strong{font-size:.92rem;color:var(--ink);}
+.pd-bulk-tier.active{border-color:var(--accent);background:rgba(255,116,49,.08);}
+.pd-bulk-tier.active span{color:var(--accent-dark);}
+.pd-bulk-tier.active strong{color:var(--accent-dark);}
+
 .pd-specs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
 .pd-spec-card{background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius-md);padding:16px;transition:transform .25s var(--ease), box-shadow .25s var(--ease);}
 .pd-spec-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-sm);}

@@ -213,6 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileMap = {};
     (profiles || []).forEach(p => { profileMap[p.id] = p; });
 
+    // One batched query for "does this listing have bulk pricing"
+    // instead of a per-card round trip — just needs the listing_id
+    // of every tier row to know which listings qualify.
+    const { data: tierRows } = await window.sb
+      .from('listing_price_tiers')
+      .select('listing_id')
+      .in('listing_id', rows.map(r => r.id));
+    const bulkListingIds = new Set((tierRows || []).map(t => t.listing_id));
+
     return rows.map(row => {
       const cat = categoryLabelToSlug[row.category] || 'services';
       const ci = categories.indexOf(cat);
@@ -235,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         description: row.description || descriptions[cat] || '',
         moq: row.moq || null,
         leadTime: row.lead_time_days || null,
+        hasBulkPricing: bulkListingIds.has(row.id),
         isReal: true
       };
     });
@@ -339,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </button>
         ${p.badge ? `<span class="p-badge">${esc(p.badge)}</span>` : ''}
+        ${p.hasBulkPricing ? `<span class="p-bulk-badge">Bulk pricing</span>` : ''}
       </div>
       <div class="p-body">
         <div class="p-head">

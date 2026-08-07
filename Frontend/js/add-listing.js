@@ -162,6 +162,56 @@
     function clearError() {
       errorEl.classList.remove("show");
     }
+
+    /* ---------- Bulk pricing tiers (optional) ----------
+       Purely a UI concern here — rows are collected on submit and
+       inserted into listing_price_tiers once the listing itself has
+       an id. Entirely optional: a listing with no tier rows just
+       sells at the flat price field above, same as before this was added. */
+    const tiersContainer = document.getElementById("tiersContainer");
+    const addTierBtn = document.getElementById("addTierBtn");
+
+    function addTierRow() {
+      if (!tiersContainer) return;
+      const row = document.createElement("div");
+      row.className = "tier-row";
+      row.innerHTML = `
+        <label>Min quantity <input type="number" class="tier-min-qty" min="1" step="1" placeholder="e.g. 50"></label>
+        <label>Price per unit (USD) <input type="number" class="tier-price" min="0" step="0.01" placeholder="e.g. 8.00"></label>
+        <button type="button" class="tier-row-remove" aria-label="Remove this tier">&times;</button>
+      `;
+      row.querySelector(".tier-row-remove").addEventListener("click", () => row.remove());
+      tiersContainer.appendChild(row);
+    }
+    addTierBtn?.addEventListener("click", addTierRow);
+
+    function collectTiers() {
+      if (!tiersContainer) return { tiers: [], error: null };
+      const rows = [...tiersContainer.querySelectorAll(".tier-row")];
+      const tiers = [];
+      for (const row of rows) {
+        const minQtyRaw = row.querySelector(".tier-min-qty").value;
+        const priceRaw = row.querySelector(".tier-price").value;
+        if (!minQtyRaw && !priceRaw) continue; // silently skip a fully-empty row
+        const minQty = parseInt(minQtyRaw, 10);
+        const price = parseFloat(priceRaw);
+        if (isNaN(minQty) || minQty < 1 || isNaN(price) || price < 0) {
+          return { tiers: null, error: "Please fill in both fields on every bulk pricing row, or remove the empty one." };
+        }
+        tiers.push({ min_qty: minQty, price_per_unit: price });
+      }
+      // No duplicate quantity thresholds — the database would reject
+      // it anyway (unique per listing), but catching it here gives a
+      // clearer message than a raw constraint-violation error.
+      const seen = new Set();
+      for (const t of tiers) {
+        if (seen.has(t.min_qty)) {
+          return { tiers: null, error: `You have two bulk pricing rows both starting at ${t.min_qty} units — each quantity can only appear once.` };
+        }
+        seen.add(t.min_qty);
+      }
+      return { tiers, error: null };
+    }
     function setLoading(isLoading) {
       submitBtn.disabled = isLoading;
       submitBtn.querySelector("span").textContent = isLoading ? "Publishing…" : "Publish Listing";
@@ -191,6 +241,9 @@
       if (!category) { showError("Please select a category."); return; }
       if (isNaN(price) || price < 0) { showError("Please enter a valid price."); return; }
 
+      const { tiers, error: tiersError } = collectTiers();
+      if (tiersError) { showError(tiersError); return; }
+
       setLoading(true);
 
       let imageUrl = null;
@@ -210,7 +263,7 @@
         imageUrl = publicUrlData?.publicUrl || null;
       }
 
-      const { error } = await window.sb.from("listings").insert({
+      const { data: newListing, error } = await window.sb.from("listings").insert({
         supplier_id: user.id,
         title,
         category,
@@ -223,13 +276,25 @@
         country_of_origin: countryOfOrigin,
         hs_code: hsCode,
         status: "active"
-      });
-      setLoading(false);
+      }).select("id").single();
 
-      if (error) {
-        showError(error.message || "Could not publish this listing. Please try again.");
+      if (error || !newListing) {
+        setLoading(false);
+        showError((error && error.message) || "Could not publish this listing. Please try again.");
         return;
       }
+
+      if (tiers.length) {
+        const { error: tiersInsertError } = await window.sb.from("listing_price_tiers").insert(
+          tiers.map(t => ({ listing_id: newListing.id, min_qty: t.min_qty, price_per_unit: t.price_per_unit }))
+        );
+        // The listing itself already published successfully at this point —
+        // don't block the success flow over the bulk-pricing add-on failing,
+        // just let the seller know so they can add tiers later from the listing.
+        if (tiersInsertError) console.error("Ometong: failed to save bulk pricing tiers", tiersInsertError);
+      }
+
+      setLoading(false);
 
       form.style.display = "none";
       successEl.classList.add("show");
