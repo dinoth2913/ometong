@@ -1,0 +1,179 @@
+/* =========================================================
+   OMETONG — ENTRY LOADING SPLASH (index.html at the repo root)
+   Recolored to the site's real brand accent (--accent/--accent-dark,
+   same orange used everywhere else) rather than the original yellow
+   draft. Only ever shown by pageLoader.js when the connection is
+   genuinely slow — see that file for the skip-when-fast logic.
+========================================================= */
+
+:root {
+  --accent: #FF7431;
+  --accent-dark: #E05A18;
+  --cream: #FFF7EE;
+  --ink: #4A2E12;
+  --ink-soft: #B9773B;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(circle at 50% 35%, var(--cream) 0%, #FFE8CC 55%, #FFD8A8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.loader-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  opacity: 0;
+  animation: fadeIn .4s ease forwards;
+}
+
+/* Soft ambient glow behind the logo */
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  transform: translate(-50%, -60%);
+  background: radial-gradient(circle, rgba(255, 116, 49, 0.5) 0%, rgba(255, 116, 49, 0) 70%);
+  filter: blur(4px);
+  animation: pulseGlow 2.6s ease-in-out infinite;
+  z-index: 0;
+}
+
+.logo-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: bounce 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 10px 18px rgba(255, 116, 49, 0.4));
+}
+
+/* Rotating dashed ring orbiting the smiley */
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 152px;
+  height: 152px;
+  transform: translate(-50%, -50%);
+  border: 3px dashed var(--accent-dark);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: spin 6s linear infinite;
+}
+
+.loading-text {
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: baseline;
+  z-index: 1;
+}
+
+.dots span {
+  display: inline-block;
+  animation: dotFade 1.4s infinite;
+  opacity: 0;
+}
+
+.dots span:nth-child(1) { animation-delay: 0s; }
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+
+.progress-track {
+  width: 220px;
+  height: 8px;
+  background: rgba(74, 46, 18, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+  transition: width 0.25s ease-out;
+}
+
+.progress-percent {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
+/* Fade the whole screen out once loading completes */
+.loader-screen.done {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-14px) scale(1.04); }
+}
+
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -60%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -60%) scale(1.12); }
+}
+
+@keyframes dotFade {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .logo, .ring, .glow, .dots span, .loader-screen {
+    animation: none !important;
+    opacity: 1;
+  }
+}
