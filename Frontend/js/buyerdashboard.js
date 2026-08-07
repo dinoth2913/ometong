@@ -383,12 +383,18 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="order-date">${esc(o.date)}</span>
         <span class="order-amount">$${o.amount.toLocaleString()}</span>
         <span class="order-status ${o.status}">${esc(o.statusLabel)}</span>
-        <span>${o.canReview ? `<button class="order-track" data-rate="${o.id}">Rate</button>` : ''}</span>
+        <span class="order-row-actions">
+          <button class="order-track" data-track="${o.id}">Track</button>
+          ${o.canReview ? `<button class="order-track" data-rate="${o.id}">Rate</button>` : ''}
+        </span>
       </div>
     `).join('');
 
     ordersList.querySelectorAll('[data-rate]').forEach(btn => {
       btn.addEventListener('click', () => openRateModal(btn.getAttribute('data-rate')));
+    });
+    ordersList.querySelectorAll('[data-track]').forEach(btn => {
+      btn.addEventListener('click', () => window.OmetongOrderTracking?.open(btn.getAttribute('data-track'), { mode: 'view' }));
     });
 
     const active = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;

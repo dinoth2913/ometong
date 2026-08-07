@@ -1,0 +1,93 @@
+/* =========================================================
+   OMETONG — ORDER TRACKING MODAL
+   Self-contained: injected by orderTracking.js on any dashboard
+   that includes it (buyer/supplier/manufacturer). Reads the
+   host page's own --ink/--accent/--line/--card-bg/--glass-bg
+   variables so it always matches that dashboard's theme.
+========================================================= */
+.ot-overlay {
+  position: fixed; inset: 0; z-index: 5000;
+  background: rgba(15, 20, 30, .5);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease;
+}
+.ot-overlay.open { opacity: 1; pointer-events: auto; }
+
+.ot-modal {
+  width: 100%; max-width: 480px; max-height: 86vh;
+  overflow-y: auto;
+  background: var(--card-bg, #fff);
+  border-radius: 20px;
+  border: 1px solid var(--line, rgba(0,0,0,.09));
+  box-shadow: 0 30px 70px rgba(0,0,0,.3);
+  padding: 26px 26px 22px;
+  position: relative;
+  transform: translateY(14px) scale(.97);
+  transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+.ot-overlay.open .ot-modal { transform: translateY(0) scale(1); }
+
+.ot-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 30px; height: 30px; border-radius: 50%; border: none;
+  background: rgba(0,0,0,.06); color: var(--ink, #15181F);
+  font-size: 16px; cursor: pointer; line-height: 1;
+}
+[data-theme="dark"] .ot-close { background: rgba(255,255,255,.08); }
+
+.ot-title { margin: 0 30px 4px 0; font-size: 1.1rem; }
+.ot-subtitle { margin: 0 0 18px; font-size: .84rem; color: var(--ink-faint, #9AA1AC); }
+
+.ot-ship-info {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  background: var(--bg-alt, #FBFAF8); border: 1px solid var(--line, rgba(0,0,0,.09));
+  border-radius: 14px; padding: 14px; margin-bottom: 20px;
+}
+.ot-ship-info div { display: flex; flex-direction: column; gap: 3px; }
+.ot-ship-info span { font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint, #9AA1AC); font-weight: 700; }
+.ot-ship-info strong { font-size: .86rem; color: var(--ink, #15181F); font-weight: 700; overflow-wrap: break-word; }
+
+.ot-timeline { display: flex; flex-direction: column; margin-bottom: 6px; }
+.ot-step { display: flex; gap: 14px; padding-bottom: 22px; position: relative; }
+.ot-step:last-child { padding-bottom: 0; }
+.ot-step::before {
+  content: ""; position: absolute; left: 10px; top: 22px; bottom: 0; width: 2px;
+  background: var(--line, rgba(0,0,0,.09));
+}
+.ot-step:last-child::before { display: none; }
+.ot-dot {
+  flex-shrink: 0; width: 21px; height: 21px; border-radius: 50%;
+  border: 2px solid var(--line, rgba(0,0,0,.09));
+  background: var(--card-bg, #fff);
+  display: flex; align-items: center; justify-content: center;
+}
+.ot-step.done .ot-dot { border-color: #22C55E; background: #22C55E; }
+.ot-step.done .ot-dot svg { display: block; stroke: #fff; }
+.ot-step.current .ot-dot { border-color: var(--accent, #FF7431); box-shadow: 0 0 0 4px rgba(255,116,49,.16); }
+.ot-step .ot-dot svg { display: none; width: 11px; height: 11px; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.ot-step.cancelled .ot-dot { border-color: #EF4444; background: #EF4444; }
+
+.ot-step-label { font-size: .9rem; font-weight: 700; color: var(--ink-faint, #9AA1AC); }
+.ot-step.done .ot-step-label, .ot-step.current .ot-step-label { color: var(--ink, #15181F); }
+.ot-step.cancelled .ot-step-label { color: #EF4444; }
+.ot-step-time { font-size: .76rem; color: var(--ink-faint, #9AA1AC); margin-top: 2px; }
+
+.ot-edit { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line, rgba(0,0,0,.09)); display: flex; flex-direction: column; gap: 12px; }
+.ot-edit label { display: flex; flex-direction: column; gap: 5px; font-size: .8rem; font-weight: 600; color: var(--ink, #15181F); }
+.ot-edit input {
+  padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line, rgba(0,0,0,.09));
+  font-family: inherit; font-size: .86rem; color: var(--ink, #15181F); background: var(--card-bg, #fff);
+}
+.ot-edit input:focus { outline: none; border-color: var(--accent, #FF7431); }
+.ot-edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ot-edit-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.ot-msg { font-size: .8rem; font-weight: 600; margin: 0; }
+.ot-msg.error { color: #B91C1C; }
+.ot-msg.success { color: #178A50; }
+
+@media (max-width: 480px) {
+  .ot-ship-info { grid-template-columns: 1fr; }
+  .ot-edit-row { grid-template-columns: 1fr; }
+}

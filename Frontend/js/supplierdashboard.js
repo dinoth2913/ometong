@@ -68,13 +68,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Supplier data ----------
-     Listings are real, fetched from Supabase for the logged-in account.
-     No order-fulfillment/payout backend exists yet, so a real new
-     supplier account genuinely starts with none of that — those
-     sections fill in on their own once that's built. */
+     Listings and orders are real, fetched from Supabase for the
+     logged-in account. No payout backend exists yet (needs a real
+     payment provider wired in first — see supabase/orders_schema.sql),
+     so that section genuinely starts empty until then. */
   let listings = [];
+  let orders = [];
   const demoRequests = [];
-  const demoOrders = [];
   const demoPayouts = [];
 
   const listingColors = ['#3A6FF7', '#8B5CF6', '#22C55E', '#FFC24D', '#FF7431', '#EF4444'];
@@ -196,15 +196,67 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ---------- Load real orders ----------
+     Fetched from order_items (the line items that are actually this
+     seller's own, not the whole order — an order can mix items from
+     several sellers) joined back to their parent order, then grouped
+     into one row per order. Amount shown is this seller's own share
+     of that order, not its grand total. */
+  async function loadOrders() {
+    if (!window.sb) return;
+    const user = await window.ometongGetUser();
+    if (!user) return;
+    const { data, error } = await window.sb
+      .from('order_items')
+      .select('*, orders(*)')
+      .eq('supplier_id', user.id)
+      .order('created_at', { ascending: false });
+    if (error) { console.error('Ometong: failed to load orders', error); return; }
+
+    const grouped = {};
+    (data || []).forEach(item => {
+      const o = item.orders;
+      if (!o) return;
+      if (!grouped[o.id]) grouped[o.id] = { order: o, items: [] };
+      grouped[o.id].items.push(item);
+    });
+
+    orders = Object.values(grouped)
+      .sort((a, b) => new Date(b.order.created_at) - new Date(a.order.created_at))
+      .map(g => {
+        const items = g.items;
+        const addr = g.order.shipping_address || {};
+        const amount = items.reduce((sum, it) => sum + Number(it.line_total || 0), 0);
+        const product = items.length > 1 ? `${items[0].title} +${items.length - 1} more` : items[0].title;
+        return {
+          id: g.order.id,
+          buyer: addr.fullName || 'Buyer',
+          country: addr.country || '—',
+          product,
+          amount,
+          status: g.order.status
+        };
+      });
+  }
+
   /* ---------- Render orders ---------- */
   const ordersList = document.getElementById('ordersList');
   const ordersHead = document.getElementById('ordersHead');
   const ordersEmpty = document.getElementById('ordersEmpty');
-  const orderStatusLabels = { processing: 'Processing', shipped: 'Shipped', delivered: 'Delivered' };
+  const ORDER_STATUS_MAP = {
+    pending: { cls: 'processing', label: 'Pending payment' },
+    paid: { cls: 'processing', label: 'Paid — ready to process' },
+    processing: { cls: 'processing', label: 'Processing' },
+    shipped: { cls: 'transit', label: 'Shipped' },
+    delivered: { cls: 'delivered', label: 'Delivered' },
+    completed: { cls: 'delivered', label: 'Completed' },
+    cancelled: { cls: 'cancelled', label: 'Cancelled' },
+    refunded: { cls: 'cancelled', label: 'Refunded' }
+  };
 
   function renderOrders() {
     if (!ordersList) return;
-    if (demoOrders.length === 0) {
+    if (orders.length === 0) {
       ordersList.innerHTML = '';
       if (ordersHead) ordersHead.style.display = 'none';
       if (ordersEmpty) ordersEmpty.hidden = false;
@@ -212,24 +264,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (ordersHead) ordersHead.style.display = '';
     if (ordersEmpty) ordersEmpty.hidden = true;
-    ordersList.innerHTML = demoOrders.map(o => `
+    ordersList.innerHTML = orders.map(o => {
+      const st = ORDER_STATUS_MAP[o.status] || { cls: 'processing', label: o.status };
+      return `
       <div class="order-row">
         <div>
           <div class="order-buyer">${o.buyer}</div>
-          <div class="order-buyer-sub">${o.country} · ${o.id}</div>
+          <div class="order-buyer-sub">${o.country} · #${String(o.id).slice(0, 8).toUpperCase()}</div>
         </div>
         <div class="order-product-name">${o.product}</div>
         <div class="order-amount">$${o.amount.toLocaleString('en-US')}</div>
-        <div><span class="order-status ${o.status}">${orderStatusLabels[o.status]}</span></div>
-        <div class="order-shipby">${o.shipBy}</div>
-      </div>`).join('');
+        <div><span class="order-status ${st.cls}">${st.label}</span></div>
+        <div><button class="order-track" data-manage="${o.id}">Manage</button></div>
+      </div>`;
+    }).join('');
+
+    ordersList.querySelectorAll('[data-manage]').forEach(btn => {
+      btn.addEventListener('click', () => window.OmetongOrderTracking?.open(btn.getAttribute('data-manage'), { mode: 'manage' }));
+    });
   }
+
+  document.addEventListener('ometongOrderUpdated', async () => {
+    await loadOrders();
+    renderOrders();
+    renderPayouts();
+    renderStats();
+  });
 
   /* ---------- Render payouts ---------- */
   function renderPayouts() {
-    const escrow = demoOrders.filter(o => o.status !== 'delivered').reduce((sum, o) => sum + o.amount, 0);
+    const escrow = orders.filter(o => o.status !== 'delivered' && o.status !== 'completed').reduce((sum, o) => sum + o.amount, 0);
     const paidTotal = demoPayouts.reduce((sum, p) => sum + p.amount, 0);
-    const nextAmount = demoOrders.find(o => o.status === 'processing')?.amount || 0;
+    const nextAmount = orders.find(o => o.status === 'processing')?.amount || 0;
 
     const escrowEl = document.getElementById('payoutEscrow');
     const nextEl = document.getElementById('payoutNext');
@@ -266,9 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderStats() {
     const activeListings = listings.filter(l => l.status === 'active' && l.is_approved).length;
     const newRequests = demoRequests.filter(r => r.status === 'new').length;
-    const ordersInProgress = demoOrders.filter(o => o.status !== 'delivered').length;
+    const ordersInProgress = orders.filter(o => o.status !== 'delivered' && o.status !== 'completed' && o.status !== 'cancelled').length;
     const totalEarnings = demoPayouts.reduce((sum, p) => sum + p.amount, 0)
-      + demoOrders.filter(o => o.status === 'delivered').reduce((sum, o) => sum + o.amount, 0);
+      + orders.filter(o => o.status === 'delivered' || o.status === 'completed').reduce((sum, o) => sum + o.amount, 0);
 
     const setNum = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     setNum('statListings', activeListings);
@@ -278,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   (async () => {
-    await loadListings();
+    await Promise.all([loadListings(), loadOrders()]);
     renderListings();
     renderRequests();
     renderOrders();

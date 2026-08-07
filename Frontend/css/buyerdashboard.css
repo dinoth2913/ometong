@@ -194,6 +194,7 @@ button,input,textarea,select{font-family:inherit;}
 .order-status.cancelled{background:rgba(239,68,68,.12);color:#C0392B;}
 .order-track{font-size:.8rem;font-weight:700;color:var(--accent);white-space:nowrap;}
 .order-track:hover{text-decoration:underline;}
+.order-row-actions{display:flex;gap:12px;}
 
 .empty-state{
   text-align:center;padding:56px 24px;

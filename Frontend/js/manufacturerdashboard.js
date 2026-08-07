@@ -68,16 +68,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Manufacturer data ----------
-     Listings are real, fetched from Supabase for the logged-in
-     account. No production/RFQ/order/certification/payout backend
-     exists yet, so those sections genuinely start empty — they'll
-     fill in on their own once that's built. */
+     Listings and orders are real, fetched from Supabase for the
+     logged-in account. No production-line/RFQ/certification/payout
+     backend exists yet, so those sections genuinely start empty —
+     they'll fill in on their own once that's built. */
   let listings = [];
+  let orders = [];
   const demoLines = [];
   const demoRfqs = [];
   const rfqLabels = { new: 'New', quoted: 'Quoted', won: 'Won' };
-  const stageNames = ['Materials sourced', 'In production', 'Quality check', 'Packaging', 'Shipped'];
-  const demoProdOrders = [];
   const demoCerts = [];
   const demoPayouts = [];
 
@@ -225,42 +224,101 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ---------- Render production-stage orders ---------- */
+  /* ---------- Load real orders ----------
+     Same shape as the supplier dashboard: order_items that are
+     actually this manufacturer's own (listings.supplier_id holds
+     both supplier and manufacturer account ids), grouped into one
+     card per order. Amount is this manufacturer's own share of the
+     order, not its grand total. */
+  async function loadOrders() {
+    if (!window.sb) return;
+    const user = await window.ometongGetUser();
+    if (!user) return;
+    const { data, error } = await window.sb
+      .from('order_items')
+      .select('*, orders(*)')
+      .eq('supplier_id', user.id)
+      .order('created_at', { ascending: false });
+    if (error) { console.error('Ometong: failed to load orders', error); return; }
+
+    const grouped = {};
+    (data || []).forEach(item => {
+      const o = item.orders;
+      if (!o) return;
+      if (!grouped[o.id]) grouped[o.id] = { order: o, items: [] };
+      grouped[o.id].items.push(item);
+    });
+
+    orders = Object.values(grouped)
+      .sort((a, b) => new Date(b.order.created_at) - new Date(a.order.created_at))
+      .map(g => {
+        const items = g.items;
+        const addr = g.order.shipping_address || {};
+        const amount = items.reduce((sum, it) => sum + Number(it.line_total || 0), 0);
+        const product = items.length > 1 ? `${items[0].title} +${items.length - 1} more` : items[0].title;
+        return {
+          id: g.order.id,
+          buyer: addr.fullName || 'Buyer',
+          country: addr.country || '—',
+          product,
+          amount,
+          status: g.order.status,
+          eta: g.order.estimated_delivery ? new Date(g.order.estimated_delivery).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'ETA not set'
+        };
+      });
+  }
+
+  /* ---------- Render orders in production ---------- */
   const prodOrders = document.getElementById('prodOrders');
   const prodOrdersEmpty = document.getElementById('prodOrdersEmpty');
-  const checkIcon = '<svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>';
+  const ORDER_STATUS_MAP = {
+    pending: { cls: 'processing', label: 'Pending payment' },
+    paid: { cls: 'processing', label: 'Paid — ready to produce' },
+    processing: { cls: 'processing', label: 'In production' },
+    shipped: { cls: 'transit', label: 'Shipped' },
+    delivered: { cls: 'delivered', label: 'Delivered' },
+    completed: { cls: 'delivered', label: 'Completed' },
+    cancelled: { cls: 'cancelled', label: 'Cancelled' },
+    refunded: { cls: 'cancelled', label: 'Refunded' }
+  };
 
   function renderProdOrders() {
     if (!prodOrders) return;
-    if (demoProdOrders.length === 0) {
+    if (orders.length === 0) {
       prodOrders.innerHTML = '';
       if (prodOrdersEmpty) prodOrdersEmpty.hidden = false;
       return;
     }
     if (prodOrdersEmpty) prodOrdersEmpty.hidden = true;
-    prodOrders.innerHTML = demoProdOrders.map(o => `
+    prodOrders.innerHTML = orders.map(o => {
+      const st = ORDER_STATUS_MAP[o.status] || { cls: 'processing', label: o.status };
+      return `
       <div class="prod-order-card">
         <div class="prod-order-top">
           <div>
             <div class="prod-order-title">${o.product}</div>
-            <div class="prod-order-sub">${o.buyer} · ${o.country} · ${o.id} · ${o.eta}</div>
+            <div class="prod-order-sub">${o.buyer} · ${o.country} · #${String(o.id).slice(0, 8).toUpperCase()} · ${o.eta}</div>
           </div>
           <div class="prod-order-amt">$${o.amount.toLocaleString('en-US')}</div>
         </div>
-        <div class="stage-tracker">
-          ${stageNames.map((label, i) => {
-            const stepIndex = i + 1;
-            const cls = stepIndex < o.stage ? 'done' : stepIndex === o.stage ? 'current' : '';
-            return `
-              <div class="stage-step ${cls}">
-                <div class="stage ${cls}">${stepIndex < o.stage ? checkIcon : ''}</div>
-                <span class="stage-label">${label}</span>
-                <div class="stage-line"></div>
-              </div>`;
-          }).join('')}
+        <div class="prod-order-bottom">
+          <span class="order-status ${st.cls}">${st.label}</span>
+          <button class="order-track" data-manage="${o.id}">Manage tracking</button>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
+
+    prodOrders.querySelectorAll('[data-manage]').forEach(btn => {
+      btn.addEventListener('click', () => window.OmetongOrderTracking?.open(btn.getAttribute('data-manage'), { mode: 'manage' }));
+    });
   }
+
+  document.addEventListener('ometongOrderUpdated', async () => {
+    await loadOrders();
+    renderProdOrders();
+    renderPayouts();
+    renderStats();
+  });
 
   /* ---------- Render certifications ---------- */
   const certGrid = document.getElementById('certGrid');
@@ -286,9 +344,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Render payouts ---------- */
   function renderPayouts() {
-    const escrow = demoProdOrders.filter(o => o.stage < 5).reduce((sum, o) => sum + o.amount, 0);
+    const escrow = orders.filter(o => o.status !== 'delivered' && o.status !== 'completed' && o.status !== 'cancelled').reduce((sum, o) => sum + o.amount, 0);
     const paidTotal = demoPayouts.reduce((sum, p) => sum + p.amount, 0);
-    const nextOrder = demoProdOrders.find(o => o.stage < 5);
+    const nextOrder = orders.find(o => o.status === 'processing');
 
     const escrowEl = document.getElementById('payoutEscrow');
     const nextEl = document.getElementById('payoutNext');
@@ -325,9 +383,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderStats() {
     const activeLines = demoLines.filter(l => l.status !== 'maintenance').length;
     const newRfqs = demoRfqs.filter(r => r.status === 'new').length;
-    const ordersInProduction = demoProdOrders.filter(o => o.stage < 5).length;
+    const ordersInProduction = orders.filter(o => o.status !== 'delivered' && o.status !== 'completed' && o.status !== 'cancelled').length;
     const totalEarnings = demoPayouts.reduce((sum, p) => sum + p.amount, 0)
-      + demoProdOrders.filter(o => o.stage === 5).reduce((sum, o) => sum + o.amount, 0);
+      + orders.filter(o => o.status === 'delivered' || o.status === 'completed').reduce((sum, o) => sum + o.amount, 0);
 
     const setNum = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     setNum('statLines', activeLines);
@@ -337,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   (async () => {
-    await loadListings();
+    await Promise.all([loadListings(), loadOrders()]);
     renderListings();
     renderLines();
     renderRfqs();
