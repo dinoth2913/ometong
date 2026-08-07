@@ -7,7 +7,14 @@
 .admin-table {
   border: 1px solid var(--border, #ECECEF);
   border-radius: 16px;
-  overflow: hidden;
+  /* A row's own content can still legitimately need more space than
+     it has (a long buyer name, a long refund reason) — overflow-x:auto
+     lets it scroll into view instead of silently clipping it, same
+     fix as the marketplace category-chip overflow issue. Vertical
+     overflow stays hidden so the rounded corners keep clipping row
+     backgrounds like before. */
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .admin-row {
@@ -18,6 +25,17 @@
   padding: 14px 20px;
   font-size: .88rem;
   border-bottom: 1px solid var(--border, #ECECEF);
+  /* Grid items default to min-width:auto, which means a track won't
+     shrink below its content's min-content size — a long unbroken
+     string (an email, an order id) can silently force the whole row
+     wider than the table. min-width:0 on every direct cell lets text
+     actually wrap/truncate inside its column instead of pushing the
+     layout out. */
+  min-width: fit-content;
+}
+
+.admin-row > * {
+  min-width: 0;
 }
 
 .admin-row:last-child {
