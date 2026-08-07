@@ -11,6 +11,10 @@
 
   var STORAGE_KEY = "ometongCart";
   var PROMO_STORAGE_KEY = "ometongPromo";
+  // Set by marketplace.js's "Buy Now" button (sessionStorage, not
+  // localStorage — a single-item order that lives only for this tab
+  // and never touches the real persisted cart).
+  var BUY_NOW_KEY = "ometongBuyNowItem";
   var TAX_RATE = 0.08;
   var FLAT_SHIPPING = 45;
   var FREE_SHIPPING_THRESHOLD = 500;
@@ -21,7 +25,13 @@
     "FREESHIP": { type: "shipping", value: 0, label: "Free shipping" }
   };
 
-  var cart = loadCart();
+  // Buy Now mode is decided once, up front, from the URL — if a
+  // ?buyNow=1 request shows up with no matching sessionStorage item
+  // (expired tab, direct link, etc.) this just falls back to the
+  // normal cart flow rather than checking out nothing.
+  var buyNowItem = new URLSearchParams(window.location.search).get("buyNow") === "1" ? loadBuyNowItem() : null;
+  var isBuyNow = !!buyNowItem;
+  var cart = isBuyNow ? [buyNowItem] : loadCart();
   var appliedPromo = loadPromo();
   var els = {};
 
@@ -48,11 +58,21 @@
     } catch (e) { /* ignore */ }
     return null;
   }
+  function loadBuyNowItem() {
+    try {
+      var raw = sessionStorage.getItem(BUY_NOW_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore malformed storage */ }
+    return null;
+  }
   function clearCartStorage() {
     try {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(PROMO_STORAGE_KEY);
     } catch (e) { /* ignore */ }
+  }
+  function clearBuyNowStorage() {
+    try { sessionStorage.removeItem(BUY_NOW_KEY); } catch (e) { /* ignore */ }
   }
 
   /* ---------------------------------------------------------------------
@@ -177,12 +197,17 @@
     }
     currentUser = session.user;
 
-    var synced = await waitForCartSync();
-    if (synced) cart = synced;
-    else cart = loadCart();
+    if (!isBuyNow) {
+      // Only the real cart gets merged with the account's saved cart
+      // after login — a Buy Now item is a one-off, self-contained
+      // order and must never be replaced by whatever's in the cart.
+      var synced = await waitForCartSync();
+      if (synced) cart = synced;
+      else cart = loadCart();
+    }
 
     if (!cart.length) {
-      window.location.href = "cart.html";
+      window.location.href = isBuyNow ? "marketplace.html" : "cart.html";
       return;
     }
 
@@ -328,7 +353,8 @@
         return;
       }
 
-      clearCartStorage();
+      if (isBuyNow) clearBuyNowStorage();
+      else clearCartStorage();
       cart = [];
       renderPlacedState();
     });

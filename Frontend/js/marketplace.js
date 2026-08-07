@@ -251,23 +251,38 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.ometongSyncCartToServer) window.ometongSyncCartToServer(items);
   }
   function cartTotalQty(items) { return items.reduce((sum, i) => sum + i.qty, 0); }
-  function addToCart(product) {
-    const items = getCart();
-    const existing = items.find(i => i.id === product.id);
-    if (existing) existing.qty++;
-    else items.push({
+  function toCartItem(product, qty) {
+    return {
       id: product.id,
       name: product.title,
       meta: product.supplier,
       badge: product.badge || 'New',
       price: product.price,
-      qty: 1,
+      qty: qty || 1,
       color: product.color,
       listingId: product.isReal ? product.id : null,
       supplierId: product.supplierId || null
-    });
+    };
+  }
+  function addToCart(product) {
+    const items = getCart();
+    const existing = items.find(i => i.id === product.id);
+    if (existing) existing.qty++;
+    else items.push(toCartItem(product, 1));
     saveCart(items);
     updateCartBadge();
+  }
+
+  /* ---------- Buy Now (pay for just this one item, cart untouched) ----------
+     Stores a single-item order in sessionStorage under its own key —
+     never touches the persisted cart — and hands off to checkout.html,
+     which reads that key instead of the cart when it's present. See
+     checkout.js's BUY_NOW_KEY handling. */
+  const BUY_NOW_KEY = 'ometongBuyNowItem';
+  function buyNow(product) {
+    try { sessionStorage.setItem(BUY_NOW_KEY, JSON.stringify(toCartItem(product, 1))); }
+    catch { /* sessionStorage unavailable — fall through, checkout will just show an empty cart */ }
+    window.location.href = 'checkout.html?buyNow=1';
   }
   function updateCartBadge() {
     const el = document.getElementById('cartCount');
@@ -340,10 +355,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M20.6 12l-8-8H4v8.6l8 8 8.6-8.6z"/><circle cx="8" cy="8" r="1.4"/></svg>${catLabel}</span>
           <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>${p.badge || 'Standard'}</span>
         </div>
-        <button class="p-add" data-add="${p.id}">
-          <svg viewBox="0 0 24 24" width="15" height="15"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
-          Add to Cart
-        </button>
+        <div class="p-actions-row">
+          <button class="p-add" data-add="${p.id}">
+            <svg viewBox="0 0 24 24" width="15" height="15"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+            Add to Cart
+          </button>
+          <button class="p-buy-now" data-buynow="${p.id}">
+            <svg viewBox="0 0 24 24" width="15" height="15"><path d="M4 12l6 6L20 6"/></svg>
+            Buy Now
+          </button>
+        </div>
         <a class="p-details-link" href="product-details.html?id=${p.id}" data-details>View full details →</a>
       </div>
     </div>`;
@@ -656,6 +677,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (product) addToCart(product);
       addBtn.classList.add('added');
       setTimeout(() => addBtn.classList.remove('added'), 700);
+      return;
+    }
+    const buyNowBtn = e.target.closest('[data-buynow]');
+    if (buyNowBtn) {
+      const id = buyNowBtn.dataset.buynow;
+      const product = allProducts.find(p => String(p.id) === id);
+      if (product) {
+        buyNowBtn.disabled = true;
+        buyNowBtn.textContent = 'Redirecting…';
+        buyNow(product);
+      }
       return;
     }
     const favBtn = e.target.closest('[data-fav]');
