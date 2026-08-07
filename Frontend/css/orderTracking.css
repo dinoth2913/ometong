@@ -87,6 +87,22 @@
 .ot-msg.error { color: #B91C1C; }
 .ot-msg.success { color: #178A50; }
 
+.ot-refund { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line, rgba(0,0,0,.09)); }
+.ot-refund-status {
+  font-size: .84rem; font-weight: 600; padding: 10px 14px; border-radius: 10px;
+  background: var(--bg-alt, #FBFAF8); color: var(--ink-soft, #666E7A);
+}
+.ot-refund-status.approved, .ot-refund-status.processed { background: rgba(34,197,94,.12); color: #178A50; }
+.ot-refund-status.rejected { background: rgba(239,68,68,.1); color: #B91C1C; }
+.ot-refund-form { display: flex; flex-direction: column; gap: 12px; }
+.ot-refund-form label { display: flex; flex-direction: column; gap: 5px; font-size: .8rem; font-weight: 600; color: var(--ink, #15181F); }
+.ot-refund-form textarea, .ot-refund-form input {
+  padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line, rgba(0,0,0,.09));
+  font-family: inherit; font-size: .86rem; color: var(--ink, #15181F); background: var(--card-bg, #fff); resize: vertical;
+}
+.ot-refund-form textarea:focus, .ot-refund-form input:focus { outline: none; border-color: var(--accent, #FF7431); }
+.ot-refund-form button { align-self: flex-start; }
+
 @media (max-width: 480px) {
   .ot-ship-info { grid-template-columns: 1fr; }
   .ot-edit-row { grid-template-columns: 1fr; }

@@ -38,6 +38,7 @@
       <a href="#listings" data-i18n="nav.allListings">All Listings</a>
       <a href="#users" data-i18n="nav.users">Users</a>
       <a href="#orders" data-i18n="nav.orders">Orders</a>
+      <a href="#refunds">Refunds</a>
       <a href="#inquiries">Inquiries</a>
       <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
     </nav>
@@ -73,6 +74,7 @@
   <a href="#listings" data-i18n="nav.allListings">All Listings</a>
   <a href="#users" data-i18n="nav.users">Users</a>
   <a href="#orders" data-i18n="nav.orders">Orders</a>
+  <a href="#refunds">Refunds</a>
   <a href="#inquiries">Inquiries</a>
   <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
   <select class="lang-switch" aria-label="Language">
@@ -208,6 +210,30 @@
           <h3 data-i18n="admin.noOrdersTitle">No orders yet</h3>
           <p data-i18n="admin.noOrdersText">Orders will show up here once buyers start checking out.</p>
         </div>
+      </div>
+    </section>
+
+    <!-- ===== REFUNDS ===== -->
+    <section data-reveal id="refunds">
+      <div class="section-head">
+        <h2>Refund requests</h2>
+        <span class="section-hint" id="refundsPendingHint">Nothing pending</span>
+      </div>
+      <div class="admin-table" id="refundsTable">
+        <div class="admin-row admin-row--refunds admin-row--head">
+          <span>Order</span>
+          <span>Buyer</span>
+          <span>Reason</span>
+          <span>Requested</span>
+          <span>Status</span>
+          <span></span>
+        </div>
+        <div id="refundsTableBody"></div>
+      </div>
+      <div class="empty-state" id="refundsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 8v5l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+        <h3>No refund requests</h3>
+        <p>When a buyer requests a refund from their dashboard, it'll show up here for review.</p>
       </div>
     </section>
 
@@ -388,5 +414,6 @@
 <script src="../js/admindashboard.js"></script>
 <script src="../js/adminInquiries.js"></script>
 <script src="../js/adminContactMessages.js"></script>
+<script src="../js/adminRefunds.js"></script>
 </body>
 </html>

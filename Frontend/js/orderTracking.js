@@ -62,6 +62,16 @@
             <button class="btn btn-primary btn-sm" id="otAdvanceBtn" type="button" hidden></button>
           </div>
         </div>
+
+        <div class="ot-refund" id="otRefund" hidden>
+          <div class="ot-refund-status" id="otRefundStatus" hidden></div>
+          <form class="ot-refund-form" id="otRefundForm" hidden>
+            <label>What went wrong? <textarea id="otRefundReason" rows="2" placeholder="e.g. item arrived damaged" required></textarea></label>
+            <label>Amount requested (USD) <input type="number" id="otRefundAmount" min="0" step="0.01" required></label>
+            <p class="ot-msg" id="otRefundMsg" hidden></p>
+            <button type="submit" class="btn btn-ghost btn-sm">Request a refund</button>
+          </form>
+        </div>
       </div>
     `;
     document.body.appendChild(overlay);
@@ -79,8 +89,15 @@
       etaInput: overlay.querySelector('#otEtaInput'),
       msg: overlay.querySelector('#otMsg'),
       saveDetailsBtn: overlay.querySelector('#otSaveDetailsBtn'),
-      advanceBtn: overlay.querySelector('#otAdvanceBtn')
+      advanceBtn: overlay.querySelector('#otAdvanceBtn'),
+      refund: overlay.querySelector('#otRefund'),
+      refundStatus: overlay.querySelector('#otRefundStatus'),
+      refundForm: overlay.querySelector('#otRefundForm'),
+      refundReason: overlay.querySelector('#otRefundReason'),
+      refundAmount: overlay.querySelector('#otRefundAmount'),
+      refundMsg: overlay.querySelector('#otRefundMsg')
     };
+    els.refundForm.addEventListener('submit', submitRefundRequest);
 
     overlay.querySelector('#otClose').addEventListener('click', close);
     overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
@@ -192,6 +209,79 @@
     renderEdit(order);
 
     overlay._currentOrder = order;
+
+    if (currentMode === 'view') {
+      await renderRefund(order);
+    } else {
+      els.refund.hidden = true;
+    }
+  }
+
+  const REFUND_ELIGIBLE_STATUSES = ['paid', 'processing', 'shipped', 'delivered', 'completed'];
+
+  async function renderRefund(order) {
+    els.refund.hidden = false;
+    els.refundMsg.hidden = true;
+
+    const { data: existing, error } = await window.sb
+      .from('refund_requests')
+      .select('*')
+      .eq('order_id', order.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) console.error('Ometong: failed to load refund request', error);
+
+    if (existing) {
+      els.refundForm.hidden = true;
+      els.refundStatus.hidden = false;
+      const labels = {
+        pending: 'Refund requested — awaiting review.',
+        approved: 'Refund approved — you\'ll see it once it\'s been sent back.',
+        processed: 'Refund processed.',
+        rejected: 'Refund request declined' + (existing.admin_note ? ': ' + existing.admin_note : '.')
+      };
+      els.refundStatus.textContent = labels[existing.status] || existing.status;
+      els.refundStatus.className = 'ot-refund-status ' + existing.status;
+      return;
+    }
+
+    els.refundStatus.hidden = true;
+    if (!REFUND_ELIGIBLE_STATUSES.includes(order.status)) {
+      els.refundForm.hidden = true;
+      els.refund.hidden = true;
+      return;
+    }
+    els.refundForm.hidden = false;
+    els.refundReason.value = '';
+    els.refundAmount.value = order.total;
+    els.refundAmount.max = order.total;
+  }
+
+  async function submitRefundRequest(e) {
+    e.preventDefault();
+    if (!currentOrderId) return;
+    const reason = els.refundReason.value.trim();
+    const amount = parseFloat(els.refundAmount.value);
+    if (!reason || !(amount >= 0)) return;
+
+    const submitBtn = els.refundForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    const { error } = await window.sb.from('refund_requests').insert({
+      order_id: currentOrderId,
+      buyer_id: overlay._currentOrder.buyer_id,
+      reason,
+      requested_amount: amount
+    });
+    submitBtn.disabled = false;
+    if (error) {
+      console.error('Ometong: failed to submit refund request', error);
+      els.refundMsg.textContent = 'Could not submit your request — please try again.';
+      els.refundMsg.className = 'ot-msg error';
+      els.refundMsg.hidden = false;
+      return;
+    }
+    renderRefund(overlay._currentOrder);
   }
 
   async function saveShippingDetails() {
