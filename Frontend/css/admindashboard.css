@@ -174,40 +174,9 @@
 }
 
 /* =========================================================
-   INQUIRIES TABS (Buyer <-> Supplier vs Contact Us messages)
+   Small unread-count pill — used next to the "Contact Us messages"
+   section heading.
 ========================================================= */
-.inq-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.inq-tab {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  border-radius: 999px;
-  border: 1.5px solid var(--line);
-  background: var(--card-bg);
-  color: var(--ink-soft);
-  font-weight: 700;
-  font-size: .84rem;
-  cursor: pointer;
-  transition: border-color .2s, color .2s, background .2s;
-}
-
-.inq-tab:hover {
-  border-color: var(--accent);
-  color: var(--ink);
-}
-
-.inq-tab.active {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #fff;
-}
-
 .inq-tab-badge {
   min-width: 18px;
   height: 18px;
@@ -303,5 +272,35 @@
 
 .contact-msg-actions {
   display: flex;
+  gap: 10px;
+}
+
+.contact-msg-reply-block {
+  background: rgba(34, 197, 94, .08);
+  border: 1px solid rgba(34, 197, 94, .25);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.contact-msg-reply-label {
+  display: block;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #178A50;
+  margin-bottom: 6px;
+}
+
+.contact-msg-reply-text {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+
+#contactMsgReplyForm {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }

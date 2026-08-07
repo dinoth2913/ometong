@@ -41,6 +41,7 @@
       <a href="#refunds">Refunds</a>
       <a href="#applications">Applications</a>
       <a href="#inquiries">Inquiries</a>
+      <a href="#contactmessages">Contact Messages</a>
       <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
     </nav>
 
@@ -78,6 +79,7 @@
   <a href="#refunds">Refunds</a>
   <a href="#applications">Applications</a>
   <a href="#inquiries">Inquiries</a>
+  <a href="#contactmessages">Contact Messages</a>
   <a href="#activity" data-i18n="nav.activityLog">Activity Log</a>
   <select class="lang-switch" aria-label="Language">
     <option value="en">EN</option>
@@ -269,11 +271,6 @@
         <span class="section-hint">Buyers and suppliers never message each other directly — read both sides here and relay what's needed</span>
       </div>
 
-      <div class="inq-tabs" role="tablist">
-        <button class="inq-tab active" id="inqTabMediated" data-panel="mediated" type="button">Buyer ↔ Supplier</button>
-        <button class="inq-tab" id="inqTabContact" data-panel="contact" type="button">Contact Us messages<span class="inq-tab-badge" id="contactNewBadge" hidden>0</span></button>
-      </div>
-
       <div class="msg-shell" id="adminMsgShell">
         <aside class="msg-list" id="adminMsgList">
           <div class="msg-list-head"><span>Open cases</span></div>
@@ -328,9 +325,16 @@
           </div>
         </section>
       </div>
+    </section>
 
-      <!-- ===== CONTACT US MESSAGES ===== -->
-      <div class="msg-shell" id="contactMsgShell" hidden>
+    <!-- ===== CONTACT US MESSAGES ===== -->
+    <section data-reveal id="contactmessages">
+      <div class="section-head">
+        <h2>Contact Us messages<span class="inq-tab-badge" id="contactNewBadge" hidden>0</span></h2>
+        <span class="section-hint">Submissions from the public Contact Us page — reply from right here, or by email/phone</span>
+      </div>
+
+      <div class="msg-shell" id="contactMsgShell">
         <aside class="msg-list" id="contactMsgList">
           <div class="msg-list-head"><span>Messages</span></div>
           <div class="msg-list-body" id="contactMsgListBody"></div>
@@ -356,29 +360,43 @@
                 <strong id="contactMsgSubject">Subject</strong>
                 <span id="contactMsgFrom">From —</span>
               </div>
+              <span class="contact-msg-status" id="contactMsgStatusBadge" style="margin-left:auto;">New</span>
             </div>
 
             <div class="contact-msg-body">
               <p class="contact-msg-text" id="contactMsgText"></p>
 
               <div class="contact-msg-reach">
-                <a class="btn btn-primary btn-sm" id="contactMsgEmailBtn" href="#" target="_blank" rel="noopener">
+                <a class="btn btn-ghost btn-sm" id="contactMsgEmailBtn" href="#" target="_blank" rel="noopener">
                   <svg viewBox="0 0 24 24" width="15" height="15"><path d="M3 5h18v14H3zM3 5l9 8 9-8"/></svg>
-                  Reply by email
+                  Open in email instead
                 </a>
                 <a class="btn btn-ghost btn-sm" id="contactMsgCallBtn" href="#" hidden>
                   <svg viewBox="0 0 24 24" width="15" height="15"><path d="M3 3c0 7 5 12 12 12l2-3-4-2-1 2c-3-1-5-3-6-6l2-1-2-4L3 3z"/></svg>
                   Call
                 </a>
-                <span class="contact-msg-status" id="contactMsgStatusBadge">New</span>
               </div>
 
+              <div class="contact-msg-reply-block" id="contactMsgReplyBlock" hidden>
+                <span class="contact-msg-reply-label">Your reply</span>
+                <p class="contact-msg-reply-text" id="contactMsgReplyText"></p>
+              </div>
+
+              <form id="contactMsgReplyForm">
+                <label class="contact-msg-note-label">Reply to <span id="contactMsgReplyToName">this sender</span>
+                  <textarea id="contactMsgReply" rows="4" placeholder="Type your reply — this is saved here and also opens ready to send by email…" required></textarea>
+                </label>
+                <div class="contact-msg-actions">
+                  <button type="submit" class="btn btn-primary btn-sm" id="contactMsgSendReplyBtn">Send reply</button>
+                </div>
+              </form>
+
               <label class="contact-msg-note-label">Internal note (visible to staff only)
-                <textarea id="contactMsgNote" rows="3" placeholder="What was said / done about this…"></textarea>
+                <textarea id="contactMsgNote" rows="2" placeholder="What was said / done about this…"></textarea>
               </label>
 
               <div class="contact-msg-actions">
-                <button class="btn btn-primary btn-sm" id="contactMsgMarkRepliedBtn">Mark as replied</button>
+                <button class="btn btn-ghost btn-sm" id="contactMsgSaveNoteBtn">Save note</button>
                 <button class="btn btn-ghost btn-sm" id="contactMsgCloseBtn">Close</button>
               </div>
             </div>

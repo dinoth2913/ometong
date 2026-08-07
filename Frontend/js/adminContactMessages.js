@@ -1,12 +1,14 @@
 /* =========================================================
-   OMETONG — ADMIN: CONTACT US MESSAGES + INQUIRIES TAB SWITCH
+   OMETONG — ADMIN: CONTACT US MESSAGES
    Contact Us submissions (public.contact_messages) are a separate,
    simpler system from the mediated buyer/supplier inquiries in
-   adminInquiries.js: there's no back-and-forth panel here, because
-   staff reply to the sender directly by real email/phone using the
-   details they gave — not through the site. This file just lists
-   them, shows the full message + contact details, and lets staff
-   log that they've handled it.
+   adminInquiries.js — a sender here usually isn't paired with a
+   specific supplier, and often isn't even a registered account.
+   Staff write a reply here (saved on the platform via admin_reply,
+   see supabase/contact_messages_reply_schema.sql), which also opens
+   ready to send by real email — there's no email-sending
+   integration wired into this project, so the message still has to
+   go out through the admin's own inbox.
 ========================================================= */
 document.addEventListener('DOMContentLoaded', async () => {
   function getInitialSession() {
@@ -20,25 +22,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
   }
-
-  /* ---------- Tab switching (shared with adminInquiries.js's panel) ---------- */
-  const tabMediated = document.getElementById('inqTabMediated');
-  const tabContact = document.getElementById('inqTabContact');
-  const mediatedShell = document.getElementById('adminMsgShell');
-  const contactShell = document.getElementById('contactMsgShell');
-
-  tabMediated?.addEventListener('click', () => {
-    tabMediated.classList.add('active');
-    tabContact?.classList.remove('active');
-    if (mediatedShell) mediatedShell.hidden = false;
-    if (contactShell) contactShell.hidden = true;
-  });
-  tabContact?.addEventListener('click', () => {
-    tabContact.classList.add('active');
-    tabMediated?.classList.remove('active');
-    if (contactShell) contactShell.hidden = false;
-    if (mediatedShell) mediatedShell.hidden = true;
-  });
 
   const session = await getInitialSession();
   if (!session || !window.sb) return; // authGuard.js already redirects non-admins away
@@ -57,10 +40,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const callBtn = document.getElementById('contactMsgCallBtn');
   const statusBadge = document.getElementById('contactMsgStatusBadge');
   const noteInput = document.getElementById('contactMsgNote');
-  const markRepliedBtn = document.getElementById('contactMsgMarkRepliedBtn');
+  const saveNoteBtn = document.getElementById('contactMsgSaveNoteBtn');
   const closeBtn = document.getElementById('contactMsgCloseBtn');
   const backBtn = document.getElementById('contactMsgBack');
   const newBadge = document.getElementById('contactNewBadge');
+  const replyBlock = document.getElementById('contactMsgReplyBlock');
+  const replyTextEl = document.getElementById('contactMsgReplyText');
+  const replyForm = document.getElementById('contactMsgReplyForm');
+  const replyInput = document.getElementById('contactMsgReply');
+  const replyToNameEl = document.getElementById('contactMsgReplyToName');
   if (!listBody) return; // section not on this page
 
   const ROUTE_LABELS = { general: 'General', sales: 'Sales', support: 'Support', partner: 'Become a Supplier' };
@@ -114,6 +102,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  function buildMailHref(m, bodyText) {
+    const mailSubject = encodeURIComponent('Re: ' + m.subject);
+    const mailBody = encodeURIComponent(bodyText || `Hi ${m.name},\n\n`);
+    return `mailto:${m.email}?subject=${mailSubject}&body=${mailBody}`;
+  }
+
   function openMessage(id) {
     const m = messages.find(x => x.id === id);
     if (!m) return;
@@ -126,11 +120,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     subjectEl.textContent = m.subject;
     fromEl.textContent = `${m.name} · ${m.email}${m.company ? ' · ' + m.company : ''}`;
     textEl.textContent = m.message;
+    replyToNameEl.textContent = m.name;
 
-    const mailSubject = encodeURIComponent('Re: ' + m.subject);
-    const mailBody = encodeURIComponent(`Hi ${m.name},\n\n`);
-    emailBtn.href = `mailto:${m.email}?subject=${mailSubject}&body=${mailBody}`;
-
+    emailBtn.href = buildMailHref(m);
     if (m.phone) {
       callBtn.hidden = false;
       callBtn.href = `tel:${m.phone.replace(/\s+/g, '')}`;
@@ -141,28 +133,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     statusBadge.textContent = m.status;
     statusBadge.className = 'contact-msg-status' + (m.status !== 'new' ? ' ' + m.status : '');
     noteInput.value = m.admin_note || '';
-    markRepliedBtn.textContent = m.status === 'replied' ? 'Replied ✓' : 'Mark as replied';
-    markRepliedBtn.disabled = m.status === 'replied';
+
+    if (m.admin_reply) {
+      replyBlock.hidden = false;
+      replyTextEl.textContent = m.admin_reply;
+      replyInput.value = m.admin_reply;
+    } else {
+      replyBlock.hidden = true;
+      replyInput.value = '';
+    }
   }
 
   backBtn?.addEventListener('click', () => shell.classList.remove('thread-open'));
 
-  async function updateStatus(status) {
-    if (!active) return;
-    const patch = { status, admin_note: noteInput.value.trim() || null };
-    if (status === 'replied') {
-      patch.replied_by = adminId;
-      patch.replied_at = new Date().toISOString();
-    }
+  async function patchActive(patch) {
+    if (!active) return false;
     const { error } = await window.sb.from('contact_messages').update(patch).eq('id', active.id);
-    if (error) { console.error('Ometong: failed to update contact message', error); return; }
+    if (error) { console.error('Ometong: failed to update contact message', error); return false; }
     Object.assign(active, patch);
     await loadMessages();
     openMessage(active.id);
+    return true;
   }
 
-  markRepliedBtn?.addEventListener('click', () => updateStatus('replied'));
-  closeBtn?.addEventListener('click', () => updateStatus('closed'));
+  replyForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!active) return;
+    const replyText = replyInput.value.trim();
+    if (!replyText) return;
+    const sendBtn = document.getElementById('contactMsgSendReplyBtn');
+    sendBtn.disabled = true;
+    const ok = await patchActive({
+      admin_reply: replyText,
+      status: 'replied',
+      replied_by: adminId,
+      replied_at: new Date().toISOString()
+    });
+    sendBtn.disabled = false;
+    if (ok) {
+      // The reply is now saved on the platform — open it ready to
+      // actually send, since there's no automatic email delivery here.
+      window.open(buildMailHref(active, `Hi ${active.name},\n\n${replyText}`), '_blank');
+    }
+  });
+
+  saveNoteBtn?.addEventListener('click', () => {
+    patchActive({ admin_note: noteInput.value.trim() || null });
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    patchActive({ status: 'closed', admin_note: noteInput.value.trim() || null });
+  });
 
   await loadMessages();
 });
