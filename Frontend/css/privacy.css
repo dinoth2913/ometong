@@ -1,7 +1,9 @@
 /* =========================================================
-   OMETONG — PRIVACY POLICY PAGE
+   OMETONG — LEGAL PAGES (Privacy Policy, Terms & Conditions)
    Layered on top of contactus.css's shared chrome (nav, blobs,
-   footer, buttons). This file only styles the policy body.
+   footer, buttons). This file only styles the policy/terms body
+   (.privacy-* class names are shared/generic — used by both
+   privacy.html and terms.html, not specific to one page).
 ========================================================= */
 
 .privacy-layout{
