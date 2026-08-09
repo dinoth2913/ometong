@@ -4,6 +4,43 @@
    card/empty-state/orders-card styles reused as-is).
    ========================================================================== */
 
+/* =========================================================
+   QUICK JUMP — section shortcuts, moved out of the sticky top
+   navbar (which was overloaded with 9+ anchor links) and into the
+   page content itself, right under the dashboard header. Wraps
+   onto multiple lines on narrow screens instead of needing a
+   horizontal-scroll affordance, so nothing can end up unreachable.
+========================================================= */
+.quick-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+
+.quick-jump a {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--card-bg);
+  color: var(--ink-soft);
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: border-color .2s, color .2s, background .2s;
+}
+
+.quick-jump a:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.quick-jump a.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
 .admin-table {
   border: 1px solid var(--border, #ECECEF);
   border-radius: 16px;
