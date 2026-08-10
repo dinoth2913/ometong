@@ -497,6 +497,10 @@ main .container.section > section[data-reveal]:last-of-type {
   grid-template-columns: 1fr 1fr .9fr .9fr 1fr 1.2fr;
 }
 
+.admin-row--verification {
+  grid-template-columns: 1.3fr 1.1fr .9fr .9fr 1.8fr;
+}
+
 @media (max-width: 760px) {
   .coupon-form { grid-template-columns: 1fr 1fr; }
 }

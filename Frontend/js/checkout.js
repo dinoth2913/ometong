@@ -19,12 +19,6 @@
   var FLAT_SHIPPING = 45;
   var FREE_SHIPPING_THRESHOLD = 500;
 
-  var PROMO_CODES = {
-    "WELCOME10": { type: "percent", value: 10, label: "10% off" },
-    "SAVE20": { type: "flat", value: 20, label: "$20 off" },
-    "FREESHIP": { type: "shipping", value: 0, label: "Free shipping" }
-  };
-
   // Buy Now mode is decided once, up front, from the URL — if a
   // ?buyNow=1 request shows up with no matching sessionStorage item
   // (expired tab, direct link, etc.) this just falls back to the
@@ -351,6 +345,13 @@
         setLoading(false);
         showError(paymentInsert.error.message || "Could not record payment for your order. Please try again.");
         return;
+      }
+
+      if (appliedPromo) {
+        // Best-effort — a failure here shouldn't block an order that's
+        // already been placed and paid-for-in-escrow.
+        window.sb.rpc("increment_coupon_usage", { p_code: appliedPromo.code })
+          .then(function (res) { if (res.error) console.error("Ometong: failed to record coupon usage", res.error); });
       }
 
       if (isBuyNow) clearBuyNowStorage();

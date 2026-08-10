@@ -275,6 +275,41 @@
       </div>
     </section>
 
+    <!-- ===== VERIFICATION ===== -->
+    <section data-reveal id="verification">
+      <div class="section-head">
+        <h2>Business verification</h2>
+        <span class="section-hint">Upload a business license or export license — once approved, you get a Verified badge buyers see on your listings</span>
+      </div>
+      <div class="verify-shell">
+        <form class="verify-upload-form" id="verifyUploadForm">
+          <label>Document type
+            <select id="verifyDocType" required>
+              <option value="business_license">Business license</option>
+              <option value="export_license">Export license</option>
+              <option value="tax_certificate">Tax certificate</option>
+              <option value="id_document">ID document</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>File
+            <input type="file" id="verifyDocFile" accept="image/png,image/jpeg,image/webp,application/pdf" required>
+            <span class="field-hint">JPG, PNG, WEBP or PDF, up to 8MB. Kept private — only you and Ometong staff can see it.</span>
+          </label>
+          <p class="ot-msg" id="verifyFormMsg" hidden></p>
+          <button type="submit" class="btn btn-primary btn-sm" id="verifySubmitBtn">Upload document</button>
+        </form>
+
+        <div class="verify-docs-list">
+          <div class="verify-docs-head">Your submitted documents</div>
+          <div id="verifyDocsBody"></div>
+          <div class="empty-state" id="verifyDocsEmpty" style="padding:30px 20px;">
+            <p style="margin:0;font-size:.84rem;color:var(--ink-faint);">No documents submitted yet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== ACCOUNT ===== -->
     <section data-reveal>
       <div class="section-head">
@@ -295,10 +330,10 @@
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /></svg></span>
             <span data-i18n="supplier.payoutBankDetails">Payout bank details</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
           </div>
-          <div class="quick-link soon">
+          <a class="quick-link" href="#verification">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" /><path d="M9 12l2 2 4-4" /></svg></span>
-            <span data-i18n="manufacturer.factoryAuditReports">Factory audit reports</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
-          </div>
+            <span data-i18n="manufacturer.factoryAuditReports">Factory audit reports &amp; verification</span>
+          </a>
           <a class="quick-link" href="authenticationpage.html">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 12l2 2 4-4" /><circle cx="12" cy="12" r="9" /></svg></span>
             <span data-i18n="common.passwordSecurity">Password &amp; security</span>
@@ -350,6 +385,7 @@
 <script src="../js/authGuard.js" data-role="manufacturer"></script>
 <script src="../js/i18n.js"></script>
 <script src="../js/manufacturerdashboard.js"></script>
+<script src="../js/supplierVerification.js"></script>
 <script src="../js/orderTracking.js"></script>
 <script src="../js/chatWidget.js"></script>
 </body>

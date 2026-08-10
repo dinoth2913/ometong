@@ -115,6 +115,7 @@
       <a href="#payments">Payments</a>
       <a href="#refunds">Refunds</a>
       <a href="#applications">Applications</a>
+      <a href="#verificationdocs">Verification</a>
       <a href="#coupons">Coupons</a>
       <a href="#inquiries">Inquiries</a>
       <a href="#contactmessages">Contact Messages</a>
@@ -301,6 +302,29 @@
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <h3>No supplier applications</h3>
         <p>Submissions from the "Become a Supplier" form will show up here for review.</p>
+      </div>
+    </section>
+
+    <!-- ===== VERIFICATION DOCUMENTS ===== -->
+    <section data-reveal id="verificationdocs">
+      <div class="section-head">
+        <h2>Verification documents</h2>
+        <span class="section-hint" id="verificationPendingHint">Nothing pending</span>
+      </div>
+      <div class="admin-table" id="verificationDocsTable">
+        <div class="admin-row admin-row--verification admin-row--head">
+          <span>Supplier</span>
+          <span>Document</span>
+          <span>Submitted</span>
+          <span>Status</span>
+          <span></span>
+        </div>
+        <div id="verificationDocsTableBody"></div>
+      </div>
+      <div class="empty-state" id="verificationDocsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3>No verification documents yet</h3>
+        <p>When a supplier or manufacturer uploads a business license from their dashboard, it'll show up here for review.</p>
       </div>
     </section>
 
@@ -543,5 +567,6 @@
 <script src="../js/adminNotifications.js"></script>
 <script src="../js/adminPayments.js"></script>
 <script src="../js/adminCoupons.js"></script>
+<script src="../js/adminVerification.js"></script>
 </body>
 </html>

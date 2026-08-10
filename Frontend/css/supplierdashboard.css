@@ -390,3 +390,39 @@ button,input,textarea,select{font-family:inherit;}
   .nav-actions > .logout-link{display:none;}
   .nav-actions > .lang-switch{display:none;}
 }
+
+/* =========================================================
+   BUSINESS VERIFICATION (KYB upload)
+========================================================= */
+.verify-shell{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}
+.verify-upload-form{
+  display:flex;flex-direction:column;gap:14px;
+  background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:22px;box-shadow:var(--shadow-sm);
+}
+.verify-upload-form label{display:flex;flex-direction:column;gap:6px;font-size:.84rem;font-weight:600;color:var(--ink);}
+.verify-upload-form select,.verify-upload-form input[type="file"]{
+  padding:10px 12px;border-radius:10px;border:1px solid var(--line);
+  font-family:inherit;font-size:.86rem;color:var(--ink);background:var(--card-bg);
+}
+.verify-upload-form button{align-self:flex-start;}
+
+.verify-docs-list{
+  background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius-lg);
+  overflow:hidden;box-shadow:var(--shadow-sm);
+}
+.verify-docs-head{
+  padding:14px 20px;font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--ink-faint);border-bottom:1px solid var(--line);
+}
+.verify-doc-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+  padding:14px 20px;border-bottom:1px solid var(--line);font-size:.86rem;
+}
+.verify-doc-row:last-child{border-bottom:none;}
+.verify-doc-time{font-size:.76rem;color:var(--ink-faint);margin-left:auto;}
+.verify-doc-note{flex-basis:100%;font-size:.8rem;color:var(--ink-soft);}
+
+@media (max-width:860px){
+  .verify-shell{grid-template-columns:1fr;}
+}

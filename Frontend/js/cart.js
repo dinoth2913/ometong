@@ -18,12 +18,6 @@
   var FLAT_SHIPPING = 45;       // flat shipping fee
   var FREE_SHIPPING_THRESHOLD = 500; // subtotal at/above which shipping is free
 
-  var PROMO_CODES = {
-    "WELCOME10": { type: "percent", value: 10, label: "10% off" },
-    "SAVE20": { type: "flat", value: 20, label: "$20 off" },
-    "FREESHIP": { type: "shipping", value: 0, label: "Free shipping" }
-  };
-
   // Seed data used only the very first time a visitor has no saved cart.
   var DEFAULT_ITEMS = [
     {
@@ -466,23 +460,63 @@
   }
 
   /* ---------------------------------------------------------------------
-     Promo codes
+     Promo codes — validated against the real public.coupons table
+     (created by an admin from the admin dashboard's Coupons section)
+     instead of the hardcoded PROMO_CODES map this used to check.
      --------------------------------------------------------------------- */
-  function applyPromoCode(rawCode) {
+  async function applyPromoCode(rawCode) {
     var code = (rawCode || "").trim().toUpperCase();
     if (!code) {
       showPromoMsg("Enter a code to apply.", false);
       return;
     }
-    var promo = PROMO_CODES[code];
-    if (!promo) {
+    if (!window.sb) {
+      showPromoMsg("Promo codes aren't available right now — please try again shortly.", false);
+      return;
+    }
+
+    var subtotal = getSubtotal();
+    var { data: coupon, error } = await window.sb
+      .from("coupons")
+      .select("*")
+      .eq("code", code)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Ometong: failed to look up coupon", error);
+      showPromoMsg("Could not check that code — please try again.", false);
+      return;
+    }
+    if (!coupon) {
       showPromoMsg("\"" + code + "\" isn't a valid code.", false);
       return;
     }
-    appliedPromo = Object.assign({ code: code }, promo);
+    if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+      showPromoMsg("\"" + code + "\" has expired.", false);
+      return;
+    }
+    if (coupon.max_uses != null && coupon.used_count >= coupon.max_uses) {
+      showPromoMsg("\"" + code + "\" has already reached its usage limit.", false);
+      return;
+    }
+    if (subtotal < Number(coupon.min_order_total || 0)) {
+      showPromoMsg("\"" + code + "\" needs a minimum order of " + formatCurrency(Number(coupon.min_order_total)) + ".", false);
+      return;
+    }
+
+    var label = coupon.discount_type === "percent"
+      ? Number(coupon.amount) + "% off"
+      : formatCurrency(Number(coupon.amount)) + " off";
+    appliedPromo = {
+      code: code,
+      type: coupon.discount_type === "percent" ? "percent" : "flat",
+      value: Number(coupon.amount),
+      label: label
+    };
     savePromo();
     updateTotals();
-    showPromoMsg("Applied: " + promo.label + ".", true);
+    showPromoMsg("Applied: " + label + ".", true);
   }
 
   function showPromoMsg(msg, success) {
