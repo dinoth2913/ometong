@@ -60,7 +60,7 @@ main .container.section > section[data-reveal]:last-of-type {
 }
 
 .admin-table {
-  border: 1px solid var(--border, #ECECEF);
+  border: 1px solid var(--line);
   border-radius: 16px;
   /* A row's own content can still legitimately need more space than
      it has (a long buyer name, a long refund reason) — overflow-x:auto
@@ -79,7 +79,7 @@ main .container.section > section[data-reveal]:last-of-type {
   gap: 12px;
   padding: 14px 20px;
   font-size: .88rem;
-  border-bottom: 1px solid var(--border, #ECECEF);
+  border-bottom: 1px solid var(--line);
   /* Grid items default to min-width:auto, which means a track won't
      shrink below its content's min-content size — a long unbroken
      string (an email, an order id) can silently force the whole row
@@ -103,7 +103,12 @@ main .container.section > section[data-reveal]:last-of-type {
   text-transform: uppercase;
   letter-spacing: .04em;
   color: var(--ink-faint, #8A8A94);
-  background: var(--surface-2, #FAFAFB);
+  /* --surface-2 was never actually defined anywhere (light or dark),
+     so this always fell back to the hardcoded light #FAFAFB — a
+     bright white header row sitting directly on top of dark card
+     rows in dark mode. --bg-alt already has a proper dark-mode
+     override in supplierdashboard.css, so reuse that instead. */
+  background: var(--bg-alt, #FAFAFB);
 }
 
 #usersTable .admin-row {
@@ -141,18 +146,39 @@ main .container.section > section[data-reveal]:last-of-type {
 
 .admin-row-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.admin-row-actions button {
+.admin-row-actions button,
+.admin-row-actions a.order-track {
+  display: inline-flex;
+  align-items: center;
   font-size: .76rem;
   font-weight: 700;
   padding: 6px 12px;
   border-radius: 8px;
-  border: 1px solid var(--border, #ECECEF);
-  background: #fff;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  color: var(--ink);
   cursor: pointer;
+  white-space: nowrap;
+}
+
+/* The "Email" quick-link on supplier applications is an <a>, not a
+   <button> — it was left with its bare-text .order-track styling
+   (no border/padding), so it sat oddly out of line next to the
+   Approve/Reject buttons instead of reading as one consistent row
+   of actions. Giving it the same button-shaped treatment above
+   fixes that; this just restores its accent color on top of it. */
+.admin-row-actions a.order-track {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.admin-row-actions a.order-track:hover {
+  background: var(--accent);
+  color: #fff;
 }
 
 .admin-row-actions button:disabled {
