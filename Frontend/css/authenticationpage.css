@@ -76,8 +76,34 @@ button,input{font-family:inherit;}
 .brand-content h1{font-size:clamp(1.7rem,2.6vw,2.3rem);letter-spacing:-.01em;}
 .brand-content p{color:rgba(255,255,255,.72);font-size:1rem;}
 
+/* ---- Trade routes: China HQ -> destination markets ---- */
+.trade-routes{
+  margin-top:28px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(14px);border-radius:var(--radius-md);padding:20px 22px;
+}
+.trade-routes-origin{display:flex;align-items:center;gap:11px;}
+.trade-routes-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--accent-light);box-shadow:0 0 0 4px rgba(255,116,49,.22);}
+.trade-routes-origin strong{display:block;font-size:.88rem;color:#fff;font-weight:700;}
+.trade-routes-origin span{font-size:.74rem;color:rgba(255,255,255,.6);}
+.trade-routes-line{
+  height:20px;width:2px;margin-left:4px;
+  background:repeating-linear-gradient(to bottom, rgba(255,255,255,.35) 0 4px, transparent 4px 8px);
+}
+.trade-routes-destinations{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px;}
+.trade-routes-chip{
+  font-size:.76rem;font-weight:600;color:#fff;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;padding:5px 12px;white-space:nowrap;
+}
+.trade-routes-note{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:.8rem;line-height:1.55;color:rgba(255,255,255,.72);margin:0;
+  padding-top:14px;border-top:1px solid rgba(255,255,255,.12);
+}
+.trade-routes-note svg{flex-shrink:0;margin-top:2px;fill:none;stroke:var(--accent-light);stroke-width:1.8;}
+
 .brand-quote{
-  margin-top:34px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  margin-top:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
   backdrop-filter:blur(14px);border-radius:var(--radius-md);padding:22px;
 }
 .stars{color:var(--accent-light);letter-spacing:2px;margin-bottom:8px;font-size:.85rem;}
