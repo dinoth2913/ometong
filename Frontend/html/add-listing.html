@@ -104,14 +104,11 @@
           <textarea id="description" name="description" rows="4" placeholder="Describe the product or service, materials, specs, or what's included…"></textarea>
         </label>
 
-        <label>Product photo (optional)
-          <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp">
-          <span class="field-hint">JPG, PNG or WEBP, up to 5MB.</span>
+        <label>Product photos (optional)
+          <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp" multiple>
+          <span class="field-hint">JPG, PNG or WEBP, up to 5MB each, up to 6 photos. The first one is used as the cover photo shown on the marketplace.</span>
         </label>
-        <div class="image-preview" id="imagePreview" hidden>
-          <img id="imagePreviewImg" alt="Listing photo preview">
-          <button type="button" id="imagePreviewRemove" aria-label="Remove photo">&times;</button>
-        </div>
+        <div class="image-preview-grid" id="imagePreviewGrid" hidden></div>
 
         <button type="submit" class="btn btn-primary btn-block" id="submitListingBtn">
           <span>Publish Listing</span>

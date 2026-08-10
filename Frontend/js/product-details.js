@@ -225,6 +225,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       .eq('listing_id', row.id)
       .order('min_qty', { ascending: true });
 
+    const { data: imageRows } = await window.sb
+      .from('listing_images')
+      .select('image_url')
+      .eq('listing_id', row.id)
+      .order('sort_order', { ascending: true });
+    // Cover photo (image_url) first, then the rest of the gallery —
+    // mirrors how add-listing.js saves them (first upload = cover,
+    // rest go into listing_images).
+    const gallery = [row.image_url, ...(imageRows || []).map(r => r.image_url)].filter(Boolean);
+
     return {
       id: row.id,
       cat,
@@ -237,6 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       reviews: 0,
       color: palette[(ci >= 0 ? ci : 0) % palette.length],
       image: row.image_url || null,
+      gallery,
       badge: 'Verified',
       description: row.description || descriptions[cat] || '',
       moq: row.moq || null,
@@ -380,18 +391,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ---------- Render main product panel ---------- */
   const pdGrid = document.getElementById('pdGrid');
   const esc = window.ometongEscapeHTML;
+  // Real listings with more than one uploaded photo (add-listing.js's
+  // multi-photo upload -> public.listing_images) get a real thumbnail
+  // strip that swaps the actual images; everything else keeps the
+  // existing single-image / synthetic-thumbnail behavior.
+  const realGallery = product.gallery && product.gallery.length ? product.gallery : (product.image ? [product.image] : []);
   pdGrid.innerHTML = `
     <div class="pd-gallery">
       <div class="pd-main-image" id="pdMainImage" style="background:${product.color}10">
-        ${product.image ? `<img src="${esc(product.image)}" alt="${esc(product.title)}" style="width:100%;height:100%;object-fit:cover;">` : svgHero(product.color, numericSeed(product.id))}
+        ${realGallery.length ? `<img src="${esc(realGallery[0])}" alt="${esc(product.title)}" style="width:100%;height:100%;object-fit:cover;">` : svgHero(product.color, numericSeed(product.id))}
         ${product.badge ? `<span class="pd-badge">${esc(product.badge)}</span>` : ''}
         <button class="pd-fav${getWishlist().includes(product.id) ? ' saved' : ''}" id="pdFav" aria-label="Save item">
           <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6a5.5 5.5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
         </button>
       </div>
-      ${product.image ? '' : `<div class="pd-thumb-strip" id="pdThumbStrip">
+      ${realGallery.length > 1 ? `<div class="pd-thumb-strip" id="pdThumbStrip">
+        ${realGallery.map((url, i) => `<button class="${i === 0 ? 'active' : ''}" data-real-thumb="${esc(url)}" style="background:${product.color}10"><img src="${esc(url)}" alt="" style="width:100%;height:100%;object-fit:cover;"></button>`).join('')}
+      </div>` : (realGallery.length === 0 ? `<div class="pd-thumb-strip" id="pdThumbStrip">
         ${[0, 1, 2, 3].map(i => `<button class="${i === 0 ? 'active' : ''}" data-thumb="${i}" style="background:${product.color}10">${svgThumb(product.color, numericSeed(product.id) + i)}</button>`).join('')}
-      </div>`}
+      </div>` : '')}
     </div>
 
     <div class="pd-info">
@@ -617,16 +635,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderAllReviews();
   }
 
-  /* ---------- Thumbnail swap (visual only — different angle tint) ---------- */
+  /* ---------- Thumbnail swap ----------
+     Two flavors: a real uploaded photo (data-real-thumb, swaps the
+     main image to that actual URL) or the synthetic demo-catalog
+     thumbnail (data-thumb, different generated angle/tint) — only
+     one flavor is ever rendered per product, see realGallery above. */
   document.querySelectorAll('#pdThumbStrip button').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#pdThumbStrip button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const i = parseInt(btn.dataset.thumb, 10);
       const mainImg = document.getElementById('pdMainImage');
       const badge = mainImg.querySelector('.pd-badge');
       const fav = mainImg.querySelector('.pd-fav');
-      mainImg.innerHTML = svgHero(product.color, numericSeed(product.id) + i * 3);
+      const realUrl = btn.getAttribute('data-real-thumb');
+      if (realUrl) {
+        mainImg.innerHTML = `<img src="${esc(realUrl)}" alt="${esc(product.title)}" style="width:100%;height:100%;object-fit:cover;">`;
+      } else {
+        const i = parseInt(btn.dataset.thumb, 10);
+        mainImg.innerHTML = svgHero(product.color, numericSeed(product.id) + i * 3);
+      }
       if (badge) mainImg.appendChild(badge);
       if (fav) mainImg.appendChild(fav);
     });

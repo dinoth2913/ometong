@@ -61,39 +61,63 @@
     const successEl = document.getElementById("listingSuccess");
     const submitBtn = document.getElementById("submitListingBtn");
     const imageInput = document.getElementById("image");
-    const imagePreview = document.getElementById("imagePreview");
-    const imagePreviewImg = document.getElementById("imagePreviewImg");
-    const imagePreviewRemove = document.getElementById("imagePreviewRemove");
+    const imagePreviewGrid = document.getElementById("imagePreviewGrid");
 
     const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+    const MAX_IMAGES = 6;
     const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
+    // Multiple photos — the first one becomes the listing's cover photo
+    // (listings.image_url, shown on marketplace cards), the rest go into
+    // listing_images for the gallery on the product page. Held here as
+    // our own array (rather than trusting imageInput.files directly)
+    // so a single photo can be removed from the middle of the set.
+    let selectedImages = [];
+
+    function renderImagePreviews() {
+      if (!selectedImages.length) {
+        imagePreviewGrid.hidden = true;
+        imagePreviewGrid.innerHTML = "";
+        return;
+      }
+      imagePreviewGrid.hidden = false;
+      imagePreviewGrid.innerHTML = selectedImages.map(function (file, i) {
+        return '<div class="image-preview-item' + (i === 0 ? ' is-cover' : '') + '">' +
+          '<img src="' + URL.createObjectURL(file) + '" alt="Listing photo ' + (i + 1) + '">' +
+          (i === 0 ? '<span class="image-preview-cover-tag">Cover</span>' : '') +
+          '<button type="button" data-remove-image="' + i + '" aria-label="Remove this photo">&times;</button>' +
+          '</div>';
+      }).join("");
+      imagePreviewGrid.querySelectorAll("[data-remove-image]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          selectedImages.splice(parseInt(btn.getAttribute("data-remove-image"), 10), 1);
+          renderImagePreviews();
+        });
+      });
+    }
+
     imageInput?.addEventListener("change", () => {
-      const file = imageInput.files && imageInput.files[0];
-      if (!file) {
-        imagePreview.hidden = true;
-        return;
-      }
-      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-        showError("Please choose a JPG, PNG or WEBP image.");
-        imageInput.value = "";
-        imagePreview.hidden = true;
-        return;
-      }
-      if (file.size > MAX_IMAGE_BYTES) {
-        showError("That image is too large — please choose one under 5MB.");
-        imageInput.value = "";
-        imagePreview.hidden = true;
-        return;
+      const files = imageInput.files ? Array.from(imageInput.files) : [];
+      imageInput.value = ""; // reset so choosing the same file again still fires "change"
+      if (!files.length) return;
+
+      for (const file of files) {
+        if (selectedImages.length >= MAX_IMAGES) {
+          showError("You can add up to " + MAX_IMAGES + " photos.");
+          break;
+        }
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+          showError("Please choose only JPG, PNG or WEBP images.");
+          continue;
+        }
+        if (file.size > MAX_IMAGE_BYTES) {
+          showError("\"" + file.name + "\" is too large — please choose one under 5MB.");
+          continue;
+        }
+        selectedImages.push(file);
       }
       clearError();
-      imagePreviewImg.src = URL.createObjectURL(file);
-      imagePreview.hidden = false;
-    });
-
-    imagePreviewRemove?.addEventListener("click", () => {
-      imageInput.value = "";
-      imagePreview.hidden = true;
+      renderImagePreviews();
     });
 
     /* ---------- Compliance notice — general guidance per category, not
@@ -246,22 +270,26 @@
 
       setLoading(true);
 
-      let imageUrl = null;
-      const file = imageInput?.files && imageInput.files[0];
-      if (file) {
+      // Upload every selected photo; the first becomes the listing's
+      // cover photo (image_url), the rest are inserted into
+      // listing_images once the listing itself has an id.
+      const uploadedImageUrls = [];
+      for (let i = 0; i < selectedImages.length; i++) {
+        const file = selectedImages[i];
         const ext = file.name.split(".").pop().toLowerCase();
-        const path = `${user.id}/${Date.now()}.${ext}`;
+        const path = `${user.id}/${Date.now()}-${i}.${ext}`;
         const { error: uploadError } = await window.sb.storage
           .from("listing-images")
           .upload(path, file, { cacheControl: "3600", upsert: false });
         if (uploadError) {
           setLoading(false);
-          showError(uploadError.message || "Could not upload the photo. Please try again.");
+          showError(uploadError.message || "Could not upload one of the photos. Please try again.");
           return;
         }
         const { data: publicUrlData } = window.sb.storage.from("listing-images").getPublicUrl(path);
-        imageUrl = publicUrlData?.publicUrl || null;
+        if (publicUrlData?.publicUrl) uploadedImageUrls.push(publicUrlData.publicUrl);
       }
+      const imageUrl = uploadedImageUrls[0] || null;
 
       const { data: newListing, error } = await window.sb.from("listings").insert({
         supplier_id: user.id,
@@ -292,6 +320,16 @@
         // don't block the success flow over the bulk-pricing add-on failing,
         // just let the seller know so they can add tiers later from the listing.
         if (tiersInsertError) console.error("Ometong: failed to save bulk pricing tiers", tiersInsertError);
+      }
+
+      // Cover photo is already on the listing row (image_url) — the
+      // rest of the gallery goes into listing_images, same
+      // don't-block-success reasoning as the tiers insert above.
+      if (uploadedImageUrls.length > 1) {
+        const { error: imagesInsertError } = await window.sb.from("listing_images").insert(
+          uploadedImageUrls.slice(1).map((url, i) => ({ listing_id: newListing.id, image_url: url, sort_order: i }))
+        );
+        if (imagesInsertError) console.error("Ometong: failed to save extra listing photos", imagesInsertError);
       }
 
       setLoading(false);
