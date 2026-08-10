@@ -5,6 +5,24 @@
    ========================================================================== */
 
 /* =========================================================
+   SECTION SPACING — each top-level dashboard section (Pending
+   Approval, All Listings, Users, Orders, Refunds, Applications,
+   Inquiries, Contact Messages, Activity Log) had no margin of its
+   own, so they stacked directly against each other with zero gap.
+   Targets only the top-level [data-reveal] sections under the main
+   container — nested <section> elements used inside the inquiries/
+   contact-messages panels (e.g. .msg-thread) don't carry
+   data-reveal, so they're untouched.
+========================================================= */
+main .container.section > section[data-reveal] {
+  margin-bottom: 56px;
+}
+
+main .container.section > section[data-reveal]:last-of-type {
+  margin-bottom: 0;
+}
+
+/* =========================================================
    QUICK JUMP — section shortcuts, moved out of the sticky top
    navbar (which was overloaded with 9+ anchor links) and into the
    page content itself, right under the dashboard header. Wraps
