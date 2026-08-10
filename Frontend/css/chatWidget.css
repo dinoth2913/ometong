@@ -5,6 +5,27 @@
    edge) rather than the heavy displacement-map SVG filter used on
    the Home navbar, so this stays lightweight on every single page.
 ========================================================= */
+
+/* ---------------------------------------------------------
+   SITE-WIDE FIX — the [hidden] attribute vs. author CSS `display`
+   Not related to the chat widget itself; placed here because this
+   file is the one stylesheet loaded on every single page, so this
+   fixes it everywhere in one shot.
+
+   Several panels toggle visibility by setting element.hidden = true
+   in JS (e.g. the "select a message" placeholder vs. the actual
+   message thread in messages.html / admindashboard.html's Inquiries
+   and Contact Messages panels). That's supposed to work automatically
+   — the browser's UA stylesheet has `[hidden]{display:none}` built
+   in. But *any* author stylesheet rule beats a UA stylesheet rule
+   regardless of specificity, so a class like `.msg-thread-empty{
+   display:flex }` silently wins over `[hidden]`, and the element
+   keeps rendering even while "hidden". Both the empty-state
+   placeholder and the real content end up stacked and visible at
+   once, overflowing a fixed-height box with no way to scroll to
+   what's pushed out of view underneath.
+   --------------------------------------------------------- */
+[hidden] { display: none !important; }
 #ow-root{
   --ow-accent:#FF7431;
   --ow-accent-dark:#E05A18;
