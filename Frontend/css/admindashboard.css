@@ -386,3 +386,120 @@ main .container.section > section[data-reveal]:last-of-type {
   flex-direction: column;
   gap: 10px;
 }
+
+/* =========================================================
+   NOTIFICATION BELL
+========================================================= */
+.notif-bell-wrap { position: relative; }
+
+.notif-bell {
+  position: relative;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card-bg);
+  color: var(--ink-soft);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.notif-bell:hover { border-color: var(--accent); color: var(--ink); }
+.notif-bell svg { fill: none; stroke: currentColor; stroke-width: 1.8; }
+
+.notif-bell-badge {
+  position: absolute; top: -4px; right: -4px;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 999px;
+  background: #EF4444; color: #fff;
+  font-size: .62rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--bg);
+}
+
+.notif-dropdown {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  width: 320px; max-width: calc(100vw - 32px);
+  max-height: 420px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md, 0 16px 40px rgba(21,24,31,.16));
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  z-index: 600;
+}
+
+.notif-dropdown-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: .84rem; font-weight: 700; color: var(--ink);
+  flex-shrink: 0;
+}
+.notif-dropdown-head button {
+  background: none; border: none; color: var(--accent);
+  font-size: .76rem; font-weight: 700; cursor: pointer; padding: 0;
+}
+
+.notif-dropdown-body { overflow-y: auto; }
+
+.notif-row {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  color: inherit; text-decoration: none;
+}
+.notif-row:last-child { border-bottom: none; }
+.notif-row:hover { background: var(--bg-alt); }
+.notif-row.unread { background: rgba(255, 116, 49, .06); }
+.notif-row-title { font-size: .84rem; font-weight: 700; color: var(--ink); }
+.notif-row-body { font-size: .78rem; color: var(--ink-soft); }
+.notif-row-time { font-size: .7rem; color: var(--ink-faint); }
+
+@media (max-width: 620px) {
+  .notif-dropdown { position: fixed; top: 70px; right: 16px; left: 16px; width: auto; }
+}
+
+/* =========================================================
+   PAYMENTS
+========================================================= */
+.admin-row--payments {
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+/* =========================================================
+   COUPONS
+========================================================= */
+.coupon-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.coupon-form label {
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: .82rem; font-weight: 600; color: var(--ink);
+}
+.coupon-form input, .coupon-form select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-family: inherit; font-size: .86rem;
+  color: var(--ink); background: var(--card-bg);
+}
+.coupon-form button { align-self: end; }
+
+.admin-row--coupons {
+  grid-template-columns: 1fr 1fr .9fr .9fr 1fr 1.2fr;
+}
+
+@media (max-width: 760px) {
+  .coupon-form { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .coupon-form { grid-template-columns: 1fr; }
+}

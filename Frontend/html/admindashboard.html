@@ -56,6 +56,22 @@
           </span>
         </label>
       </div>
+      <div class="notif-bell-wrap" id="notifBellWrap">
+        <button class="notif-bell" id="notifBellBtn" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 004 0"/></svg>
+          <span class="notif-bell-badge" id="notifBellBadge" hidden>0</span>
+        </button>
+        <div class="notif-dropdown" id="notifDropdown" hidden>
+          <div class="notif-dropdown-head">
+            <span>Notifications</span>
+            <button type="button" id="notifMarkAllBtn">Mark all read</button>
+          </div>
+          <div class="notif-dropdown-body" id="notifDropdownBody"></div>
+          <div class="empty-state" id="notifEmpty" style="padding:30px 20px;" hidden>
+            <p style="margin:0;font-size:.84rem;color:var(--ink-faint);">You're all caught up.</p>
+          </div>
+        </div>
+      </div>
       <span class="user-chip"><span class="user-chip-avatar" id="userAvatarInitials">AD</span><span id="userChipName">Admin</span></span>
       <a href="authenticationpage.html" class="link-btn logout-link" data-i18n="common.logout">Log out</a>
       <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
@@ -96,8 +112,10 @@
       <a href="#listings">All Listings</a>
       <a href="#users">Users</a>
       <a href="#orders">Orders</a>
+      <a href="#payments">Payments</a>
       <a href="#refunds">Refunds</a>
       <a href="#applications">Applications</a>
+      <a href="#coupons">Coupons</a>
       <a href="#inquiries">Inquiries</a>
       <a href="#contactmessages">Contact Messages</a>
       <a href="#activity">Activity Log</a>
@@ -216,6 +234,29 @@
       </div>
     </section>
 
+    <!-- ===== PAYMENTS ===== -->
+    <section data-reveal id="payments">
+      <div class="section-head">
+        <h2>Payments</h2>
+        <span class="section-hint">Held in escrow until delivery is confirmed — status changes once a real payment provider is wired in</span>
+      </div>
+      <div class="admin-table" id="paymentsTable">
+        <div class="admin-row admin-row--payments admin-row--head">
+          <span>Order</span>
+          <span>Provider</span>
+          <span>Amount</span>
+          <span>Status</span>
+          <span>Date</span>
+        </div>
+        <div id="paymentsTableBody"></div>
+      </div>
+      <div class="empty-state" id="paymentsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M2 8h20M6 16h4"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+        <h3>No payments yet</h3>
+        <p>A payment record is created the moment a buyer checks out — they'll show up here.</p>
+      </div>
+    </section>
+
     <!-- ===== REFUNDS ===== -->
     <section data-reveal id="refunds">
       <div class="section-head">
@@ -260,6 +301,47 @@
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <h3>No supplier applications</h3>
         <p>Submissions from the "Become a Supplier" form will show up here for review.</p>
+      </div>
+    </section>
+
+    <!-- ===== COUPONS ===== -->
+    <section data-reveal id="coupons">
+      <div class="section-head">
+        <h2>Coupons</h2>
+        <span class="section-hint">Promo codes buyers can apply at checkout</span>
+      </div>
+
+      <form class="coupon-form" id="couponForm">
+        <label>Code <input type="text" id="couponCode" placeholder="e.g. WELCOME10" required style="text-transform:uppercase;"></label>
+        <label>Type
+          <select id="couponType">
+            <option value="percent">Percent off</option>
+            <option value="fixed">Fixed amount off</option>
+          </select>
+        </label>
+        <label>Amount <input type="number" id="couponAmount" min="0" step="0.01" required></label>
+        <label>Min order total <input type="number" id="couponMinOrder" min="0" step="0.01" value="0"></label>
+        <label>Max uses <span class="field-hint-inline">(optional)</span><input type="number" id="couponMaxUses" min="1" step="1"></label>
+        <label>Expires <span class="field-hint-inline">(optional)</span><input type="date" id="couponExpires"></label>
+        <button type="submit" class="btn btn-primary btn-sm" id="couponCreateBtn">Create coupon</button>
+      </form>
+      <p class="ot-msg" id="couponFormMsg" hidden></p>
+
+      <div class="admin-table" id="couponsTable">
+        <div class="admin-row admin-row--coupons admin-row--head">
+          <span>Code</span>
+          <span>Discount</span>
+          <span>Min order</span>
+          <span>Uses</span>
+          <span>Expires</span>
+          <span></span>
+        </div>
+        <div id="couponsTableBody"></div>
+      </div>
+      <div class="empty-state" id="couponsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M9 9h.01M15 15h.01M15 9l-6 6"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+        <h3>No coupons yet</h3>
+        <p>Create one above — buyers can apply it by code at checkout.</p>
       </div>
     </section>
 
@@ -458,5 +540,8 @@
 <script src="../js/adminContactMessages.js"></script>
 <script src="../js/adminRefunds.js"></script>
 <script src="../js/adminSupplierApplications.js"></script>
+<script src="../js/adminNotifications.js"></script>
+<script src="../js/adminPayments.js"></script>
+<script src="../js/adminCoupons.js"></script>
 </body>
 </html>
