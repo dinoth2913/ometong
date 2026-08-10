@@ -341,6 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
         title,
         supplier: items.length ? `${items.length} item${items.length > 1 ? 's' : ''}` : '',
         date: o.created_at ? new Date(o.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '',
+        createdAt: o.created_at,
         amount: Number(o.total) || 0,
         status: statusInfo.cls,
         statusLabel: statusInfo.label,
@@ -503,9 +504,46 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOrders();
   });
 
+  /* ---------- Analytics ----------
+     Computed straight from the same `orders` this page already
+     loads — no new table needed. Spending is bucketed by calendar
+     month (last 6 including the current one); status breakdown
+     counts every non-cancelled order once. */
+  function renderAnalytics() {
+    const spendingEl = document.getElementById('chartSpending');
+    const statusEl = document.getElementById('chartOrderStatus');
+    if (!spendingEl && !statusEl) return;
+
+    const now = new Date();
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short' }), value: 0 });
+    }
+    const byKey = {};
+    months.forEach(m => { byKey[m.key] = m; });
+    orders.forEach(o => {
+      if (o.status === 'cancelled' || !o.createdAt) return;
+      const d = new Date(o.createdAt);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      if (byKey[key]) byKey[key].value += o.amount;
+    });
+
+    if (spendingEl) window.ometongRenderBarChart(spendingEl, months, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders placed yet.' });
+
+    if (statusEl) {
+      const labels = { processing: 'Processing', transit: 'In transit', delivered: 'Delivered', cancelled: 'Cancelled' };
+      const counts = { processing: 0, transit: 0, delivered: 0, cancelled: 0 };
+      orders.forEach(o => { if (counts[o.status] !== undefined) counts[o.status]++; });
+      const rows = Object.keys(labels).map(k => ({ label: labels[k], value: counts[k] }));
+      window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders placed yet.' });
+    }
+  }
+
   (async () => {
     await loadOrders();
     renderOrders();
+    renderAnalytics();
   })();
 
 });

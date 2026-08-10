@@ -33,12 +33,9 @@
 
     <nav class="nav-links" id="navLinks">
       <a href="manufacturerdashboard.html" class="active" data-i18n="common.dashboard">Dashboard</a>
-      <a href="#listings" data-i18n="nav.myListings">My Listings</a>
-      <a href="#production" data-i18n="nav.production">Production</a>
-      <a href="#rfqs" data-i18n="nav.buyerRfqs">Buyer RFQs</a>
       <a href="messages.html" data-i18n="common.messages">Messages</a>
-      <a href="#certs" data-i18n="nav.certifications">Certifications</a>
-      <a href="#payouts" data-i18n="nav.payouts">Payouts</a>
+      <a href="Home.html" data-i18n="common.home">Home</a>
+      <a href="contactus.html" data-i18n="nav.support">Support</a>
     </nav>
 
     <div class="nav-actions">
@@ -68,12 +65,9 @@
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="manufacturerdashboard.html" data-i18n="common.dashboard">Dashboard</a>
-  <a href="#listings" data-i18n="nav.myListings">My Listings</a>
-  <a href="#production" data-i18n="nav.production">Production</a>
-  <a href="#rfqs" data-i18n="nav.buyerRfqs">Buyer RFQs</a>
   <a href="messages.html" data-i18n="common.messages">Messages</a>
-  <a href="#certs" data-i18n="nav.certifications">Certifications</a>
-  <a href="#payouts" data-i18n="nav.payouts">Payouts</a>
+  <a href="Home.html" data-i18n="common.home">Home</a>
+  <a href="contactus.html" data-i18n="nav.support">Support</a>
   <select class="lang-switch" aria-label="Language">
     <option value="en">EN</option>
     <option value="fr">FR</option>
@@ -103,6 +97,17 @@
         <a href="Supplier.html#pricing" class="status-pill plan-cta" data-i18n="supplier.choosePlan">Choose a plan</a>
       </div>
     </div>
+
+    <!-- ===== QUICK JUMP ===== -->
+    <nav class="quick-jump" id="quickJump" aria-label="Jump to section">
+      <a href="#listings">My Listings</a>
+      <a href="#production">Production</a>
+      <a href="#rfqs">Buyer RFQs</a>
+      <a href="#certs">Certifications</a>
+      <a href="#payouts">Payouts</a>
+      <a href="#verification">Business Verification</a>
+      <a href="#analytics">Analytics</a>
+    </nav>
 
     <!-- ===== STATS ===== -->
     <div class="stat-grid" data-reveal>
@@ -310,6 +315,24 @@
       </div>
     </section>
 
+    <!-- ===== ANALYTICS ===== -->
+    <section data-reveal id="analytics">
+      <div class="section-head">
+        <h2>Analytics</h2>
+        <span class="section-hint">Your factory's sales performance at a glance</span>
+      </div>
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <h3>Earnings, last 6 months</h3>
+          <div id="chartEarnings"></div>
+        </div>
+        <div class="analytics-card">
+          <h3>Orders by status</h3>
+          <div id="chartOrderStatus"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== ACCOUNT ===== -->
     <section data-reveal>
       <div class="section-head">
@@ -384,6 +407,8 @@
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/authGuard.js" data-role="manufacturer"></script>
 <script src="../js/i18n.js"></script>
+<script src="../js/taxonomy.js"></script>
+<script src="../js/barChart.js"></script>
 <script src="../js/manufacturerdashboard.js"></script>
 <script src="../js/supplierVerification.js"></script>
 <script src="../js/orderTracking.js"></script>

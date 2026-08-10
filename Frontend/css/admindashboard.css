@@ -501,6 +501,14 @@ main .container.section > section[data-reveal]:last-of-type {
   grid-template-columns: 1.3fr 1.1fr .9fr .9fr 1.8fr;
 }
 
+/* =========================================================
+   RFQ QUOTES — supplier/manufacturer quotes waiting to be relayed
+   to the buyer who posted the RFQ.
+========================================================= */
+.admin-row--rfq {
+  grid-template-columns: 1.4fr 1.1fr .8fr .8fr 1.6fr 1fr;
+}
+
 @media (max-width: 760px) {
   .coupon-form { grid-template-columns: 1fr 1fr; }
 }

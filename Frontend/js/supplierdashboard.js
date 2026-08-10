@@ -68,13 +68,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Supplier data ----------
-     Listings and orders are real, fetched from Supabase for the
-     logged-in account. No payout backend exists yet (needs a real
-     payment provider wired in first — see supabase/orders_schema.sql),
-     so that section genuinely starts empty until then. */
+     Listings, orders and buyer requests (RFQs) are all real, fetched
+     from Supabase for the logged-in account. No payout backend
+     exists yet (needs a real payment provider wired in first — see
+     supabase/orders_schema.sql), so that section genuinely starts
+     empty until then. */
   let listings = [];
   let orders = [];
-  const demoRequests = [];
+  let requests = [];
+  let myResponses = {}; // rfq_id -> rfq_responses row
   const demoPayouts = [];
 
   const listingColors = ['#3A6FF7', '#8B5CF6', '#22C55E', '#FFC24D', '#FF7431', '#EF4444'];
@@ -158,14 +160,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ---------- Render buyer requests ---------- */
+  /* ---------- Load + render buyer requests (RFQs) ----------
+     Real data from public.rfqs / rfq_responses (see
+     supabase/marketplace_enhancements_schema.sql section 2) — any
+     open RFQ is visible to any logged-in account (that's how
+     suppliers discover buyer demand without buyer identity being
+     exposed), and a supplier's own quote is only ever visible to
+     that buyer once Ometong staff has relayed it. */
   const requestsGrid = document.getElementById('requestsGrid');
   const requestsEmpty = document.getElementById('requestsEmpty');
-  const reqLabels = { new: 'New', quoted: 'Quoted', won: 'Won' };
+
+  async function loadRequests() {
+    if (!window.sb) return;
+    const user = await window.ometongGetUser();
+    if (!user) return;
+    const { data, error } = await window.sb
+      .from('rfqs')
+      .select('*')
+      .eq('status', 'open')
+      .order('created_at', { ascending: false })
+      .limit(40);
+    if (error) { console.error('Ometong: failed to load buyer requests', error); return; }
+    requests = data || [];
+
+    const { data: responses, error: respErr } = await window.sb
+      .from('rfq_responses')
+      .select('*')
+      .eq('supplier_id', user.id);
+    if (respErr) console.error('Ometong: failed to load my quotes', respErr);
+    myResponses = {};
+    (responses || []).forEach(r => { myResponses[r.rfq_id] = r; });
+  }
+
+  function timeAgo(iso) {
+    const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (mins < 1) return 'now';
+    if (mins < 60) return mins + 'm';
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return hrs + 'h';
+    return Math.round(hrs / 24) + 'd';
+  }
 
   function renderRequests() {
     if (!requestsGrid) return;
-    if (demoRequests.length === 0) {
+    if (requests.length === 0) {
       requestsGrid.innerHTML = '';
       requestsGrid.style.display = 'none';
       if (requestsEmpty) requestsEmpty.hidden = false;
@@ -173,25 +211,95 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     requestsGrid.style.display = 'grid';
     if (requestsEmpty) requestsEmpty.hidden = true;
-    requestsGrid.innerHTML = demoRequests.map(r => `
-      <div class="request-card">
+    const esc = window.ometongEscapeHTML || (s => s);
+    const catLabel = slug => (window.ometongTaxonomy && window.ometongTaxonomy.categorySlugToLabel[slug]) || slug || 'General';
+
+    requestsGrid.innerHTML = requests.map(r => {
+      const mine = myResponses[r.id];
+      let actionsHtml;
+      if (mine) {
+        actionsHtml = mine.status === 'relayed'
+          ? '<button class="btn btn-ghost btn-sm" disabled>Quote sent to buyer</button>'
+          : '<button class="btn btn-ghost btn-sm" disabled>Quote submitted — pending review</button>';
+      } else {
+        actionsHtml = `<button class="btn btn-primary btn-sm" data-quote="${r.id}">Send a quote</button>`;
+      }
+      return `
+      <div class="request-card" data-rfq="${r.id}">
         <div class="req-top">
-          <span class="req-product">${r.product}</span>
-          <span class="req-status ${r.status}">${reqLabels[r.status]}</span>
+          <span class="req-product">${esc(r.title)}</span>
+          <span class="req-status new">${timeAgo(r.created_at)} ago</span>
         </div>
-        <div class="req-buyer"><strong>${r.buyer}</strong> · ${r.country}</div>
-        <div class="req-meta"><span>${r.qty}</span><span>Budget ${r.budget}</span></div>
-        <div class="req-actions">
-          ${r.status === 'won'
-            ? '<button class="btn btn-ghost btn-sm" disabled>Deal closed</button>'
-            : `<button class="btn btn-primary btn-sm" data-quote="${r.id}">${r.status === 'quoted' ? 'View quote' : 'Send a quote'}</button>`}
+        <div class="req-buyer"><strong>${catLabel(r.category_slug)}</strong> · ${esc(r.destination_country || 'Destination not set')}</div>
+        <div class="req-meta">
+          <span>${r.quantity ? 'Qty ' + Number(r.quantity).toLocaleString('en-US') : 'Qty not set'}</span>
+          <span>${r.target_price ? 'Target $' + Number(r.target_price).toLocaleString('en-US') : 'No target price'}</span>
         </div>
-      </div>`).join('');
+        ${r.description ? `<p class="rfq-desc">${esc(r.description)}</p>` : ''}
+        <div class="req-actions">${actionsHtml}</div>
+        <form class="rfq-form" id="quote-form-${r.id}" data-rfq-form="${r.id}" hidden style="margin-top:12px;">
+          <div class="rfq-form-row">
+            <label>Your price (USD / unit)
+              <input type="number" min="0" step="0.01" required data-field="price">
+            </label>
+            <label>Lead time (days)
+              <input type="number" min="0" data-field="lead">
+            </label>
+          </div>
+          <label>Message to buyer (optional)
+            <textarea data-field="message" placeholder="Anything the buyer should know about this quote"></textarea>
+          </label>
+          <p class="rfq-form-msg" data-form-msg hidden></p>
+          <div class="rfq-form-actions">
+            <button type="submit" class="btn btn-primary btn-sm">Submit quote</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-cancel-quote="${r.id}">Cancel</button>
+          </div>
+        </form>
+      </div>`;
+    }).join('');
 
     requestsGrid.querySelectorAll('[data-quote]').forEach(btn => {
       btn.addEventListener('click', () => {
-        btn.textContent = 'Quote sent ✓';
-        btn.disabled = true;
+        const formEl = document.getElementById('quote-form-' + btn.getAttribute('data-quote'));
+        if (formEl) formEl.hidden = false;
+      });
+    });
+    requestsGrid.querySelectorAll('[data-cancel-quote]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const formEl = document.getElementById('quote-form-' + btn.getAttribute('data-cancel-quote'));
+        if (formEl) formEl.hidden = true;
+      });
+    });
+    requestsGrid.querySelectorAll('[data-rfq-form]').forEach(formEl => {
+      formEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const rfqId = formEl.getAttribute('data-rfq-form');
+        const price = formEl.querySelector('[data-field="price"]').value;
+        const lead = formEl.querySelector('[data-field="lead"]').value;
+        const message = formEl.querySelector('[data-field="message"]').value.trim();
+        const msgEl = formEl.querySelector('[data-form-msg]');
+        const user = await window.ometongGetUser();
+        if (!price || !user) return;
+
+        const submitBtn = formEl.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        const { error } = await window.sb.from('rfq_responses').insert({
+          rfq_id: rfqId,
+          supplier_id: user.id,
+          quoted_price: Number(price),
+          lead_time_days: lead ? Number(lead) : null,
+          message: message || null
+        });
+        submitBtn.disabled = false;
+
+        if (error) {
+          console.error('Ometong: failed to submit quote', error);
+          if (msgEl) { msgEl.textContent = error.message || 'Could not submit this quote. Please try again.'; msgEl.className = 'rfq-form-msg error'; msgEl.hidden = false; }
+          return;
+        }
+        await loadRequests();
+        renderRequests();
+        renderStats();
       });
     });
   }
@@ -234,7 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
           country: addr.country || '—',
           product,
           amount,
-          status: g.order.status
+          status: g.order.status,
+          createdAt: g.order.created_at
         };
       });
   }
@@ -331,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Render stats ---------- */
   function renderStats() {
     const activeListings = listings.filter(l => l.status === 'active' && l.is_approved).length;
-    const newRequests = demoRequests.filter(r => r.status === 'new').length;
+    const newRequests = requests.filter(r => !myResponses[r.id]).length;
     const ordersInProgress = orders.filter(o => o.status !== 'delivered' && o.status !== 'completed' && o.status !== 'cancelled').length;
     const totalEarnings = demoPayouts.reduce((sum, p) => sum + p.amount, 0)
       + orders.filter(o => o.status === 'delivered' || o.status === 'completed').reduce((sum, o) => sum + o.amount, 0);
@@ -343,13 +452,51 @@ document.addEventListener('DOMContentLoaded', () => {
     setNum('statEarnings', '$' + totalEarnings.toLocaleString('en-US'));
   }
 
+  /* ---------- Analytics ----------
+     Computed from the same `orders` already loaded on this page —
+     no new table needed. */
+  function renderAnalytics() {
+    const earningsEl = document.getElementById('chartEarnings');
+    const statusEl = document.getElementById('chartOrderStatus');
+    if (!earningsEl && !statusEl) return;
+
+    const now = new Date();
+    const months = [];
+    const byKey = {};
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const m = { key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short' }), value: 0 };
+      months.push(m);
+      byKey[m.key] = m;
+    }
+    orders.forEach(o => {
+      if (o.status === 'cancelled' || !o.createdAt) return;
+      const d = new Date(o.createdAt);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      if (byKey[key]) byKey[key].value += o.amount;
+    });
+    if (earningsEl) window.ometongRenderBarChart(earningsEl, months, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders yet.' });
+
+    if (statusEl) {
+      const labels = { processing: 'Processing', transit: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled' };
+      const counts = { processing: 0, transit: 0, delivered: 0, cancelled: 0 };
+      orders.forEach(o => {
+        const cls = (ORDER_STATUS_MAP[o.status] || {}).cls || o.status;
+        if (counts[cls] !== undefined) counts[cls]++;
+      });
+      const rows = Object.keys(labels).map(k => ({ label: labels[k], value: counts[k] }));
+      window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders yet.' });
+    }
+  }
+
   (async () => {
-    await Promise.all([loadListings(), loadOrders()]);
+    await Promise.all([loadListings(), loadOrders(), loadRequests()]);
     renderListings();
     renderRequests();
     renderOrders();
     renderPayouts();
     renderStats();
+    renderAnalytics();
   })();
 
   /* ---------- Quick jump active-section highlight ----------

@@ -159,6 +159,68 @@
       </div>
     </section>
 
+    <!-- ===== REQUEST QUOTES (RFQ) ===== -->
+    <section data-reveal id="rfqs">
+      <div class="section-head">
+        <h2>Request quotes (RFQ)</h2>
+        <span class="section-hint">Post what you need — verified suppliers and manufacturers can send you quotes, reviewed by our team before they reach you</span>
+      </div>
+
+      <form class="rfq-form" id="rfqPostForm">
+        <div class="rfq-form-row">
+          <label>What do you need?
+            <input type="text" id="rfqTitle" placeholder="e.g. Cotton T-shirts, custom printed" required>
+          </label>
+          <label>Category
+            <select id="rfqCategory" required></select>
+          </label>
+        </div>
+        <div class="rfq-form-row">
+          <label>Quantity
+            <input type="number" id="rfqQuantity" min="1" placeholder="e.g. 5000">
+          </label>
+          <label>Target price (USD / unit)
+            <input type="number" id="rfqTargetPrice" min="0" step="0.01" placeholder="e.g. 2.50">
+          </label>
+        </div>
+        <label>Destination country
+          <input type="text" id="rfqDestination" placeholder="e.g. United States">
+        </label>
+        <label>Details
+          <textarea id="rfqDescription" placeholder="Specs, materials, packaging, deadline — anything suppliers should know"></textarea>
+        </label>
+        <p class="rfq-form-msg" id="rfqFormMsg" hidden></p>
+        <div class="rfq-form-actions">
+          <button type="submit" class="btn btn-primary btn-sm" id="rfqSubmitBtn">Post request</button>
+        </div>
+      </form>
+
+      <div class="rfq-list" id="rfqList"></div>
+      <div class="empty-state" id="rfqListEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>
+        <h3>No requests posted yet</h3>
+        <p>Post what you're looking to buy above — verified suppliers and manufacturers can send you quotes, and you'll see them here once our team relays them.</p>
+      </div>
+    </section>
+
+    <!-- ===== ANALYTICS ===== -->
+    <section data-reveal id="analytics">
+      <div class="section-head">
+        <h2>Analytics</h2>
+        <span class="section-hint">Your buying activity at a glance</span>
+      </div>
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <h3>Spending, last 6 months</h3>
+          <div id="chartSpending"></div>
+        </div>
+        <div class="analytics-card">
+          <h3>Orders by status</h3>
+          <div id="chartOrderStatus"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== WISHLIST ===== -->
     <section data-reveal>
       <div class="section-head">
@@ -262,7 +324,10 @@
 <script src="../js/authGuard.js" data-role="buyer"></script>
 <script src="../js/cartSync.js"></script>
 <script src="../js/i18n.js"></script>
+<script src="../js/taxonomy.js"></script>
+<script src="../js/barChart.js"></script>
 <script src="../js/buyerdashboard.js"></script>
+<script src="../js/buyerRfq.js"></script>
 <script src="../js/orderTracking.js"></script>
 <script src="../js/chatWidget.js"></script>
 </body>

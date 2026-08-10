@@ -110,6 +110,29 @@ button,input,textarea,select{font-family:inherit;}
 .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--accent);border-radius:2px;transition:width .3s var(--ease);}
 .nav-links a:hover,.nav-links a.active{color:var(--ink);}
 .nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+
+/* =========================================================
+   QUICK JUMP — section shortcuts, kept out of the sticky top navbar
+   and placed in the page content itself, right under the dashboard
+   header. Mirrors the pattern used on admin/supplier dashboards.
+========================================================= */
+.quick-jump{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;}
+.quick-jump a{
+  padding:7px 16px;border-radius:999px;border:1.5px solid var(--line);
+  background:var(--card-bg);color:var(--ink-soft);font-size:.8rem;font-weight:700;
+  white-space:nowrap;transition:border-color .2s,color .2s,background .2s;
+}
+.quick-jump a:hover{border-color:var(--accent);color:var(--ink);}
+.quick-jump a.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+/* =========================================================
+   SECTION SPACING — top-level dashboard sections had no margin of
+   their own, so they stacked directly against each other with zero
+   gap between them.
+========================================================= */
+main .container.section > section[data-reveal]{margin-bottom:56px;}
+main .container.section > section[data-reveal]:last-of-type{margin-bottom:0;}
+
 .nav-actions{display:flex;align-items:center;gap:14px;}
 .link-btn{font-size:.88rem;font-weight:600;color:var(--ink-soft);}
 .link-btn:hover{color:var(--ink);}
@@ -465,3 +488,66 @@ button,input,textarea,select{font-family:inherit;}
 @media (max-width:860px){
   .verify-shell{grid-template-columns:1fr;}
 }
+
+/* =========================================================
+   RFQ (REQUEST FOR QUOTATION) — post form + list, shared shape
+   across the buyer (post + view quotes) and supplier/manufacturer
+   (browse open RFQs + send a quote) dashboards.
+========================================================= */
+.rfq-form{
+  display:flex;flex-direction:column;gap:12px;margin-bottom:20px;
+  background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:20px;box-shadow:var(--shadow-sm);
+}
+.rfq-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.rfq-form label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:600;color:var(--ink);}
+.rfq-form input,.rfq-form select,.rfq-form textarea{
+  padding:9px 11px;border-radius:9px;border:1px solid var(--line);
+  font-family:inherit;font-size:.84rem;color:var(--ink);background:var(--bg-alt);
+}
+.rfq-form textarea{resize:vertical;min-height:64px;}
+.rfq-form-actions{display:flex;gap:10px;align-items:center;}
+.rfq-form-msg{font-size:.8rem;margin:0;}
+.rfq-form-msg.error{color:var(--red);}
+.rfq-form-msg.success{color:var(--green);}
+@media (max-width:640px){.rfq-form-row{grid-template-columns:1fr;}}
+
+.rfq-list{display:flex;flex-direction:column;gap:12px;}
+.rfq-list-item{
+  background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:16px 18px;
+}
+.rfq-list-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.rfq-list-title{font-weight:700;font-size:.92rem;color:var(--ink);}
+.rfq-list-meta{font-size:.78rem;color:var(--ink-faint);margin-top:4px;}
+.rfq-list-status{
+  padding:4px 11px;border-radius:999px;font-size:.7rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;
+}
+.rfq-list-status.open{background:rgba(58,111,247,.12);color:#3A6FF7;}
+.rfq-list-status.closed{background:rgba(154,161,172,.16);color:var(--ink-soft);}
+.rfq-list-status.awarded{background:rgba(34,197,94,.14);color:#178A50;}
+.rfq-desc{font-size:.82rem;color:var(--ink-soft);margin:10px 0 0;}
+.rfq-quotes{margin-top:12px;border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:10px;}
+.rfq-quote-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;font-size:.82rem;background:var(--bg-alt);border-radius:9px;padding:10px 12px;}
+.rfq-quote-price{font-weight:800;color:var(--accent-dark);}
+.rfq-quote-msg{flex-basis:100%;color:var(--ink-soft);font-size:.8rem;}
+.rfq-toggle-quotes{background:none;border:none;color:var(--accent-dark);font-weight:700;font-size:.78rem;cursor:pointer;padding:0;margin-top:10px;}
+
+/* =========================================================
+   ANALYTICS — simple horizontal bar charts, no chart library.
+========================================================= */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media (max-width:760px){.analytics-grid{grid-template-columns:1fr;}}
+.analytics-card{
+  background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:20px;box-shadow:var(--shadow-sm);
+}
+.analytics-card h3{margin:0 0 14px;font-size:.92rem;font-weight:700;color:var(--ink);}
+.bar-chart{display:flex;flex-direction:column;gap:10px;}
+.bar-chart-row{display:grid;grid-template-columns:66px 1fr 58px;align-items:center;gap:10px;font-size:.76rem;}
+.bar-chart-label{color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-chart-track{height:10px;border-radius:6px;background:var(--bg-alt);overflow:hidden;}
+.bar-chart-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-dark));}
+.bar-chart-value{text-align:right;font-weight:700;color:var(--ink);}
+.analytics-empty{font-size:.82rem;color:var(--ink-faint);padding:20px 0;text-align:center;}

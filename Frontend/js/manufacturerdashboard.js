@@ -68,15 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Manufacturer data ----------
-     Listings and orders are real, fetched from Supabase for the
-     logged-in account. No production-line/RFQ/certification/payout
-     backend exists yet, so those sections genuinely start empty —
-     they'll fill in on their own once that's built. */
+     Listings, orders and buyer RFQs are all real, fetched from
+     Supabase for the logged-in account. No production-line/
+     certification/payout backend exists yet, so those sections
+     genuinely start empty — they'll fill in on their own once
+     that's built. */
   let listings = [];
   let orders = [];
   const demoLines = [];
-  const demoRfqs = [];
-  const rfqLabels = { new: 'New', quoted: 'Quoted', won: 'Won' };
+  let rfqs = [];
+  let myResponses = {}; // rfq_id -> rfq_responses row
   const demoCerts = [];
   const demoPayouts = [];
 
@@ -188,12 +189,49 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`).join('');
   }
 
-  /* ---------- Render RFQs ---------- */
+  /* ---------- Load + render RFQs ----------
+     Real data from public.rfqs / rfq_responses (see
+     supabase/marketplace_enhancements_schema.sql section 2) — any
+     open RFQ is visible to any logged-in account, and a
+     manufacturer's own quote only ever reaches the buyer once
+     Ometong staff has relayed it. */
   const rfqGrid = document.getElementById('rfqGrid');
   const rfqsEmpty = document.getElementById('rfqsEmpty');
+
+  async function loadRfqs() {
+    if (!window.sb) return;
+    const user = await window.ometongGetUser();
+    if (!user) return;
+    const { data, error } = await window.sb
+      .from('rfqs')
+      .select('*')
+      .eq('status', 'open')
+      .order('created_at', { ascending: false })
+      .limit(40);
+    if (error) { console.error('Ometong: failed to load buyer RFQs', error); return; }
+    rfqs = data || [];
+
+    const { data: responses, error: respErr } = await window.sb
+      .from('rfq_responses')
+      .select('*')
+      .eq('supplier_id', user.id);
+    if (respErr) console.error('Ometong: failed to load my quotes', respErr);
+    myResponses = {};
+    (responses || []).forEach(r => { myResponses[r.rfq_id] = r; });
+  }
+
+  function rfqTimeAgo(iso) {
+    const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (mins < 1) return 'now';
+    if (mins < 60) return mins + 'm';
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return hrs + 'h';
+    return Math.round(hrs / 24) + 'd';
+  }
+
   function renderRfqs() {
     if (!rfqGrid) return;
-    if (demoRfqs.length === 0) {
+    if (rfqs.length === 0) {
       rfqGrid.innerHTML = '';
       rfqGrid.style.display = 'none';
       if (rfqsEmpty) rfqsEmpty.hidden = false;
@@ -201,25 +239,95 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     rfqGrid.style.display = 'grid';
     if (rfqsEmpty) rfqsEmpty.hidden = true;
-    rfqGrid.innerHTML = demoRfqs.map(r => `
-      <div class="rfq-card">
+    const esc = window.ometongEscapeHTML || (s => s);
+    const catLabel = slug => (window.ometongTaxonomy && window.ometongTaxonomy.categorySlugToLabel[slug]) || slug || 'General';
+
+    rfqGrid.innerHTML = rfqs.map(r => {
+      const mine = myResponses[r.id];
+      let actionsHtml;
+      if (mine) {
+        actionsHtml = mine.status === 'relayed'
+          ? '<button class="btn btn-ghost btn-sm" disabled>Quote sent to buyer</button>'
+          : '<button class="btn btn-ghost btn-sm" disabled>Quote submitted — pending review</button>';
+      } else {
+        actionsHtml = `<button class="btn btn-primary btn-sm" data-quote="${r.id}">Send a quote</button>`;
+      }
+      return `
+      <div class="rfq-card" data-rfq="${r.id}">
         <div class="rfq-top">
-          <span class="rfq-product">${r.product}</span>
-          <span class="rfq-status ${r.status}">${rfqLabels[r.status]}</span>
+          <span class="rfq-product">${esc(r.title)}</span>
+          <span class="rfq-status new">${rfqTimeAgo(r.created_at)} ago</span>
         </div>
-        <div class="rfq-buyer"><strong>${r.buyer}</strong> · ${r.country}</div>
-        <div class="rfq-meta"><span>${r.qty}</span><span>Budget ${r.budget}</span></div>
-        <div class="rfq-actions">
-          ${r.status === 'won'
-            ? '<button class="btn btn-ghost btn-sm" disabled>Deal closed</button>'
-            : `<button class="btn btn-primary btn-sm" data-quote="${r.id}">${r.status === 'quoted' ? 'View quote' : 'Send a quote'}</button>`}
+        <div class="rfq-buyer"><strong>${catLabel(r.category_slug)}</strong> · ${esc(r.destination_country || 'Destination not set')}</div>
+        <div class="rfq-meta">
+          <span>${r.quantity ? 'Qty ' + Number(r.quantity).toLocaleString('en-US') : 'Qty not set'}</span>
+          <span>${r.target_price ? 'Target $' + Number(r.target_price).toLocaleString('en-US') : 'No target price'}</span>
         </div>
-      </div>`).join('');
+        ${r.description ? `<p class="rfq-desc">${esc(r.description)}</p>` : ''}
+        <div class="rfq-actions">${actionsHtml}</div>
+        <form class="rfq-form" id="quote-form-${r.id}" data-rfq-form="${r.id}" hidden style="margin-top:12px;">
+          <div class="rfq-form-row">
+            <label>Your price (USD / unit)
+              <input type="number" min="0" step="0.01" required data-field="price">
+            </label>
+            <label>Lead time (days)
+              <input type="number" min="0" data-field="lead">
+            </label>
+          </div>
+          <label>Message to buyer (optional)
+            <textarea data-field="message" placeholder="Anything the buyer should know about this quote"></textarea>
+          </label>
+          <p class="rfq-form-msg" data-form-msg hidden></p>
+          <div class="rfq-form-actions">
+            <button type="submit" class="btn btn-primary btn-sm">Submit quote</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-cancel-quote="${r.id}">Cancel</button>
+          </div>
+        </form>
+      </div>`;
+    }).join('');
 
     rfqGrid.querySelectorAll('[data-quote]').forEach(btn => {
       btn.addEventListener('click', () => {
-        btn.textContent = 'Quote sent ✓';
-        btn.disabled = true;
+        const formEl = document.getElementById('quote-form-' + btn.getAttribute('data-quote'));
+        if (formEl) formEl.hidden = false;
+      });
+    });
+    rfqGrid.querySelectorAll('[data-cancel-quote]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const formEl = document.getElementById('quote-form-' + btn.getAttribute('data-cancel-quote'));
+        if (formEl) formEl.hidden = true;
+      });
+    });
+    rfqGrid.querySelectorAll('[data-rfq-form]').forEach(formEl => {
+      formEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const rfqId = formEl.getAttribute('data-rfq-form');
+        const price = formEl.querySelector('[data-field="price"]').value;
+        const lead = formEl.querySelector('[data-field="lead"]').value;
+        const message = formEl.querySelector('[data-field="message"]').value.trim();
+        const msgEl = formEl.querySelector('[data-form-msg]');
+        const user = await window.ometongGetUser();
+        if (!price || !user) return;
+
+        const submitBtn = formEl.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        const { error } = await window.sb.from('rfq_responses').insert({
+          rfq_id: rfqId,
+          supplier_id: user.id,
+          quoted_price: Number(price),
+          lead_time_days: lead ? Number(lead) : null,
+          message: message || null
+        });
+        submitBtn.disabled = false;
+
+        if (error) {
+          console.error('Ometong: failed to submit quote', error);
+          if (msgEl) { msgEl.textContent = error.message || 'Could not submit this quote. Please try again.'; msgEl.className = 'rfq-form-msg error'; msgEl.hidden = false; }
+          return;
+        }
+        await loadRfqs();
+        renderRfqs();
+        renderStats();
       });
     });
   }
@@ -263,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
           product,
           amount,
           status: g.order.status,
+          createdAt: g.order.created_at,
           eta: g.order.estimated_delivery ? new Date(g.order.estimated_delivery).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'ETA not set'
         };
       });
@@ -382,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Render stats ---------- */
   function renderStats() {
     const activeLines = demoLines.filter(l => l.status !== 'maintenance').length;
-    const newRfqs = demoRfqs.filter(r => r.status === 'new').length;
+    const newRfqs = rfqs.filter(r => !myResponses[r.id]).length;
     const ordersInProduction = orders.filter(o => o.status !== 'delivered' && o.status !== 'completed' && o.status !== 'cancelled').length;
     const totalEarnings = demoPayouts.reduce((sum, p) => sum + p.amount, 0)
       + orders.filter(o => o.status === 'delivered' || o.status === 'completed').reduce((sum, o) => sum + o.amount, 0);
@@ -394,8 +503,45 @@ document.addEventListener('DOMContentLoaded', () => {
     setNum('statEarnings', '$' + totalEarnings.toLocaleString('en-US'));
   }
 
+  /* ---------- Analytics ----------
+     Computed from the same `orders` already loaded on this page —
+     no new table needed. */
+  function renderAnalytics() {
+    const earningsEl = document.getElementById('chartEarnings');
+    const statusEl = document.getElementById('chartOrderStatus');
+    if (!earningsEl && !statusEl) return;
+
+    const now = new Date();
+    const months = [];
+    const byKey = {};
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const m = { key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short' }), value: 0 };
+      months.push(m);
+      byKey[m.key] = m;
+    }
+    orders.forEach(o => {
+      if (o.status === 'cancelled' || !o.createdAt) return;
+      const d = new Date(o.createdAt);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      if (byKey[key]) byKey[key].value += o.amount;
+    });
+    if (earningsEl) window.ometongRenderBarChart(earningsEl, months, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders yet.' });
+
+    if (statusEl) {
+      const labels = { processing: 'Processing', transit: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled' };
+      const counts = { processing: 0, transit: 0, delivered: 0, cancelled: 0 };
+      orders.forEach(o => {
+        const cls = (ORDER_STATUS_MAP[o.status] || {}).cls || o.status;
+        if (counts[cls] !== undefined) counts[cls]++;
+      });
+      const rows = Object.keys(labels).map(k => ({ label: labels[k], value: counts[k] }));
+      window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders yet.' });
+    }
+  }
+
   (async () => {
-    await Promise.all([loadListings(), loadOrders()]);
+    await Promise.all([loadListings(), loadOrders(), loadRfqs()]);
     renderListings();
     renderLines();
     renderRfqs();
@@ -403,6 +549,24 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCerts();
     renderPayouts();
     renderStats();
+    renderAnalytics();
   })();
+
+  /* ---------- Quick jump active-section highlight ---------- */
+  const quickJumpLinks = document.querySelectorAll('.quick-jump a');
+  const quickJumpSections = [...quickJumpLinks]
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+  if (quickJumpLinks.length && quickJumpSections.length && 'IntersectionObserver' in window) {
+    const jumpIo = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = '#' + entry.target.id;
+          quickJumpLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === id));
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    quickJumpSections.forEach(sec => jumpIo.observe(sec));
+  }
 
 });

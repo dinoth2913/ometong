@@ -116,6 +116,7 @@
       <a href="#refunds">Refunds</a>
       <a href="#applications">Applications</a>
       <a href="#verificationdocs">Verification</a>
+      <a href="#rfqquotes">RFQ Quotes</a>
       <a href="#coupons">Coupons</a>
       <a href="#inquiries">Inquiries</a>
       <a href="#contactmessages">Contact Messages</a>
@@ -327,6 +328,30 @@
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
         <h3>No verification documents yet</h3>
         <p>When a supplier or manufacturer uploads a business license from their dashboard, it'll show up here for review.</p>
+      </div>
+    </section>
+
+    <!-- ===== RFQ QUOTES ===== -->
+    <section data-reveal id="rfqquotes">
+      <div class="section-head">
+        <h2>RFQ quotes</h2>
+        <span class="section-hint" id="rfqQuotesPendingHint">Nothing pending</span>
+      </div>
+      <div class="admin-table" id="rfqQuotesTable">
+        <div class="admin-row admin-row--rfq admin-row--head">
+          <span>Request</span>
+          <span>Supplier</span>
+          <span>Price</span>
+          <span>Lead time</span>
+          <span>Message</span>
+          <span></span>
+        </div>
+        <div id="rfqQuotesTableBody"></div>
+      </div>
+      <div class="empty-state" id="rfqQuotesEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>
+        <h3>No RFQ quotes yet</h3>
+        <p>When a supplier or manufacturer sends a quote on a buyer's request, it'll show up here for you to review and relay.</p>
       </div>
     </section>
 
@@ -659,6 +684,7 @@
 <script src="../js/adminPayments.js"></script>
 <script src="../js/adminCoupons.js"></script>
 <script src="../js/adminVerification.js"></script>
+<script src="../js/adminRfqs.js"></script>
 <script src="../js/adminChatMessages.js"></script>
 <script src="../js/adminSupportMessages.js"></script>
 </body>

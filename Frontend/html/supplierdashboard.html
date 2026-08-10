@@ -104,6 +104,7 @@
       <a href="#listings">My Listings</a>
       <a href="#payouts">Payouts</a>
       <a href="#verification">Business Verification</a>
+      <a href="#analytics">Analytics</a>
     </nav>
 
     <!-- ===== STATS ===== -->
@@ -257,6 +258,24 @@
       </div>
     </section>
 
+    <!-- ===== ANALYTICS ===== -->
+    <section data-reveal id="analytics">
+      <div class="section-head">
+        <h2>Analytics</h2>
+        <span class="section-hint">Your sales performance at a glance</span>
+      </div>
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <h3>Earnings, last 6 months</h3>
+          <div id="chartEarnings"></div>
+        </div>
+        <div class="analytics-card">
+          <h3>Orders by status</h3>
+          <div id="chartOrderStatus"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== ACCOUNT ===== -->
     <section data-reveal>
       <div class="section-head">
@@ -331,6 +350,8 @@
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/authGuard.js" data-role="supplier"></script>
 <script src="../js/i18n.js"></script>
+<script src="../js/taxonomy.js"></script>
+<script src="../js/barChart.js"></script>
 <script src="../js/supplierdashboard.js"></script>
 <script src="../js/supplierVerification.js"></script>
 <script src="../js/orderTracking.js"></script>
