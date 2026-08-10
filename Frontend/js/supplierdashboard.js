@@ -352,4 +352,23 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStats();
   })();
 
+  /* ---------- Quick jump active-section highlight ----------
+     Purely cosmetic scroll-spy for the pill row under the dashboard
+     header — mirrors the same pattern used on admindashboard.js. */
+  const quickJumpLinks = document.querySelectorAll('.quick-jump a');
+  const quickJumpSections = [...quickJumpLinks]
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+  if (quickJumpLinks.length && quickJumpSections.length && 'IntersectionObserver' in window) {
+    const jumpIo = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = '#' + entry.target.id;
+          quickJumpLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === id));
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    quickJumpSections.forEach(sec => jumpIo.observe(sec));
+  }
+
 });
