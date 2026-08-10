@@ -217,6 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const rememberCheckbox = document.getElementById('rememberMeCheckbox');
+    if (window.ometongSetRememberMe) {
+      window.ometongSetRememberMe(rememberCheckbox ? rememberCheckbox.checked : true);
+    }
+
     const { data: profile } = await window.sb
       .from('profiles')
       .select('role')
@@ -275,6 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
       );
       return;
     }
+
+    // No "remember me" checkbox on signup — always starts remembered.
+    // Also clears any leftover "don't remember" flag from an earlier
+    // login on this browser, so it can't sign this brand-new session
+    // straight back out.
+    if (window.ometongSetRememberMe) window.ometongSetRememberMe(true);
 
     showSuccess("You're all set", 'Your account has been created — redirecting to your dashboard…', destinationForRole(currentRole));
   });
