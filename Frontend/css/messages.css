@@ -11,6 +11,28 @@
 }
 .msg-policy-note svg{flex-shrink:0;margin-top:2px;stroke:var(--accent);fill:none;stroke-width:1.8;}
 
+.msg-tabs{display:flex;gap:8px;margin:18px 0 16px;}
+.msg-tab{
+  display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;
+  border:1.5px solid var(--line);background:var(--card-bg);color:var(--ink-soft);
+  font-weight:700;font-size:.84rem;cursor:pointer;transition:border-color .2s,color .2s,background .2s;
+}
+.msg-tab:hover{border-color:var(--accent);color:var(--ink);}
+.msg-tab.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+.msg-tab-badge{
+  min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--accent);
+  color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center;
+}
+
+.msg-list-head{display:flex;align-items:center;justify-content:space-between;}
+.msg-new-btn{
+  background:none;border:1.5px solid var(--accent);color:var(--accent-dark);border-radius:999px;
+  padding:4px 12px;font-size:.74rem;font-weight:700;cursor:pointer;transition:background .2s,color .2s;
+}
+.msg-new-btn:hover{background:var(--accent);color:#fff;}
+
+#supportListEmpty .btn{margin-top:14px;}
+
 .msg-shell{
   display:grid;
   grid-template-columns:300px 1fr;

@@ -225,11 +225,200 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  /* =========================================================
+     OMETONG SUPPORT — a direct, two-way line to Ometong staff.
+     Unlike the mediated inquiries above (buyer<->supplier, routed
+     through staff because those two can't talk directly), this is
+     just this account <-> Ometong, nobody to mediate between. See
+     supabase/support_messages_schema.sql.
+  ========================================================= */
+  const supportShell = document.getElementById('supportShell');
+  const supportListBody = document.getElementById('supportListBody');
+  const supportListEmpty = document.getElementById('supportListEmpty');
+  const supportThreadEmpty = document.getElementById('supportThreadEmpty');
+  const supportThreadActive = document.getElementById('supportThreadActive');
+  const supportThreadSubject = document.getElementById('supportThreadSubject');
+  const supportBubbles = document.getElementById('supportBubbles');
+  const supportComposer = document.getElementById('supportComposer');
+  const supportComposerInput = document.getElementById('supportComposerInput');
+  const supportNewBadge = document.getElementById('supportNewBadge');
+
+  let supportThreads = [];
+  let activeSupportThread = null;
+
+  async function loadSupportThreads() {
+    const { data, error } = await window.sb
+      .from('support_threads')
+      .select('*')
+      .eq('user_id', myId)
+      .order('last_message_at', { ascending: false });
+    if (error) { console.error('Ometong: failed to load support threads', error); return; }
+    supportThreads = data || [];
+    renderSupportList();
+    const unreadTotal = supportThreads.reduce((sum, t) => sum + t.user_unread_count, 0);
+    if (supportNewBadge) {
+      supportNewBadge.hidden = unreadTotal === 0;
+      supportNewBadge.textContent = unreadTotal > 9 ? '9+' : unreadTotal;
+    }
+  }
+
+  function renderSupportList() {
+    if (!supportThreads.length) {
+      supportListBody.innerHTML = '';
+      supportListEmpty.hidden = false;
+      return;
+    }
+    supportListEmpty.hidden = true;
+    supportListBody.innerHTML = supportThreads.map(t => `
+      <button class="msg-row${activeSupportThread && activeSupportThread.id === t.id ? ' active' : ''}${t.status === 'closed' ? ' closed' : ''}" data-id="${t.id}">
+        <div class="msg-row-top">
+          <span class="msg-row-with">Ometong Support</span>
+          ${t.user_unread_count > 0 ? `<span class="msg-row-badge">${t.user_unread_count}</span>` : ''}
+        </div>
+        <span class="msg-row-subject">${esc(t.subject || 'Support request')}</span>
+        <span class="msg-row-time">${timeAgo(t.last_message_at)} ago${t.status === 'closed' ? ' · closed' : ''}</span>
+      </button>
+    `).join('');
+    supportListBody.querySelectorAll('.msg-row').forEach(row => {
+      row.addEventListener('click', () => openSupportThread(row.getAttribute('data-id')));
+    });
+  }
+
+  async function openSupportThread(id) {
+    const t = supportThreads.find(x => x.id === id);
+    if (!t) return;
+    activeSupportThread = t;
+    supportShell.classList.add('thread-open');
+    supportThreadEmpty.hidden = true;
+    supportThreadActive.hidden = false;
+    renderSupportList();
+
+    supportThreadSubject.textContent = t.subject || 'Support request';
+
+    supportBubbles.innerHTML = '<p style="color:var(--ink-faint);font-size:.85rem;">Loading…</p>';
+    const { data, error } = await window.sb
+      .from('support_messages')
+      .select('*')
+      .eq('thread_id', t.id)
+      .order('created_at', { ascending: true });
+    if (error) { console.error('Ometong: failed to load support messages', error); supportBubbles.innerHTML = ''; return; }
+
+    renderSupportBubbles(data || []);
+
+    if (t.user_unread_count > 0) {
+      await window.sb.rpc('mark_support_thread_read', { p_thread_id: t.id, p_as_admin: false });
+      t.user_unread_count = 0;
+      renderSupportList();
+      loadSupportThreads();
+    }
+
+    supportComposerInput.focus();
+  }
+
+  function renderSupportBubbles(messages) {
+    if (!messages.length) {
+      supportBubbles.innerHTML = '<p style="color:var(--ink-faint);font-size:.85rem;">No messages yet — send the first one below.</p>';
+      return;
+    }
+    supportBubbles.innerHTML = messages.map(m => {
+      const mine = m.sender_role === 'user';
+      const label = mine ? 'You' : 'Ometong Support';
+      return `
+        <div class="msg-bubble-row ${mine ? 'mine' : 'admin'}">
+          <div class="msg-bubble">
+            ${esc(m.body)}
+            <span class="msg-bubble-meta">${label} · ${timeAgo(m.created_at)} ago</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+    supportBubbles.scrollTop = supportBubbles.scrollHeight;
+  }
+
+  document.getElementById('supportBack').addEventListener('click', () => {
+    supportShell.classList.remove('thread-open');
+  });
+
+  async function startNewSupportThread() {
+    const { data: threadId, error } = await window.sb.rpc('start_support_thread', {
+      p_subject: 'Support request',
+      p_first_message: null
+    });
+    if (error) { console.error('Ometong: failed to start support thread', error); return; }
+    await loadSupportThreads();
+    openSupportThread(threadId);
+  }
+  document.getElementById('supportNewBtn')?.addEventListener('click', startNewSupportThread);
+  document.getElementById('supportStartBtn')?.addEventListener('click', startNewSupportThread);
+
+  supportComposer.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = supportComposerInput.value.trim();
+    if (!body) return;
+    supportComposerInput.disabled = true;
+
+    if (!activeSupportThread) {
+      // No thread open yet — the composer inside the empty state
+      // shouldn't normally be reachable, but handle it gracefully
+      // by starting one with this text as the first message.
+      const { data: threadId, error } = await window.sb.rpc('start_support_thread', {
+        p_subject: 'Support request',
+        p_first_message: body
+      });
+      supportComposerInput.disabled = false;
+      if (error) { console.error('Ometong: failed to start support thread', error); return; }
+      supportComposerInput.value = '';
+      await loadSupportThreads();
+      openSupportThread(threadId);
+      return;
+    }
+
+    const { error } = await window.sb.from('support_messages').insert({
+      thread_id: activeSupportThread.id,
+      sender_id: myId,
+      sender_role: 'user',
+      body
+    });
+    supportComposerInput.disabled = false;
+    if (error) { console.error('Ometong: failed to send support message', error); return; }
+    supportComposerInput.value = '';
+    activeSupportThread.last_message_at = new Date().toISOString();
+    openSupportThread(activeSupportThread.id);
+    loadSupportThreads();
+  });
+
+  supportComposerInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      supportComposer.requestSubmit();
+    }
+  });
+
+  /* ---------- Tab switching ---------- */
+  const tabInquiries = document.getElementById('tabInquiries');
+  const tabSupport = document.getElementById('tabSupport');
+  tabInquiries.addEventListener('click', () => {
+    tabInquiries.classList.add('active');
+    tabSupport.classList.remove('active');
+    msgShell.hidden = false;
+    supportShell.hidden = true;
+  });
+  tabSupport.addEventListener('click', () => {
+    tabSupport.classList.add('active');
+    tabInquiries.classList.remove('active');
+    supportShell.hidden = false;
+    msgShell.hidden = true;
+  });
+
   /* ---------- Deep link from "Contact Supplier" (?inquiry=<id>) ---------- */
   await loadInquiries();
+  await loadSupportThreads();
   const params = new URLSearchParams(window.location.search);
   const wantId = params.get('inquiry');
   if (wantId && inquiries.some(i => i.id === wantId)) {
     openInquiry(wantId);
+  }
+  if (params.get('tab') === 'support') {
+    tabSupport.click();
   }
 });
