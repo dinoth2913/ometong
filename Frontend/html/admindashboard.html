@@ -117,6 +117,7 @@
       <a href="#applications">Applications</a>
       <a href="#verificationdocs">Verification</a>
       <a href="#rfqquotes">RFQ Quotes</a>
+      <a href="#advertisements">Advertisements</a>
       <a href="#coupons">Coupons</a>
       <a href="#inquiries">Inquiries</a>
       <a href="#contactmessages">Contact Messages</a>
@@ -352,6 +353,30 @@
         <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg>
         <h3>No RFQ quotes yet</h3>
         <p>When a supplier or manufacturer sends a quote on a buyer's request, it'll show up here for you to review and relay.</p>
+      </div>
+    </section>
+
+    <!-- ===== ADVERTISEMENTS ===== -->
+    <section data-reveal id="advertisements">
+      <div class="section-head">
+        <h2>Advertisements</h2>
+        <span class="section-hint" id="adsPendingHint">Nothing pending</span>
+      </div>
+      <div class="admin-table" id="adsTable">
+        <div class="admin-row admin-row--ads admin-row--head">
+          <span>Advertiser</span>
+          <span>Plan</span>
+          <span>Product</span>
+          <span>Price</span>
+          <span>Status</span>
+          <span></span>
+        </div>
+        <div id="adsTableBody"></div>
+      </div>
+      <div class="empty-state" id="adsEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M3 11l18-7-7 18-3-8-8-3z"/></svg>
+        <h3>No advertising requests yet</h3>
+        <p>When a supplier or manufacturer submits an ad request from their dashboard, it'll show up here for you to review, confirm payment, and activate.</p>
       </div>
     </section>
 
@@ -685,6 +710,7 @@
 <script src="../js/adminCoupons.js"></script>
 <script src="../js/adminVerification.js"></script>
 <script src="../js/adminRfqs.js"></script>
+<script src="../js/adminAdvertisements.js"></script>
 <script src="../js/adminChatMessages.js"></script>
 <script src="../js/adminSupportMessages.js"></script>
 </body>

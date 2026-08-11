@@ -106,6 +106,7 @@
       <a href="#certs">Certifications</a>
       <a href="#payouts">Payouts</a>
       <a href="#verification">Business Verification</a>
+      <a href="#advertising">Advertising</a>
       <a href="#analytics">Analytics</a>
     </nav>
 
@@ -315,6 +316,69 @@
       </div>
     </section>
 
+    <!-- ===== ADVERTISING ===== -->
+    <section data-reveal id="advertising">
+      <div class="section-head">
+        <h2>Advertising</h2>
+        <span class="section-hint">Get extra visibility on the marketplace — submit a request and our team will follow up on payment before it goes live</span>
+      </div>
+      <form class="rfq-form" id="adRequestForm">
+        <div class="rfq-form-row">
+          <label>Plan
+            <select id="adPlan" required>
+              <option value="spotlight">Category Spotlight — Free / listing</option>
+              <option value="featured">Featured Listing — $49 / month</option>
+              <option value="banner">Homepage Banner — $149 / month</option>
+            </select>
+          </label>
+          <label>Product or service name
+            <input type="text" id="adProductName" required placeholder="What are you advertising?">
+          </label>
+        </div>
+        <div class="rfq-form-row">
+          <label>Business name
+            <input type="text" id="adBusinessName" required placeholder="e.g. Guangzhou Precision Mfg.">
+          </label>
+          <label>Category <span class="field-hint-inline">(optional)</span>
+            <select id="adCategory">
+              <option value="">Select a category</option>
+              <option>Electronics</option>
+              <option>Textiles</option>
+              <option>Machinery</option>
+              <option>Food &amp; Beverage</option>
+              <option>Construction</option>
+              <option>Packaging</option>
+              <option>Services</option>
+              <option>Logistics</option>
+              <option>Other</option>
+            </select>
+          </label>
+        </div>
+        <label>Description
+          <textarea id="adDescription" required placeholder="Describe what you're advertising and who it's for…"></textarea>
+        </label>
+        <label>Link <span class="field-hint-inline">(optional)</span>
+          <input type="url" id="adLink" placeholder="https://">
+        </label>
+        <label>Ad image <span class="field-hint-inline">(optional)</span>
+          <input type="file" id="adImage" accept="image/png,image/jpeg,image/webp">
+          <span class="field-hint">JPG, PNG or WEBP, up to 5MB.</span>
+        </label>
+        <p class="rfq-form-msg" id="adFormMsg" hidden></p>
+        <div class="rfq-form-actions">
+          <button type="submit" class="btn btn-primary btn-sm" id="adSubmitBtn">Submit request</button>
+        </div>
+      </form>
+
+      <div class="verify-docs-list" style="margin-top:20px;">
+        <div class="verify-docs-head">Your ad requests</div>
+        <div id="adRequestsBody"></div>
+        <div class="empty-state" id="adRequestsEmpty" style="padding:30px 20px;">
+          <p style="margin:0;font-size:.84rem;color:var(--ink-faint);">No ad requests submitted yet.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== ANALYTICS ===== -->
     <section data-reveal id="analytics">
       <div class="section-head">
@@ -411,6 +475,7 @@
 <script src="../js/barChart.js"></script>
 <script src="../js/manufacturerdashboard.js"></script>
 <script src="../js/supplierVerification.js"></script>
+<script src="../js/sellerAdvertising.js"></script>
 <script src="../js/orderTracking.js"></script>
 <script src="../js/chatWidget.js"></script>
 </body>

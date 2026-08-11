@@ -509,6 +509,14 @@ main .container.section > section[data-reveal]:last-of-type {
   grid-template-columns: 1.4fr 1.1fr .8fr .8fr 1.6fr 1fr;
 }
 
+/* =========================================================
+   ADVERTISEMENTS — supplier/manufacturer ad requests awaiting
+   payment confirmation and activation.
+========================================================= */
+.admin-row--ads {
+  grid-template-columns: 1.3fr 1fr 1.4fr .8fr 1fr 1.3fr;
+}
+
 @media (max-width: 760px) {
   .coupon-form { grid-template-columns: 1fr 1fr; }
 }
