@@ -48,6 +48,7 @@
 [data-theme="dark"] .grid-toolbar select {
   background: var(--glass-bg-strong);
   color: var(--ink);
+  color-scheme: dark;
 }
 
 [data-theme="dark"] .p-fav {
@@ -79,6 +80,15 @@
 [data-theme="dark"] .p-spec {
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink-soft);
+}
+
+/* .mobile-menu kept a hardcoded white background year-round — fine in
+   light mode, but .mobile-menu a inherits var(--ink), which turns
+   near-white in dark mode, making every link in the hamburger menu
+   unreadable against that white panel. */
+[data-theme="dark"] .mobile-menu {
+  background: #15181F;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -544,6 +554,7 @@ svg {
   padding: 7px 14px;
   font-size: .8rem;
   color: var(--ink);
+  color-scheme: light;
 }
 
 .toolbar-filters {
