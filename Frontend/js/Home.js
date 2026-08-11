@@ -3,10 +3,23 @@
 ========================================================= */
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ---------- Loader ---------- */
+  /* ---------- Loader ----------
+     .hide fades it out via opacity/visibility, but that leaves the
+     full-viewport element sitting in the layout with pointer-events
+     still live — if that transition ever fails to apply (theme
+     timing, reduced-motion, etc.) a fragment of it, e.g. the corner
+     of the spinner ring, can be left visible/clickable indefinitely.
+     Removing it outright once it's faded out is the only way to
+     guarantee it's gone for good. */
   const loader = document.getElementById('loader');
-  window.addEventListener('load', () => setTimeout(() => loader?.classList.add('hide'), 300));
-  setTimeout(() => loader?.classList.add('hide'), 2200);
+  function hideLoader() {
+    if (!loader) return;
+    loader.classList.add('hide');
+    loader.style.pointerEvents = 'none';
+    setTimeout(() => loader.remove(), 650);
+  }
+  window.addEventListener('load', () => setTimeout(hideLoader, 300));
+  setTimeout(hideLoader, 2200);
 
   /* ---------- Footer year ---------- */
   const yearEl = document.getElementById('year');
