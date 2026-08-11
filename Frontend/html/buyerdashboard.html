@@ -238,6 +238,78 @@
       </div>
     </section>
 
+    <!-- ===== SHIPPING ADDRESSES ===== -->
+    <section data-reveal id="addresses">
+      <div class="section-head">
+        <h2>Shipping addresses</h2>
+        <span class="section-hint">Save an address once, then pick it at checkout instead of retyping it every time</span>
+      </div>
+
+      <form class="rfq-form" id="addressForm">
+        <input type="hidden" id="addressEditId">
+        <div class="rfq-form-row">
+          <label>Label <span class="field-hint-inline">(optional)</span>
+            <input type="text" id="addrLabel" placeholder="e.g. Home, Office">
+          </label>
+          <label>Full name
+            <input type="text" id="addrFullName" required placeholder="e.g. Jane Perera">
+          </label>
+        </div>
+        <div class="rfq-form-row">
+          <label>Phone number
+            <input type="tel" id="addrPhone" placeholder="e.g. +94 71 234 5678">
+          </label>
+          <label>Country
+            <select id="addrCountry" required>
+              <option value="">Select a country</option>
+              <option value="United States">United States</option>
+              <option value="Canada">Canada</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="Germany">Germany</option>
+              <option value="France">France</option>
+              <option value="Other EU">Other EU country</option>
+              <option value="Sri Lanka">Sri Lanka</option>
+              <option value="India">India</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+        </div>
+        <label>Street address
+          <input type="text" id="addrLine1" required placeholder="e.g. 42 Galle Road">
+        </label>
+        <label>Apartment, suite, etc. <span class="field-hint-inline">(optional)</span>
+          <input type="text" id="addrLine2" placeholder="e.g. Unit 4B">
+        </label>
+        <div class="rfq-form-row">
+          <label>City
+            <input type="text" id="addrCity" required placeholder="e.g. Colombo">
+          </label>
+          <label>State / province <span class="field-hint-inline">(optional)</span>
+            <input type="text" id="addrState" placeholder="e.g. Western">
+          </label>
+        </div>
+        <label>Postal code <span class="field-hint-inline">(optional)</span>
+          <input type="text" id="addrPostal" placeholder="e.g. 00300">
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:8px;">
+          <input type="checkbox" id="addrIsDefault" style="width:auto;">
+          <span style="font-weight:600;font-size:.84rem;">Set as my default address</span>
+        </label>
+        <p class="rfq-form-msg" id="addressFormMsg" hidden></p>
+        <div class="rfq-form-actions">
+          <button type="submit" class="btn btn-primary btn-sm" id="addressSubmitBtn">Save address</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="addressCancelEditBtn" hidden>Cancel edit</button>
+        </div>
+      </form>
+
+      <div class="rfq-list" id="addressList" style="margin-top:20px;"></div>
+      <div class="empty-state" id="addressListEmpty" hidden>
+        <svg viewBox="0 0 24 24" width="40" height="40"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <h3>No saved addresses yet</h3>
+        <p>Add one above and it'll be ready to pick at checkout next time you buy something.</p>
+      </div>
+    </section>
+
     <!-- ===== ACCOUNT ===== -->
     <section data-reveal>
       <div class="section-head">
@@ -253,10 +325,10 @@
         </div>
         <div class="account-card">
           <h3 data-i18n="common.manage">Manage</h3>
-          <div class="quick-link soon">
+          <a class="quick-link" href="#addresses">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-            <span data-i18n="buyer.shippingAddresses">Shipping addresses</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
-          </div>
+            <span data-i18n="buyer.shippingAddresses">Shipping addresses</span>
+          </a>
           <div class="quick-link soon">
             <span class="quick-link-icon"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
             <span data-i18n="buyer.paymentMethods">Payment methods</span><span class="soon-badge" data-i18n="common.comingSoon">Coming soon</span>
@@ -328,6 +400,7 @@
 <script src="../js/barChart.js"></script>
 <script src="../js/buyerdashboard.js"></script>
 <script src="../js/buyerRfq.js"></script>
+<script src="../js/buyerAddresses.js"></script>
 <script src="../js/orderTracking.js"></script>
 <script src="../js/chatWidget.js"></script>
 </body>

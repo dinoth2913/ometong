@@ -213,6 +213,96 @@
     renderReview();
     updateTotals();
     initForm();
+    loadSavedAddresses();
+  }
+
+  /* ---------------------------------------------------------------------
+     Saved shipping addresses (public.addresses — see buyerAddresses.js
+     on the buyer dashboard, which is where these get created/edited).
+     Picking one autofills the same form fields checkout already
+     submits from, so nothing else about the order flow needs to know
+     whether an address came from a pick or was typed by hand.
+     --------------------------------------------------------------------- */
+  var selectedSavedAddress = null;
+
+  function fillFormFromAddress(a) {
+    if (!els.form) return;
+    els.form.fullName.value = a.full_name || "";
+    els.form.phone.value = a.phone || "";
+    els.form.address.value = [a.line1, a.line2].filter(Boolean).join(", ");
+    els.form.city.value = a.city || "";
+    els.form.country.value = a.country || "";
+    updateCustomsNotice();
+  }
+
+  function renderSavedAddresses(addresses) {
+    var picker = document.getElementById("savedAddressPicker");
+    var list = document.getElementById("savedAddressList");
+    var saveCheckboxRow = document.getElementById("saveAddressCheckbox");
+    saveCheckboxRow = saveCheckboxRow ? saveCheckboxRow.closest("label") : null;
+    if (!picker || !list || !addresses.length) return;
+    var esc = window.ometongEscapeHTML || function (s) { return s; };
+
+    picker.hidden = false;
+    list.innerHTML = addresses.map(function (a) {
+      var lineBits = [a.line1, a.line2].filter(Boolean).join(", ");
+      var cityBits = [a.city, a.state, a.postal_code].filter(Boolean).join(", ");
+      return '<label class="saved-address-card" data-addr="' + a.id + '">' +
+        '<input type="radio" name="savedAddress" value="' + a.id + '">' +
+        '<span class="saved-address-card-body">' +
+        '<strong>' + esc(a.label || "Address") + ' — ' + esc(a.full_name) + (a.is_default ? '<span class="saved-address-default-tag">Default</span>' : '') + '</strong>' +
+        '<span>' + esc(lineBits) + (cityBits ? ', ' + esc(cityBits) : '') + ', ' + esc(a.country) + '</span>' +
+        '</span>' +
+        '</label>';
+    }).join("");
+
+    list.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        var a = addresses.filter(function (x) { return x.id === radio.value; })[0];
+        if (!a) return;
+        selectedSavedAddress = a;
+        list.querySelectorAll(".saved-address-card").forEach(function (c) { c.classList.remove("active"); });
+        radio.closest(".saved-address-card").classList.add("active");
+        fillFormFromAddress(a);
+        if (saveCheckboxRow) saveCheckboxRow.hidden = true;
+      });
+    });
+
+    var useNewBtn = document.getElementById("useNewAddressBtn");
+    useNewBtn && useNewBtn.addEventListener("click", function () {
+      selectedSavedAddress = null;
+      list.querySelectorAll('input[type="radio"]').forEach(function (r) { r.checked = false; });
+      list.querySelectorAll(".saved-address-card").forEach(function (c) { c.classList.remove("active"); });
+      els.form.fullName.value = "";
+      els.form.phone.value = "";
+      els.form.address.value = "";
+      els.form.city.value = "";
+      els.form.country.value = "";
+      updateCustomsNotice();
+      if (saveCheckboxRow) saveCheckboxRow.hidden = false;
+      els.form.fullName.focus();
+    });
+
+    // Auto-pick the default (or the first saved one) so a returning
+    // buyer doesn't have to click anything to get a filled-in form.
+    var toSelect = addresses.filter(function (a) { return a.is_default; })[0] || addresses[0];
+    var radioToSelect = list.querySelector('input[value="' + toSelect.id + '"]');
+    if (radioToSelect) {
+      radioToSelect.checked = true;
+      radioToSelect.dispatchEvent(new Event("change"));
+    }
+  }
+
+  async function loadSavedAddresses() {
+    if (!window.sb || !currentUser) return;
+    var res = await window.sb
+      .from("addresses")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("is_default", { ascending: false })
+      .order("created_at", { ascending: false });
+    if (res.error || !res.data || !res.data.length) return;
+    renderSavedAddresses(res.data);
   }
 
   /* ---------------------------------------------------------------------
@@ -357,6 +447,22 @@
         // already been placed and paid-for-in-escrow.
         window.sb.rpc("increment_coupon_usage", { p_code: appliedPromo.code })
           .then(function (res) { if (res.error) console.error("Ometong: failed to record coupon usage", res.error); });
+      }
+
+      // Only offer to save when this was actually typed by hand — a
+      // saved address that was just picked is already saved, and the
+      // checkbox is hidden in that case anyway.
+      var saveAddressCheckbox = document.getElementById("saveAddressCheckbox");
+      if (!selectedSavedAddress && saveAddressCheckbox && saveAddressCheckbox.checked) {
+        window.sb.from("addresses").insert({
+          user_id: currentUser.id,
+          full_name: fullName,
+          phone: phone || null,
+          line1: address,
+          city: city,
+          country: country,
+          is_default: false
+        }).then(function (res) { if (res.error) console.error("Ometong: failed to save address for next time", res.error); });
       }
 
       if (isBuyNow) clearBuyNowStorage();

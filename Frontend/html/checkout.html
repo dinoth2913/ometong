@@ -72,6 +72,12 @@
               <h2>Shipping details</h2>
               <p class="form-error" id="checkoutFormError"></p>
 
+              <div id="savedAddressPicker" hidden>
+                <div class="saved-address-list" id="savedAddressList"></div>
+                <button type="button" class="link-inline" id="useNewAddressBtn">+ Use a different address</button>
+              </div>
+
+              <div id="manualAddressFields">
               <label>Full name
                 <input type="text" id="fullName" name="fullName" required placeholder="e.g. Jane Perera">
               </label>
@@ -103,6 +109,11 @@
               <label>Notes for the supplier (optional)
                 <textarea id="notes" name="notes" rows="3" placeholder="Delivery instructions, etc."></textarea>
               </label>
+              <label class="save-address-check" style="flex-direction:row;align-items:center;gap:8px;">
+                <input type="checkbox" id="saveAddressCheckbox" style="width:auto;" checked>
+                <span style="font-weight:600;font-size:.84rem;">Save this address to my account for next time</span>
+              </label>
+              </div>
             </div>
           </form>
 

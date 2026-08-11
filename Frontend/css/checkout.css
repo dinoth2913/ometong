@@ -51,6 +51,74 @@
   outline: none;
 }
 
+.link-inline {
+  background: none;
+  border: none;
+  color: var(--c-accent, #FF7431);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: .85rem;
+  padding: 4px 0;
+}
+
+.saved-address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.saved-address-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1.5px solid var(--c-border, #ECECEF);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+
+.saved-address-card:hover {
+  border-color: var(--c-accent, #FF7431);
+}
+
+.saved-address-card.active {
+  border-color: var(--c-accent, #FF7431);
+  background: rgba(255, 116, 49, .06);
+}
+
+.saved-address-card input[type="radio"] {
+  margin-top: 3px;
+  accent-color: var(--c-accent, #FF7431);
+  flex-shrink: 0;
+}
+
+.saved-address-card-body strong {
+  display: block;
+  font-size: .88rem;
+  margin-bottom: 3px;
+}
+
+.saved-address-card-body span {
+  display: block;
+  font-size: .8rem;
+  color: var(--c-ink-soft, #666);
+}
+
+.saved-address-default-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, .14);
+  color: #178A50;
+  font-size: .66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
 .form-error {
   display: none;
   background: #FEECEC;
