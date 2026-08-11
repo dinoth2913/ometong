@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const backBtn = document.getElementById('chatMsgBack');
   if (!listBody) return; // section not on this page
 
-  const SENDER_LABEL = { user: 'Visitor', bot: 'Ometong AI', agent: 'Staff' };
+  const SENDER_LABEL = { user: 'Visitor', bot: 'Ometong Assistant', agent: 'Staff' };
 
   let conversations = [];
   let profileMap = {};
