@@ -394,6 +394,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let sortMode = 'relevance';
   let priceMinVal = null;
   let priceMaxVal = null;
+  let moqMaxVal = null;
+  let ratingMinVal = 0;
+  let verifiedOnlyVal = false;
 
   function currentList() {
     let list = allProducts;
@@ -402,6 +405,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeBrand !== 'all') list = list.filter(p => p.brand === activeBrand);
     if (priceMinVal !== null) list = list.filter(p => p.price >= priceMinVal);
     if (priceMaxVal !== null) list = list.filter(p => p.price <= priceMaxVal);
+    // A listing with no MOQ set has no minimum to worry about, so it
+    // always passes a "max MOQ" filter rather than being excluded for
+    // missing data the buyer never asked about.
+    if (moqMaxVal !== null) list = list.filter(p => p.moq == null || p.moq <= moqMaxVal);
+    if (ratingMinVal > 0) list = list.filter(p => p.rating != null && Number(p.rating) >= ratingMinVal);
+    if (verifiedOnlyVal) list = list.filter(p => p.badge === 'Verified');
     if (query) {
       const q = query.toLowerCase();
       list = list.filter(p => p.title.toLowerCase().includes(q) || p.cat.includes(q) || p.supplier.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q));
@@ -445,6 +454,29 @@ document.addEventListener('DOMContentLoaded', () => {
     refresh();
   });
 
+  /* ---------- MOQ filter ----------
+     Lets a buyer sourcing a small quantity hide listings whose
+     minimum order is higher than they actually need. */
+  const moqMaxInput = document.getElementById('moqMax');
+  moqMaxInput?.addEventListener('input', () => {
+    moqMaxVal = moqMaxInput.value === '' ? null : Number(moqMaxInput.value);
+    refresh();
+  });
+
+  /* ---------- Rating filter ---------- */
+  const ratingSelect = document.getElementById('ratingSelect');
+  ratingSelect?.addEventListener('change', () => {
+    ratingMinVal = Number(ratingSelect.value);
+    refresh();
+  });
+
+  /* ---------- Verified-only filter ---------- */
+  const verifiedOnlyCheckbox = document.getElementById('verifiedOnly');
+  verifiedOnlyCheckbox?.addEventListener('change', () => {
+    verifiedOnlyVal = verifiedOnlyCheckbox.checked;
+    refresh();
+  });
+
   /* ---------- Clear filters ---------- */
   document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
     activeCat = 'all';
@@ -454,11 +486,17 @@ document.addEventListener('DOMContentLoaded', () => {
     sortMode = 'relevance';
     priceMinVal = null;
     priceMaxVal = null;
+    moqMaxVal = null;
+    ratingMinVal = 0;
+    verifiedOnlyVal = false;
     const searchEl = document.getElementById('searchInput');
     const sortEl = document.getElementById('sortSelect');
     if (searchEl) searchEl.value = '';
     if (priceMinInput) priceMinInput.value = '';
     if (priceMaxInput) priceMaxInput.value = '';
+    if (moqMaxInput) moqMaxInput.value = '';
+    if (ratingSelect) ratingSelect.value = '0';
+    if (verifiedOnlyCheckbox) verifiedOnlyCheckbox.checked = false;
     if (sortEl) sortEl.value = 'relevance';
     document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'all'));
     renderSubcategoryChips();

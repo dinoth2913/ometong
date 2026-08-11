@@ -127,6 +127,20 @@
           <span class="price-filter-sep">–</span>
           <input type="number" id="priceMax" placeholder="Max" min="0">
         </div>
+        <div class="price-filter moq-filter">
+          <span class="price-filter-label">Max MOQ</span>
+          <input type="number" id="moqMax" placeholder="Any" min="1">
+        </div>
+        <select id="ratingSelect">
+          <option value="0">Rating: Any</option>
+          <option value="3">3★ &amp; up</option>
+          <option value="4">4★ &amp; up</option>
+          <option value="4.5">4.5★ &amp; up</option>
+        </select>
+        <label class="verified-filter">
+          <input type="checkbox" id="verifiedOnly">
+          <span>Verified only</span>
+        </label>
         <select id="sortSelect">
           <option value="relevance">Sort: Relevance</option>
           <option value="price-low">Price: Low to High</option>

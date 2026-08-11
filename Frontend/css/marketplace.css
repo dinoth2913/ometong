@@ -600,6 +600,51 @@ svg {
   outline: none;
 }
 
+.moq-filter input {
+  width: 72px;
+}
+
+.verified-filter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.verified-filter:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.verified-filter input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.verified-filter:has(input:checked) {
+  border-color: var(--accent);
+  background: rgba(255, 116, 49, .08);
+  color: var(--ink);
+}
+
+[data-theme="dark"] .moq-filter,
+[data-theme="dark"] .verified-filter {
+  background: var(--glass-bg-strong);
+  border-color: var(--line);
+  color: var(--ink);
+}
+[data-theme="dark"] .verified-filter:has(input:checked) {
+  background: rgba(255, 116, 49, .16);
+  border-color: var(--accent);
+}
+
 .price-filter-sep {
   color: var(--ink-faint);
 }
