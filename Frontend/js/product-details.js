@@ -345,6 +345,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!product) product = allProducts[0];
   const catLabel = product.cat.charAt(0).toUpperCase() + product.cat.slice(1);
 
+  // Record this as a "recently viewed" product — rendered further
+  // down, once the DOM section for it exists.
+  window.ometongRecentlyViewed?.track(product);
+
   /* ---------- Reviews (open to any logged-in user, on any product) ----------
      Keyed by product_ref, which is just the product's id as text, so this
      works for both real listings (uuid) and the generated demo catalog. */
@@ -807,5 +811,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       window.scrollTo({ top: 0 });
     }
   });
+
+  /* ---------- Recently viewed (everything but this product) ---------- */
+  window.ometongRecentlyViewed?.renderInto(
+    document.getElementById('recentlyViewedSection'),
+    document.getElementById('recentlyViewedGrid'),
+    product.id
+  );
 
 });

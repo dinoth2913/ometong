@@ -516,6 +516,12 @@ document.addEventListener('DOMContentLoaded', () => {
   refresh();
   updateCartBadge();
 
+  /* ---------- Recently viewed ---------- */
+  window.ometongRecentlyViewed?.renderInto(
+    document.getElementById('recentlyViewedSection'),
+    document.getElementById('recentlyViewedGrid')
+  );
+
   // Real listings load in the background and get spliced into the
   // catalog once fetched, so the page shows something immediately
   // instead of waiting on the network before rendering anything.
