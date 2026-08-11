@@ -173,6 +173,17 @@ button,input,select{font-family:inherit;}
 
 .pd-desc{font-size:.92rem;line-height:1.75;color:var(--ink-soft);margin-bottom:24px;}
 
+/* =========================================================
+   PRODUCT DETAILS SECTION — warranty + seller-added specs, shown
+   full-width below the gallery/info grid (the small marketplace
+   card stays untouched). Reuses the same .pd-spec-card look as the
+   MOQ/lead time/origin cards above.
+========================================================= */
+.pd-more-details-section{margin:40px 0;}
+.pd-more-details-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media (max-width:760px){.pd-more-details-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:480px){.pd-more-details-grid{grid-template-columns:1fr;}}
+
 .pd-trust-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px;}
 .pd-trust-item{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:600;color:#178A50;background:rgba(34,197,94,.1);padding:8px 14px;border-radius:999px;}
 .pd-trust-item svg{fill:none;stroke:#178A50;stroke-width:1.8;flex-shrink:0;}

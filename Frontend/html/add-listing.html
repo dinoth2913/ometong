@@ -104,6 +104,19 @@
           <textarea id="description" name="description" rows="4" placeholder="Describe the product or service, materials, specs, or what's included…"></textarea>
         </label>
 
+        <label>Warranty <span class="field-hint-inline">(optional)</span>
+          <input type="text" id="warranty" name="warranty" placeholder="e.g. 1 Year Manufacturer Warranty">
+        </label>
+
+        <div class="tiers-section">
+          <div class="tiers-head">
+            <label class="tiers-label">Additional product details <span class="field-hint-inline">(optional)</span></label>
+            <button type="button" class="tiers-add-btn" id="addSpecBtn">+ Add detail</button>
+          </div>
+          <p class="field-hint">Anything else buyers should know — material, power rating, certification, dimensions, care instructions. Shown on the full product page.</p>
+          <div id="specsContainer"></div>
+        </div>
+
         <label>Product photos (optional)
           <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp" multiple>
           <span class="field-hint">JPG, PNG or WEBP, up to 5MB each, up to 6 photos. The first one is used as the cover photo shown on the marketplace.</span>

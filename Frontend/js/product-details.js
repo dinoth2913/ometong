@@ -254,6 +254,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       leadTime: row.lead_time_days || null,
       countryOfOrigin: row.country_of_origin || null,
       hsCode: row.hs_code || null,
+      warranty: row.warranty || null,
+      specs: Array.isArray(row.specs) ? row.specs : [],
       priceTiers: tierRows || [],
       isReal: true
     };
@@ -499,6 +501,40 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     </div>
   `;
+
+  /* ---------- Product details (warranty + seller-added specs) ----------
+     Only real listings can have these (add-listing.js) — the demo
+     catalog has neither, so the section stays hidden for those,
+     exactly like the small marketplace card, which is untouched. */
+  const pdMoreDetailsSection = document.getElementById('pdMoreDetailsSection');
+  const pdMoreDetailsGrid = document.getElementById('pdMoreDetailsGrid');
+  if (pdMoreDetailsSection && pdMoreDetailsGrid) {
+    const specRows = Array.isArray(product.specs) ? product.specs : [];
+    if (product.warranty || specRows.length) {
+      pdMoreDetailsSection.hidden = false;
+      const cards = [];
+      if (product.warranty) {
+        cards.push(`
+          <div class="pd-spec-card">
+            <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <span class="pd-spec-label">Warranty</span>
+            <span class="pd-spec-value">${esc(product.warranty)}</span>
+          </div>`);
+      }
+      specRows.forEach(s => {
+        if (!s || !s.label || !s.value) return;
+        cards.push(`
+          <div class="pd-spec-card">
+            <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+            <span class="pd-spec-label">${esc(s.label)}</span>
+            <span class="pd-spec-value">${esc(s.value)}</span>
+          </div>`);
+      });
+      pdMoreDetailsGrid.innerHTML = cards.join('');
+    } else {
+      pdMoreDetailsSection.hidden = true;
+    }
+  }
 
   /* ---------- Reviews (real listings only) ---------- */
   const pdReviewsSection = document.getElementById('pdReviewsSection');

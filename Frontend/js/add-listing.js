@@ -209,6 +209,44 @@
     }
     addTierBtn?.addEventListener("click", addTierRow);
 
+    /* ---------- Additional product details (optional) ----------
+       Free-form {label, value} rows, saved as listings.specs (jsonb).
+       Same optional, purely-additive shape as the bulk pricing tiers
+       above — a listing with no rows just doesn't show a "Product
+       details" section on the product page. */
+    const specsContainer = document.getElementById("specsContainer");
+    const addSpecBtn = document.getElementById("addSpecBtn");
+
+    function addSpecRow() {
+      if (!specsContainer) return;
+      const row = document.createElement("div");
+      row.className = "tier-row";
+      row.innerHTML = `
+        <label>Detail name <input type="text" class="spec-label" placeholder="e.g. Material"></label>
+        <label>Detail value <input type="text" class="spec-value" placeholder="e.g. 100% Cotton"></label>
+        <button type="button" class="tier-row-remove" aria-label="Remove this detail">&times;</button>
+      `;
+      row.querySelector(".tier-row-remove").addEventListener("click", () => row.remove());
+      specsContainer.appendChild(row);
+    }
+    addSpecBtn?.addEventListener("click", addSpecRow);
+
+    function collectSpecs() {
+      if (!specsContainer) return { specs: [], error: null };
+      const rows = [...specsContainer.querySelectorAll(".tier-row")];
+      const specs = [];
+      for (const row of rows) {
+        const label = row.querySelector(".spec-label").value.trim();
+        const value = row.querySelector(".spec-value").value.trim();
+        if (!label && !value) continue; // silently skip a fully-empty row
+        if (!label || !value) {
+          return { specs: null, error: "Please fill in both the name and value on every product detail row, or remove the empty one." };
+        }
+        specs.push({ label, value });
+      }
+      return { specs, error: null };
+    }
+
     function collectTiers() {
       if (!tiersContainer) return { tiers: [], error: null };
       const rows = [...tiersContainer.querySelectorAll(".tier-row")];
@@ -260,6 +298,7 @@
       const description = form.description.value.trim();
       const countryOfOrigin = form.countryOfOrigin.value.trim() || null;
       const hsCode = form.hsCode.value.trim() || null;
+      const warranty = form.warranty.value.trim() || null;
 
       if (!title) { showError("Please enter a product or service name."); return; }
       if (!category) { showError("Please select a category."); return; }
@@ -267,6 +306,9 @@
 
       const { tiers, error: tiersError } = collectTiers();
       if (tiersError) { showError(tiersError); return; }
+
+      const { specs, error: specsError } = collectSpecs();
+      if (specsError) { showError(specsError); return; }
 
       setLoading(true);
 
@@ -303,6 +345,8 @@
         image_url: imageUrl,
         country_of_origin: countryOfOrigin,
         hs_code: hsCode,
+        warranty,
+        specs,
         status: "active"
       }).select("id").single();
 
