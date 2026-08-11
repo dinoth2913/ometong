@@ -186,7 +186,12 @@
 
     var session = await getInitialSession();
     if (!session) {
-      window.location.href = "authenticationpage.html";
+      // Send the customer back to finish checking out (with the same
+      // ?buyNow=1 if that's how they got here) once they log in,
+      // instead of dropping them on their dashboard and losing the
+      // in-progress purchase.
+      var backTo = "checkout.html" + window.location.search;
+      window.location.href = "authenticationpage.html?next=" + encodeURIComponent(backTo);
       return;
     }
     currentUser = session.user;

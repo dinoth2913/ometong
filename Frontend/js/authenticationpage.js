@@ -128,6 +128,17 @@ document.addEventListener('DOMContentLoaded', () => {
     return window.ometongDashboardForRole ? window.ometongDashboardForRole(role) : 'buyerdashboard.html';
   }
 
+  // If we got here via a "please log in first" redirect (e.g. from
+  // checkout.js), send the customer back to finish what they were
+  // doing instead of dropping them on their dashboard. Restricted to
+  // a plain relative .html filename in this same folder so a crafted
+  // ?next= value can't be used to redirect somewhere else entirely.
+  function nextRedirect(role) {
+    const next = new URLSearchParams(window.location.search).get('next');
+    if (next && /^[a-zA-Z0-9_.-]+\.html(\?[a-zA-Z0-9_=&%.-]*)?$/.test(next)) return next;
+    return destinationForRole(role);
+  }
+
   function showError(form, message) {
     let errorEl = form.querySelector('.auth-error');
     if (!errorEl) {
@@ -228,8 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
       .eq('id', data.user.id)
       .single();
     const role = profile ? profile.role : 'buyer';
+    const dest = nextRedirect(role);
+    const cameFromElsewhere = dest !== destinationForRole(role);
 
-    showSuccess('Welcome back', 'Redirecting you to your dashboard…', destinationForRole(role));
+    showSuccess('Welcome back', cameFromElsewhere ? 'Redirecting you back to finish up…' : 'Redirecting you to your dashboard…', dest);
   });
 
   signupForm.addEventListener('submit', async (e) => {
@@ -287,7 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // straight back out.
     if (window.ometongSetRememberMe) window.ometongSetRememberMe(true);
 
-    showSuccess("You're all set", 'Your account has been created — redirecting to your dashboard…', destinationForRole(currentRole));
+    const dest = nextRedirect(currentRole);
+    const cameFromElsewhere = dest !== destinationForRole(currentRole);
+
+    showSuccess("You're all set", cameFromElsewhere ? 'Your account has been created — redirecting you back to finish up…' : 'Your account has been created — redirecting to your dashboard…', dest);
   });
 
 });
