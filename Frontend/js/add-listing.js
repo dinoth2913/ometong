@@ -333,6 +333,16 @@
       }
       const imageUrl = uploadedImageUrls[0] || null;
 
+      // An admin approving their own submission would be a formality,
+      // not a real check — publish it live immediately instead of
+      // making them go review their own listing a second time.
+      // supabase/listing_admin_direct_publish.sql is what actually
+      // allows is_approved:true to reach the database for anyone but
+      // an admin account; sending it here for a non-admin would just
+      // be silently ignored by the database, not a security issue in
+      // itself, but there's no reason to send it either.
+      const isAdminListing = currentRole === "admin";
+
       const { data: newListing, error } = await window.sb.from("listings").insert({
         supplier_id: user.id,
         title,
@@ -347,6 +357,7 @@
         hs_code: hsCode,
         warranty,
         specs,
+        is_approved: isAdminListing,
         status: "active"
       }).select("id").single();
 
@@ -377,6 +388,13 @@
       }
 
       setLoading(false);
+
+      if (isAdminListing) {
+        const titleEl = document.getElementById("listingSuccessTitle");
+        const textEl = document.getElementById("listingSuccessText");
+        if (titleEl) titleEl.textContent = "Listing published";
+        if (textEl) textEl.textContent = "This listing is live on the marketplace right now — no review needed since you published it yourself. Redirecting you back to your dashboard…";
+      }
 
       form.style.display = "none";
       successEl.classList.add("show");
