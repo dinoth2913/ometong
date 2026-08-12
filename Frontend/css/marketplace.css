@@ -472,6 +472,48 @@ svg {
 }
 
 /* =========================================================
+   SPONSORED ADS — Featured Listing row + Category Spotlight card.
+   Both always carry a visible "Sponsored" tag — a promoted result
+   should never be mistaken for an organic one.
+========================================================= */
+.featured-ads-zone {
+  padding: 0 var(--gutter) 6px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.ad-card { text-decoration: none; }
+.ad-sponsored-tag {
+  background: rgba(21, 24, 31, .78);
+  color: #fff;
+  font-size: .62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+.rel-card .ad-sponsored-tag { position: absolute; top: 8px; left: 8px; }
+
+.spotlight-slot { margin-bottom: 18px; }
+.spotlight-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  border: 1.5px dashed var(--accent);
+  border-radius: 14px;
+  background: rgba(255, 116, 49, .06);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .2s, border-color .2s;
+}
+.spotlight-card:hover { background: rgba(255, 116, 49, .12); }
+.spotlight-card strong { font-family: var(--font-display); font-size: .95rem; }
+.spotlight-card > span:not(.ad-sponsored-tag):not(.spotlight-cta) { font-size: .82rem; color: var(--ink-soft); }
+.spotlight-cta { margin-left: auto; font-weight: 700; color: var(--accent-dark); font-size: .82rem; }
+
+/* =========================================================
    RECENTLY VIEWED
    Same card look as product-details.html's "You may also like" row
    (.rel-card etc.), so a product looks identical whichever page

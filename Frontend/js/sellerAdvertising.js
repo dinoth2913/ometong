@@ -76,14 +76,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     listEmpty.hidden = true;
-    listBody.innerHTML = ads.map(ad => `
+    listBody.innerHTML = ads.map(ad => {
+      const isLive = ad.status === 'active' || ad.status === 'expired';
+      return `
       <div class="verify-doc-row">
         <span>${esc(PLAN_LABELS[ad.plan] || ad.plan)} — ${esc(ad.product_name)}</span>
         <span class="order-status ${STATUS_CLS[ad.status] || 'processing'}">${esc(STATUS_LABELS[ad.status] || ad.status)}</span>
         <span class="verify-doc-time">${timeAgo(ad.created_at)} ago</span>
+        ${isLive ? `<span class="verify-doc-note">${ad.impressions || 0} views · ${ad.clicks || 0} clicks</span>` : ''}
         ${ad.admin_note ? `<span class="verify-doc-note">${esc(ad.admin_note)}</span>` : ''}
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   form.addEventListener('submit', async (e) => {

@@ -502,6 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSubcategoryChips();
     populateBrandOptions();
     refresh();
+    updateSpotlight();
   });
 
   /* ---------- Category from URL (e.g. marketplace.html?cat=electronics) ---------- */
@@ -515,6 +516,65 @@ document.addEventListener('DOMContentLoaded', () => {
   populateBrandOptions();
   refresh();
   updateCartBadge();
+
+  /* ---------- Sponsored ads ----------
+     Two placements, both driven by the same public.advertisements
+     table an admin activates from adminAdvertisements.js:
+       - Featured Listing: a fixed row of sponsored cards, shown
+         regardless of category/filters.
+       - Category Spotlight: one card pinned above the grid, only
+         while a specific category (not "All") is selected, matching
+         that category by name. */
+  (async () => {
+    if (!window.ometongAds) return;
+    const featuredEl = document.getElementById('featuredAdsSection');
+    const featuredGrid = document.getElementById('featuredAdsGrid');
+    if (!featuredEl || !featuredGrid) return;
+
+    const ads = await window.ometongAds.fetchAds('featured', { limit: 6 });
+    if (!ads.length) return;
+    const esc2 = window.ometongEscapeHTML || (s => String(s));
+    featuredEl.hidden = false;
+    featuredGrid.innerHTML = ads.map(ad => `
+      <a class="rel-card ad-card" href="${esc2(ad.link || '#')}" target="_blank" rel="noopener" data-ad="${ad.id}">
+        <div class="rel-thumb" style="${ad.image_url ? `background-image:url('${esc2(ad.image_url)}');background-size:cover;` : `background:linear-gradient(135deg,var(--accent),var(--accent-dark))`}">
+          <span class="rel-price ad-sponsored-tag">Sponsored</span>
+        </div>
+        <div class="rel-body">
+          <div class="rel-title">${esc2(ad.product_name)}</div>
+          <div class="rel-meta">${esc2(ad.business_name)}</div>
+        </div>
+      </a>`).join('');
+    ads.forEach(ad => window.ometongAds.trackImpression(ad.id));
+    featuredGrid.querySelectorAll('[data-ad]').forEach(card => {
+      card.addEventListener('click', () => window.ometongAds.trackClick(card.dataset.ad));
+    });
+  })();
+
+  async function updateSpotlight() {
+    if (!window.ometongAds) return;
+    const slot = document.getElementById('spotlightSlot');
+    if (!slot) return;
+
+    if (activeCat === 'all') { slot.hidden = true; slot.innerHTML = ''; return; }
+    const catLabel = (taxonomy && taxonomy.categorySlugToLabel[activeCat]) || activeCat;
+    const ads = await window.ometongAds.fetchAds('spotlight', { category: catLabel, limit: 1 });
+    if (!ads.length) { slot.hidden = true; slot.innerHTML = ''; return; }
+
+    const ad = ads[0];
+    const esc2 = window.ometongEscapeHTML || (s => String(s));
+    slot.hidden = false;
+    slot.innerHTML = `
+      <a class="spotlight-card" href="${esc2(ad.link || '#')}" target="_blank" rel="noopener" data-ad="${ad.id}">
+        <span class="ad-sponsored-tag">Sponsored in ${esc2(catLabel)}</span>
+        <strong>${esc2(ad.product_name)}</strong>
+        <span>${esc2(ad.business_name)}</span>
+        <span class="spotlight-cta">Visit →</span>
+      </a>`;
+    window.ometongAds.trackImpression(ad.id);
+    slot.querySelector('[data-ad]')?.addEventListener('click', () => window.ometongAds.trackClick(ad.id));
+  }
+  updateSpotlight();
 
   /* ---------- Recently viewed ---------- */
   window.ometongRecentlyViewed?.renderInto(
@@ -642,6 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSubcategoryChips();
         populateBrandOptions();
         refresh();
+        updateSpotlight();
       });
     });
   }
@@ -719,6 +780,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSubcategoryChips();
       populateBrandOptions();
       refresh();
+      updateSpotlight();
       document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });

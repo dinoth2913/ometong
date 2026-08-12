@@ -186,4 +186,45 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => goTo((idx + 1) % cards.length), 5500);
   }
 
+  /* ---------- Homepage ad banner ----------
+     The most premium of the three ad plans (advertisement.html's
+     "Homepage Banner") — seen by every visitor whether or not
+     they're actively searching yet, which is exactly why it costs
+     more than the marketplace-only placements. Stays hidden
+     entirely when no ad is currently active, and rotates through
+     more than one if several suppliers have an active banner at the
+     same time. */
+  (async () => {
+    if (!window.ometongAds) return;
+    const ads = await window.ometongAds.fetchAds('banner', { limit: 5 });
+    if (!ads.length) return;
+
+    const zone = document.getElementById('adBannerZone');
+    const banner = document.getElementById('adBanner');
+    if (!zone || !banner) return;
+    const esc = window.ometongEscapeHTML || (s => String(s));
+
+    let i = 0;
+    function renderAd() {
+      const ad = ads[i];
+      banner.innerHTML = `
+        <a class="ad-banner-link" href="${esc(ad.link || '#')}" target="_blank" rel="noopener" data-ad="${ad.id}">
+          <div class="ad-banner-media" style="${ad.image_url ? `background-image:url('${esc(ad.image_url)}')` : 'background:linear-gradient(135deg,var(--accent),var(--accent-dark))'}"></div>
+          <div class="ad-banner-copy">
+            <span class="ad-banner-tag">Sponsored</span>
+            <strong>${esc(ad.product_name)}</strong>
+            <span>${esc(ad.business_name)}</span>
+          </div>
+        </a>`;
+      window.ometongAds.trackImpression(ad.id);
+      banner.querySelector('[data-ad]')?.addEventListener('click', () => window.ometongAds.trackClick(ad.id));
+    }
+
+    zone.hidden = false;
+    renderAd();
+    if (ads.length > 1) {
+      setInterval(() => { i = (i + 1) % ads.length; renderAd(); }, 7000);
+    }
+  })();
+
 });

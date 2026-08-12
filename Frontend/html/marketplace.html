@@ -109,6 +109,15 @@
     <div class="related-grid" id="recentlyViewedGrid"></div>
   </section>
 
+  <!-- ===== FEATURED (sponsored) ===== -->
+  <section class="related-section featured-ads-zone" id="featuredAdsSection" hidden>
+    <div class="section-head">
+      <h2>Featured</h2>
+      <span class="section-hint">Sponsored placements from suppliers on our Featured Listing plan</span>
+    </div>
+    <div class="related-grid" id="featuredAdsGrid"></div>
+  </section>
+
   <!-- ===== CATEGORY LIST ===== -->
   <section class="categories" aria-label="Category list">
     <!-- Chips are rendered from taxonomy.js so they can't drift out of
@@ -159,6 +168,8 @@
       </div>
     </div>
 
+    <div class="spotlight-slot" id="spotlightSlot" hidden></div>
+
     <div class="product-grid" id="productGrid"><!-- cards injected by marketplace.js --></div>
   </section>
 
@@ -171,6 +182,7 @@
 <script src="../js/cartSync.js"></script>
 <script src="../js/taxonomy.js"></script>
 <script src="../js/recentlyViewed.js"></script>
+<script src="../js/adDisplay.js"></script>
 <script src="../js/marketplace.js"></script>
 
 <!-- Liquid glass distortion filter for the navbar (adapted from a displacement-map glass demo) -->
