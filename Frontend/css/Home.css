@@ -601,10 +601,11 @@ button,input,select{font-family:inherit;}
   .why-grid{grid-template-columns:1fr;gap:40px;}
   .team-grid{grid-template-columns:repeat(2,1fr);}
 }
-/* The nav is down to two links, so it fits comfortably to ~480px.
-   Collapse to the hamburger at the phone breakpoint instead, which is
-   also where the Create Account button drops out of the bar below. */
-@media (max-width: 620px){
+/* Four nav links (Marketplace/Suppliers/Advertise/Contact Us) plus
+   the logo and auth buttons need more room than the old two-link nav
+   did — collapse to the hamburger earlier, matching the breakpoint
+   already used for the same size nav on marketplace.html. */
+@media (max-width: 860px){
   .nav-links{display:none;}
   .hamburger{display:flex;}
 }
