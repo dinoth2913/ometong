@@ -86,7 +86,7 @@ button,input,textarea,select{font-family:inherit;}
    select's background stayed the browser's native default (light),
    making the language names unreadable. Explicit colors + a
    color-scheme hint so the native open dropdown list matches too. */
-.nav-actions select.lang-switch{
+select.lang-switch{
   background:var(--card-bg);
   color:var(--ink);
   border:1px solid var(--line);
@@ -97,7 +97,7 @@ button,input,textarea,select{font-family:inherit;}
   cursor:pointer;
   color-scheme:light;
 }
-[data-theme="dark"] .nav-actions select.lang-switch{color-scheme:dark;}
+[data-theme="dark"] select.lang-switch{color-scheme:dark;}
 .container{max-width:1280px;margin:0 auto;padding:0 var(--gutter);}
 :focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:6px;}
 
