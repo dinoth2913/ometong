@@ -501,6 +501,8 @@ main .container.section > section[data-reveal]:last-of-type{margin-bottom:0;}
 }
 .rfq-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .rfq-form label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:600;color:var(--ink);}
+.rfq-form .label-cap{display:inline-flex;gap:4px;}
+.rfq-form .field-hint-inline{font-weight:400;color:var(--ink-faint);}
 .rfq-form input,.rfq-form select,.rfq-form textarea{
   padding:9px 11px;border-radius:9px;border:1px solid var(--line);
   font-family:inherit;font-size:.84rem;color:var(--ink);background:var(--bg-alt);

@@ -74,6 +74,7 @@ select{
 
 .field-hint{font-size:.76rem;font-weight:500;color:var(--ink-faint);}
 .field-hint-inline{font-weight:400;color:var(--ink-faint);}
+.label-cap{display:inline-flex;gap:4px;}
 
 .tiers-section{display:flex;flex-direction:column;gap:8px;}
 .tiers-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
