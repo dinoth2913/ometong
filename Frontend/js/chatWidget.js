@@ -48,6 +48,109 @@
     "Understood, noting that down."
   ];
 
+  /* ---------------------------------------------------------------------
+     FAQ auto-answers — the most common things a buyer or supplier
+     actually asks, matched by keyword against whatever they type once
+     they're in free-chat mode. Every answer describes a real feature
+     that exists on the platform today (escrow, RFQs, saved addresses,
+     bulk pricing tiers, verification, etc.) — nothing invented. Falls
+     back to a GENERIC_REPLIES pick when nothing matches, same as
+     before this was added.
+     --------------------------------------------------------------------- */
+  var FAQ_INTENTS = [
+    {
+      keywords: ["escrow", "is my payment safe", "payment protect", "is it safe to pay", "money safe", "payment secure"],
+      reply: "Your payment is held securely in escrow and only released to the seller once you confirm the order has actually been delivered — so you're never paying into thin air."
+    },
+    {
+      keywords: ["verified supplier", "how do i know", "is the supplier real", "trust the seller", "genuine supplier", "is this a scam"],
+      reply: "Every supplier and manufacturer goes through a verification check — business license, export license or similar documents reviewed by our team — before they get a Verified badge. You can also check their rating and reviews from other buyers on their listings."
+    },
+    {
+      keywords: ["moq", "minimum order", "minimum quantity"],
+      reply: "MOQ (minimum order quantity) is shown right on each listing, and you can filter marketplace search by \"Max MOQ\" to only see listings you can actually meet the minimum for."
+    },
+    {
+      keywords: ["which countries", "do you ship to", "ship internationally", "countries do you", "where do you deliver"],
+      reply: "We ship from Guangzhou, China to the United States, Canada, Europe, Sri Lanka and India — door to door, with customs handled on our side."
+    },
+    {
+      keywords: ["how long", "delivery time", "shipping time", "how many days", "when will it arrive"],
+      reply: "Delivery time depends on the product, supplier location and your destination — each order shows an estimated delivery date once it's placed, and you can track it stage-by-stage from your dashboard."
+    },
+    {
+      keywords: ["track my order", "track order", "where is my order", "order status"],
+      reply: "You can track any order stage-by-stage from your dashboard — go to \"Recent orders\" and click \"Track\" on the order you're asking about."
+    },
+    {
+      keywords: ["refund", "return", "money back", "wrong item", "damaged", "item arrived broken"],
+      reply: "If something's wrong with an order, open it from your dashboard and click \"Track\" — there's a \"Request a refund\" option right there once the order's been placed, and our team reviews every request."
+    },
+    {
+      keywords: ["become a supplier", "sell on ometong", "how do i sell", "start selling", "list my product", "list a product"],
+      reply: "You can apply as a supplier or manufacturer from our \"For Suppliers\" page — once your account's approved, you can list products or services and start getting matched with buyer requests."
+    },
+    {
+      keywords: ["any fees", "extra charges", "hidden fee", "does it cost", "buyer fee"],
+      reply: "Buying on Ometong doesn't add any platform fee on top — you pay the listed price, shipping, and any customs duties your country applies on import."
+    },
+    {
+      keywords: ["contact the supplier", "message the supplier", "talk to seller", "supplier phone number", "supplier email", "contact seller directly"],
+      reply: "For everyone's protection, buyers and suppliers don't message each other directly on Ometong — you can send an inquiry from any product page and our team relays what's needed between both sides."
+    },
+    {
+      keywords: ["rfq", "request a quote", "get a quote", "quotation", "request for quotation"],
+      reply: "You can post a request for quotation (RFQ) from your dashboard describing what you need — verified suppliers can then send you quotes, which our team reviews before they reach you."
+    },
+    {
+      keywords: ["bulk price", "wholesale price", "bulk discount", "tier pricing", "buy in bulk"],
+      reply: "Many listings offer bulk pricing tiers — the price per unit drops automatically at higher quantities, shown right on the product page."
+    },
+    {
+      keywords: ["forgot password", "can't log in", "cannot login", "reset password", "can't login"],
+      reply: "No problem — on the login page, click \"Forgot password?\" and we'll email you a link to set a new one."
+    },
+    {
+      keywords: ["advertise", "advertising cost", "promote my product", "featured listing", "homepage banner"],
+      reply: "We have three ad placements: a free Category Spotlight (7-day rotation), a Featured Listing badge for $49/month, and a Homepage Banner for $149/month — you can submit a request right from your dashboard's Advertising section."
+    },
+    {
+      keywords: ["talk to a human", "speak to someone", "contact support", "real person", "speak with support"],
+      reply: "Of course — if you're logged in, go to Messages → \"Ometong Support\" to message our team directly, or use the Contact Us page if you're not signed in yet."
+    },
+    {
+      keywords: ["what payment methods", "how do i pay", "credit card", "accept paypal", "payment options"],
+      reply: "You place your order and pay through checkout, and the payment sits in escrow until delivery is confirmed. Our team handles the payment step directly with you if anything needs confirming."
+    },
+    {
+      keywords: ["cancel my order", "cancel order", "cancel an order"],
+      reply: "If your order hasn't shipped yet, reach out through Messages → Ometong Support (or Contact Us) with your order number and we'll help you cancel it."
+    },
+    {
+      keywords: ["what documents", "verification documents", "business license", "kyb", "how to get verified"],
+      reply: "To get your Verified badge, upload a business license, export license, tax certificate or ID document from your dashboard's Business Verification section — our team reviews it, usually within 2–3 days."
+    },
+    {
+      keywords: ["customs", "import duty", "import tax", "duties"],
+      reply: "Import duties and customs fees depend on your destination country and are usually collected on delivery — we'll show a general note about this at checkout based on where you're shipping to."
+    },
+    {
+      keywords: ["who are you", "where are you based", "about ometong", "company info", "who runs this"],
+      reply: "Ometong is operated by Guangzhou Ometong International Trade Co., Ltd. — you can read more about us and the team on our About Us page."
+    }
+  ];
+
+  function findFaqReply(text) {
+    var lower = text.toLowerCase();
+    for (var i = 0; i < FAQ_INTENTS.length; i++) {
+      var intent = FAQ_INTENTS[i];
+      for (var j = 0; j < intent.keywords.length; j++) {
+        if (lower.indexOf(intent.keywords[j]) !== -1) return intent.reply;
+      }
+    }
+    return null;
+  }
+
   function loadState() {
     try {
       var raw = sessionStorage.getItem(STORAGE_KEY);
@@ -363,8 +466,9 @@
     if (!text) return;
     addBubble("user", text);
     input.value = "";
+    var faqReply = findFaqReply(text);
     showTyping(function () {
-      addBubble("bot", GENERIC_REPLIES[Math.floor(Math.random() * GENERIC_REPLIES.length)]);
+      addBubble("bot", faqReply || GENERIC_REPLIES[Math.floor(Math.random() * GENERIC_REPLIES.length)]);
     }, 1000 + Math.random() * 600);
   });
 
