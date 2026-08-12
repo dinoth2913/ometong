@@ -805,7 +805,12 @@ svg {
   bottom: 10px;
   left: 10px;
   background: rgba(255, 255, 255, .9);
-  color: var(--ink);
+  /* Intentionally a fixed dark color, not var(--ink) — this badge's
+     background stays white-ish in both themes (so it stays readable
+     over any product photo), but its text color used to follow
+     var(--ink), which turns near-white in dark mode and made the
+     "Verified"/"New" text disappear against its own background. */
+  color: #15181F;
   font-size: .64rem;
   font-weight: 700;
   padding: 4px 9px;
