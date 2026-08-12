@@ -213,7 +213,52 @@
     renderReview();
     updateTotals();
     initForm();
-    loadSavedAddresses();
+    await loadSavedAddresses();
+    autoDetectCountry();
+  }
+
+  /* ---------------------------------------------------------------------
+     Auto-detect country — a free, best-effort convenience so a
+     first-time checkout doesn't start on a blank "Select a country"
+     dropdown. Runs only after loadSavedAddresses() has had a chance
+     to fill the field from a real saved address, and only if it's
+     still empty — a saved address (real data) always wins over a
+     guess. Uses a free public IP-geolocation lookup; if it's blocked,
+     rate-limited, or the country isn't one of the ones we ship to,
+     this just quietly does nothing and the buyer picks it themselves,
+     same as before this existed.
+     --------------------------------------------------------------------- */
+  var COUNTRY_CODE_MAP = {
+    US: "United States", CA: "Canada", GB: "United Kingdom",
+    DE: "Germany", FR: "France", LK: "Sri Lanka", IN: "India"
+  };
+  var EU_COUNTRY_CODES = ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"];
+
+  function countryCodeToOption(code) {
+    if (!code) return null;
+    if (COUNTRY_CODE_MAP[code]) return COUNTRY_CODE_MAP[code];
+    if (EU_COUNTRY_CODES.indexOf(code) !== -1) return "Other EU";
+    return "Other";
+  }
+
+  async function autoDetectCountry() {
+    if (!els.form || !els.form.country || els.form.country.value) return; // already filled — a real address (saved or typed) always wins
+    try {
+      var res = await fetch("https://ipapi.co/json/");
+      if (!res.ok) return;
+      var data = await res.json();
+      var option = countryCodeToOption(data.country_code);
+      if (!option || els.form.country.value) return; // re-check: buyer may have picked one while this was in flight
+      var hasOption = [].slice.call(els.form.country.options).some(function (o) { return o.value === option; });
+      if (hasOption) {
+        els.form.country.value = option;
+        updateCustomsNotice();
+      }
+    } catch (e) {
+      // best-effort only — no network, blocked by an ad-blocker/privacy
+      // extension, or the API is down. The country field just stays
+      // blank and the buyer fills it in themselves, same as always.
+    }
   }
 
   /* ---------------------------------------------------------------------
