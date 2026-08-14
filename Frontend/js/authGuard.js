@@ -11,6 +11,16 @@
 (function () {
   "use strict";
 
+  // Hide the page immediately, before the async role check below has
+  // any chance to run. Without this, a visitor who opens the wrong
+  // dashboard URL could see that page's shell (and briefly, its own
+  // account's data loading into it) for a moment before the redirect
+  // below fires — the redirect always did happen, but it looked like
+  // "this login works on every dashboard" instead of "this page flashed
+  // then bounced you to the right one". Revealed again only once the
+  // guard actually confirms the role is correct (or isn't needed).
+  if (document.body) document.body.style.visibility = "hidden";
+
   const thisScript = document.currentScript;
   const requiredRole = thisScript ? thisScript.getAttribute("data-role") : null;
 
@@ -36,28 +46,35 @@
     });
   }
 
+  function reveal() {
+    if (document.body) document.body.style.visibility = "visible";
+  }
+
   async function guard() {
     if (!window.SUPABASE_URL || window.SUPABASE_URL.indexOf("YOUR_SUPABASE") === 0) {
-      return; // Not configured yet — skip the guard, keep demo data visible.
+      reveal(); // Not configured yet — skip the guard, keep demo data visible.
+      return;
     }
-    if (!window.sb) return;
+    if (!window.sb) { reveal(); return; }
 
     const session = await getInitialSession();
     if (!session) {
       window.location.href = "authenticationpage.html";
-      return;
+      return; // stays hidden — page is navigating away
     }
 
     const profile = await window.ometongGetProfile();
     if (!profile) {
       window.location.href = "authenticationpage.html";
-      return;
+      return; // stays hidden — page is navigating away
     }
 
     if (requiredRole && profile.role !== requiredRole) {
       window.location.href = window.ometongDashboardForRole(profile.role);
-      return;
+      return; // stays hidden — page is navigating away
     }
+
+    reveal();
 
     const displayName = profile.business_name || profile.full_name || profile.email || "";
     const welcomeName = document.getElementById("welcomeName");
@@ -86,5 +103,13 @@
     });
   });
 
-  guard();
+  // If guard() throws for any unexpected reason, fail open on the
+  // visibility toggle rather than leaving the page permanently blank —
+  // the actual role check already happened by the time anything past
+  // it could throw, so this only guards against a rendering bug, not
+  // a security check.
+  guard().catch((err) => {
+    console.error("Ometong: authGuard error", err);
+    reveal();
+  });
 })();
