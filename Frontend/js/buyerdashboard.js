@@ -509,16 +509,22 @@ document.addEventListener('DOMContentLoaded', () => {
      loads — no new table needed. Spending is bucketed by calendar
      month (last 6 including the current one); status breakdown
      counts every non-cancelled order once. */
+  let lastSpendingRows = [];
+  let lastStatusRows = [];
+
   function renderAnalytics() {
     const spendingEl = document.getElementById('chartSpending');
     const statusEl = document.getElementById('chartOrderStatus');
+    const rangeSelect = document.getElementById('chartSpendingRange');
+    const spendingTitle = document.getElementById('chartSpendingTitle');
     if (!spendingEl && !statusEl) return;
 
+    const monthCount = rangeSelect ? parseInt(rangeSelect.value, 10) || 6 : 6;
     const now = new Date();
     const months = [];
-    for (let i = 5; i >= 0; i--) {
+    for (let i = monthCount - 1; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      months.push({ key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short' }), value: 0 });
+      months.push({ key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short', year: monthCount > 6 ? '2-digit' : undefined }), value: 0 });
     }
     const byKey = {};
     months.forEach(m => { byKey[m.key] = m; });
@@ -528,6 +534,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const key = `${d.getFullYear()}-${d.getMonth()}`;
       if (byKey[key]) byKey[key].value += o.amount;
     });
+    lastSpendingRows = months;
+    if (spendingTitle) spendingTitle.textContent = `Spending, last ${monthCount} months`;
 
     if (spendingEl) window.ometongRenderBarChart(spendingEl, months, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders placed yet.' });
 
@@ -536,9 +544,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const counts = { processing: 0, transit: 0, delivered: 0, cancelled: 0 };
       orders.forEach(o => { if (counts[o.status] !== undefined) counts[o.status]++; });
       const rows = Object.keys(labels).map(k => ({ label: labels[k], value: counts[k] }));
+      lastStatusRows = rows;
       window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders placed yet.' });
     }
   }
+
+  document.getElementById('chartSpendingRange')?.addEventListener('change', renderAnalytics);
+  document.getElementById('chartSpendingExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastSpendingRows, 'ometong-spending'));
+  document.getElementById('chartOrderStatusExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastStatusRows, 'ometong-orders-by-status'));
 
   (async () => {
     await loadOrders();

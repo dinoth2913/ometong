@@ -387,11 +387,23 @@
       </div>
       <div class="analytics-grid">
         <div class="analytics-card">
-          <h3>Earnings, last 6 months</h3>
+          <div class="analytics-card-head">
+            <h3 id="chartEarningsTitle">Earnings, last 6 months</h3>
+            <div class="analytics-card-actions">
+              <select class="analytics-range" id="chartEarningsRange" aria-label="Time range">
+                <option value="6">Last 6 months</option>
+                <option value="12">Last 12 months</option>
+              </select>
+              <button type="button" class="btn btn-ghost btn-sm" id="chartEarningsExport">Export CSV</button>
+            </div>
+          </div>
           <div id="chartEarnings"></div>
         </div>
         <div class="analytics-card">
-          <h3>Orders by status</h3>
+          <div class="analytics-card-head">
+            <h3>Orders by status</h3>
+            <button type="button" class="btn btn-ghost btn-sm" id="chartOrderStatusExport">Export CSV</button>
+          </div>
           <div id="chartOrderStatus"></div>
         </div>
       </div>

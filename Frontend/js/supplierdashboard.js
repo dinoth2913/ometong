@@ -454,18 +454,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Analytics ----------
      Computed from the same `orders` already loaded on this page —
-     no new table needed. */
+     no new table needed. Keeps the last-rendered rows around so the
+     Export CSV buttons can download exactly what's on screen. */
+  let lastEarningsRows = [];
+  let lastStatusRows = [];
+
   function renderAnalytics() {
     const earningsEl = document.getElementById('chartEarnings');
     const statusEl = document.getElementById('chartOrderStatus');
+    const rangeSelect = document.getElementById('chartEarningsRange');
+    const earningsTitle = document.getElementById('chartEarningsTitle');
     if (!earningsEl && !statusEl) return;
 
+    const monthCount = rangeSelect ? parseInt(rangeSelect.value, 10) || 6 : 6;
     const now = new Date();
     const months = [];
     const byKey = {};
-    for (let i = 5; i >= 0; i--) {
+    for (let i = monthCount - 1; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const m = { key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short' }), value: 0 };
+      const m = { key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short', year: monthCount > 6 ? '2-digit' : undefined }), value: 0 };
       months.push(m);
       byKey[m.key] = m;
     }
@@ -475,6 +482,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const key = `${d.getFullYear()}-${d.getMonth()}`;
       if (byKey[key]) byKey[key].value += o.amount;
     });
+    lastEarningsRows = months;
+    if (earningsTitle) earningsTitle.textContent = `Earnings, last ${monthCount} months`;
     if (earningsEl) window.ometongRenderBarChart(earningsEl, months, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders yet.' });
 
     if (statusEl) {
@@ -485,9 +494,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (counts[cls] !== undefined) counts[cls]++;
       });
       const rows = Object.keys(labels).map(k => ({ label: labels[k], value: counts[k] }));
+      lastStatusRows = rows;
       window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders yet.' });
     }
   }
+
+  document.getElementById('chartEarningsRange')?.addEventListener('change', renderAnalytics);
+  document.getElementById('chartEarningsExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastEarningsRows, 'ometong-earnings'));
+  document.getElementById('chartOrderStatusExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastStatusRows, 'ometong-orders-by-status'));
 
   (async () => {
     await Promise.all([loadListings(), loadOrders(), loadRequests()]);

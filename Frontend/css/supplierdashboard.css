@@ -510,6 +510,10 @@ main .container.section > section[data-reveal]:last-of-type{margin-bottom:0;}
   padding:20px;box-shadow:var(--shadow-sm);
 }
 .analytics-card h3{margin:0 0 14px;font-size:.92rem;font-weight:700;color:var(--ink);}
+.analytics-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.analytics-card-head h3{margin:0;}
+.analytics-card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.analytics-range{font-size:.76rem;font-weight:600;color:var(--ink);background:var(--card-bg);border:1px solid var(--line);border-radius:8px;padding:5px 8px;cursor:pointer;}
 .bar-chart{display:flex;flex-direction:column;gap:10px;}
 .bar-chart-row{display:grid;grid-template-columns:66px 1fr 58px;align-items:center;gap:10px;font-size:.76rem;}
 .bar-chart-label{color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}

@@ -29,4 +29,29 @@
         <span class="bar-chart-value">${esc(fmt(r.value))}</span>
       </div>`).join('')}</div>`;
   };
+
+  /* ---------- CSV export ----------
+     Downloads whatever [{label, value}] rows a chart is currently
+     showing as a small CSV file — e.g. "Earnings, last 6 months" ->
+     earnings-last-6-months.csv with Label,Value columns. Works on
+     the exact same row shape ometongRenderBarChart takes, so any
+     dashboard can wire an export button straight to its existing
+     chart data with no extra transformation. */
+  window.ometongExportChartCSV = function (rows, filename) {
+    if (!rows || !rows.length) return;
+    const escCell = v => {
+      const s = String(v);
+      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    const lines = ['Label,Value', ...rows.map(r => `${escCell(r.label)},${escCell(r.value)}`)];
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (filename || 'chart-data') + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
 })();
