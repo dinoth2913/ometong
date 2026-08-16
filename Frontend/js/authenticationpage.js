@@ -57,6 +57,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('authSuccess').classList.remove('show');
     loginForm.style.display = name === 'login' ? 'flex' : 'none';
     signupForm.style.display = name === 'signup' ? 'flex' : 'none';
+
+    // The Buyer/Supplier/Manufacturer selector only actually does
+    // anything on signup (it picks the new account's role). On login
+    // it had no effect at all — an account's role is fixed forever
+    // once created — but showing it there with a "Logging in as a
+    // buyer" sentence falsely implied clicking it chooses which
+    // dashboard you land on, when really you always land on your
+    // account's real, permanent role regardless of what's clicked.
+    // Hide it entirely outside of signup so nothing misleading is
+    // shown on login.
+    const roleSelect = document.getElementById('roleSelect');
+    if (roleSelect) roleSelect.style.display = name === 'signup' ? 'flex' : 'none';
   }
 
   tabs.forEach(tab => tab.addEventListener('click', () => setTab(tab.dataset.tab)));
@@ -64,9 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => setTab(btn.dataset.goto));
   });
 
-  /* ---------- Default tab from URL (e.g. authenticationpage.html?tab=signup) ---------- */
+  /* ---------- Default tab from URL (e.g. authenticationpage.html?tab=signup) ----------
+     Always runs (not just when ?tab=signup is present) so the role
+     selector's visibility is set correctly even on a plain page load
+     landing on the default Login tab. */
   const urlTab = new URLSearchParams(window.location.search).get('tab');
-  if (urlTab === 'signup') setTab('signup');
+  setTab(urlTab === 'signup' ? 'signup' : 'login');
 
   /* ---------- Role selector (Buyer / Supplier / Manufacturer) ---------- */
   const roleTabs = document.querySelectorAll('.role-tab');
@@ -74,13 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const bizFields = document.getElementById('signupBizFields');
   const bizFieldsLabel = document.getElementById('bizFieldsLabel');
   const bizDetailsLabel = document.getElementById('bizDetailsLabel');
-  const loginRoleNote = document.getElementById('loginRoleNote');
 
   const roleIndex = { buyer: 0, supplier: 1, manufacturer: 2 };
   const roleCopy = {
-    buyer: { note: 'a buyer', fieldsLabel: null, detailsLabel: null },
-    supplier: { note: 'a supplier', fieldsLabel: 'Supplier details', detailsLabel: 'What do you supply?' },
-    manufacturer: { note: 'a manufacturer', fieldsLabel: 'Manufacturer details', detailsLabel: 'What do you manufacture?' },
+    buyer: { fieldsLabel: null, detailsLabel: null },
+    supplier: { fieldsLabel: 'Supplier details', detailsLabel: 'What do you supply?' },
+    manufacturer: { fieldsLabel: 'Manufacturer details', detailsLabel: 'What do you manufacture?' },
   };
 
   let currentRole = 'buyer';
@@ -102,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
       bizFieldsLabel.textContent = roleCopy[role].fieldsLabel;
       bizDetailsLabel.textContent = roleCopy[role].detailsLabel;
     }
-    loginRoleNote.textContent = roleCopy[role].note;
   }
 
   roleTabs.forEach(tab => tab.addEventListener('click', () => setRole(tab.dataset.role)));
