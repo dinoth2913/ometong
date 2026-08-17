@@ -170,6 +170,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     </svg>`;
   }
 
+  // Mirrors the same mapping in marketplace.js so a demo product's
+  // detail page shows the same "Ships from" country as its card did
+  // on the marketplace grid.
+  const DEMO_SUPPLIER_ORIGIN = {
+    'Ceylon Traders Ltd': 'Sri Lanka',
+    'Horizon Supply Co.': 'China',
+    'Lanka Industrial Group': 'Sri Lanka',
+    'Spice Route Exports': 'China',
+    'Island Manufacturing': 'Sri Lanka',
+  };
+
   function buildProducts() {
     const list = [];
     let id = 0;
@@ -179,11 +190,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         brands.forEach((brand) => {
           id++;
           const span = def.max - def.min;
+          const supplierName = ['Ceylon Traders Ltd', 'Horizon Supply Co.', 'Lanka Industrial Group', 'Spice Route Exports', 'Island Manufacturing'][id % 5];
           list.push({
             id, cat,
             title: `${brand} ${def.title}`,
             brand,
-            supplier: ['Ceylon Traders Ltd', 'Horizon Supply Co.', 'Lanka Industrial Group', 'Spice Route Exports', 'Island Manufacturing'][id % 5],
+            supplier: supplierName,
+            countryOfOrigin: DEMO_SUPPLIER_ORIGIN[supplierName] || 'China',
             price: Math.round(def.min + ((id * 13) % (span || 1))),
             rating: (3.6 + ((id * 7) % 14) / 10).toFixed(1),
             reviews: 8 + (id * 5) % 240,

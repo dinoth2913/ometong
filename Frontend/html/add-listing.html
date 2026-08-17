@@ -92,13 +92,20 @@
 
         <div class="field-row">
           <label>Country of origin
-            <input type="text" id="countryOfOrigin" name="countryOfOrigin" value="China" placeholder="e.g. China">
+            <select id="countryOfOrigin" name="countryOfOrigin">
+              <option value="China">China</option>
+              <option value="Sri Lanka">Sri Lanka</option>
+              <option value="Other">Other</option>
+            </select>
           </label>
           <label><span class="label-cap">HS code <span class="field-hint-inline">(optional)</span></span>
             <input type="text" id="hsCode" name="hsCode" placeholder="e.g. 8517.13">
           </label>
         </div>
-        <p class="field-hint">Customs classification — helps buyers estimate import duty.</p>
+        <label id="countryOfOriginOtherWrap" hidden>Other country of origin
+          <input type="text" id="countryOfOriginOther" name="countryOfOriginOther" placeholder="e.g. India">
+        </label>
+        <p class="field-hint">Customs classification — helps buyers estimate import duty. Ometong currently ships from China and Sri Lanka.</p>
 
         <label>Description
           <textarea id="description" name="description" rows="4" placeholder="Describe the product or service, materials, specs, or what's included…"></textarea>
@@ -143,6 +150,6 @@
 <script src="../js/supabaseConfig.js"></script>
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/taxonomy.js"></script>
-<script src="../js/add-listing.js?v=2"></script>
+<script src="../js/add-listing.js?v=3"></script>
 </body>
 </html>

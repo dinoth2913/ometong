@@ -163,6 +163,19 @@ document.addEventListener('DOMContentLoaded', () => {
     </svg>`;
   }
 
+  // Ometong ships from two countries now — China and Sri Lanka. The
+  // demo catalog's supplier names already leaned Sri Lankan-sounding
+  // ("Ceylon", "Lanka", "Island"), so origin is assigned per supplier
+  // name to match, giving the new "Ships from" filter real, visible
+  // results in both countries even before real listings exist.
+  const DEMO_SUPPLIER_ORIGIN = {
+    'Ceylon Traders Ltd': 'Sri Lanka',
+    'Horizon Supply Co.': 'China',
+    'Lanka Industrial Group': 'Sri Lanka',
+    'Spice Route Exports': 'China',
+    'Island Manufacturing': 'Sri Lanka',
+  };
+
   function buildProducts() {
     const list = [];
     let id = 0;
@@ -172,12 +185,14 @@ document.addEventListener('DOMContentLoaded', () => {
         brands.forEach((brand, bi) => {
           id++;
           const span = def.max - def.min;
+          const supplierName = ['Ceylon Traders Ltd', 'Horizon Supply Co.', 'Lanka Industrial Group', 'Spice Route Exports', 'Island Manufacturing'][id % 5];
           list.push({
             id,
             cat,
             title: `${brand} ${def.title}`,
             brand,
-            supplier: ['Ceylon Traders Ltd', 'Horizon Supply Co.', 'Lanka Industrial Group', 'Spice Route Exports', 'Island Manufacturing'][id % 5],
+            supplier: supplierName,
+            origin: DEMO_SUPPLIER_ORIGIN[supplierName] || 'China',
             price: Math.round(def.min + ((id * 13) % (span || 1))),
             rating: (3.6 + ((id * 7) % 14) / 10).toFixed(1),
             reviews: 8 + (id * 5) % 240,
@@ -234,6 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         brand: supplierName,
         supplier: supplierName,
         supplierId: row.supplier_id,
+        origin: row.country_of_origin || 'China',
         price: Number(row.price),
         rating: null,
         reviews: 0,
@@ -365,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="p-specs">
           <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M20.6 12l-8-8H4v8.6l8 8 8.6-8.6z"/><circle cx="8" cy="8" r="1.4"/></svg>${catLabel}</span>
           <span class="p-spec"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>${p.badge || 'Standard'}</span>
+          ${p.origin ? `<span class="p-spec p-spec-origin"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Ships from ${esc(p.origin)}</span>` : ''}
         </div>
         <div class="p-actions-row">
           <button class="p-add" data-add="${p.id}">
@@ -397,12 +414,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let moqMaxVal = null;
   let ratingMinVal = 0;
   let verifiedOnlyVal = false;
+  let activeOriginVal = 'all';
 
   function currentList() {
     let list = allProducts;
     if (activeCat !== 'all') list = list.filter(p => p.cat === activeCat);
     if (activeSub !== 'all') list = list.filter(p => p.subcategory === activeSub);
     if (activeBrand !== 'all') list = list.filter(p => p.brand === activeBrand);
+    if (activeOriginVal !== 'all') list = list.filter(p => p.origin === activeOriginVal);
     if (priceMinVal !== null) list = list.filter(p => p.price >= priceMinVal);
     if (priceMaxVal !== null) list = list.filter(p => p.price <= priceMaxVal);
     // A listing with no MOQ set has no minimum to worry about, so it
@@ -477,6 +496,14 @@ document.addEventListener('DOMContentLoaded', () => {
     refresh();
   });
 
+  /* ---------- Ships-from (origin country) filter ----------
+     Ometong now ships from China and Sri Lanka. */
+  const originSelect = document.getElementById('originSelect');
+  originSelect?.addEventListener('change', () => {
+    activeOriginVal = originSelect.value;
+    refresh();
+  });
+
   /* ---------- Clear filters ---------- */
   document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
     activeCat = 'all';
@@ -489,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     moqMaxVal = null;
     ratingMinVal = 0;
     verifiedOnlyVal = false;
+    activeOriginVal = 'all';
     const searchEl = document.getElementById('searchInput');
     const sortEl = document.getElementById('sortSelect');
     if (searchEl) searchEl.value = '';
@@ -497,6 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (moqMaxInput) moqMaxInput.value = '';
     if (ratingSelect) ratingSelect.value = '0';
     if (verifiedOnlyCheckbox) verifiedOnlyCheckbox.checked = false;
+    if (originSelect) originSelect.value = 'all';
     if (sortEl) sortEl.value = 'relevance';
     document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'all'));
     renderSubcategoryChips();

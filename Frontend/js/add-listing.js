@@ -145,6 +145,22 @@
     categorySelect?.addEventListener("change", updateComplianceNotice);
     updateComplianceNotice();
 
+    /* ---------- Country of origin ("Other" reveals a free-text field) ----------
+       Ometong currently ships from China and Sri Lanka, so those are
+       the two quick-pick options; "Other" covers anything else
+       without blocking a listing that's genuinely sourced elsewhere. */
+    const countryOfOriginSelect = document.getElementById("countryOfOrigin");
+    const countryOfOriginOtherWrap = document.getElementById("countryOfOriginOtherWrap");
+    const countryOfOriginOtherInput = document.getElementById("countryOfOriginOther");
+    function updateCountryOfOriginOther() {
+      if (!countryOfOriginSelect || !countryOfOriginOtherWrap) return;
+      const isOther = countryOfOriginSelect.value === "Other";
+      countryOfOriginOtherWrap.hidden = !isOther;
+      if (!isOther && countryOfOriginOtherInput) countryOfOriginOtherInput.value = "";
+    }
+    countryOfOriginSelect?.addEventListener("change", updateCountryOfOriginOther);
+    updateCountryOfOriginOther();
+
     /* ---------- Category + subcategory dropdowns ----------
        Both come from the shared taxonomy, so the options here always
        match the filters buyers see in the marketplace. */
@@ -313,7 +329,9 @@
       const moq = form.moq.value ? parseInt(form.moq.value, 10) : null;
       const leadTime = form.leadTime.value ? parseInt(form.leadTime.value, 10) : null;
       const description = form.description.value.trim();
-      const countryOfOrigin = form.countryOfOrigin.value.trim() || null;
+      const countryOfOrigin = form.countryOfOrigin.value === "Other"
+        ? (form.countryOfOriginOther.value.trim() || null)
+        : (form.countryOfOrigin.value || null);
       const hsCode = form.hsCode.value.trim() || null;
       const warranty = form.warranty.value.trim() || null;
 
