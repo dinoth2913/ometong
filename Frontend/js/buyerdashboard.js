@@ -311,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadOrders() {
     if (!window.sb) return;
+    if (ordersList) window.ometongShowLoading?.(ordersList, 'Loading your orders…');
     const user = await window.ometongGetUser();
     if (!user) return;
     currentUserId = user.id;
@@ -322,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (ordersRes.error) {
       console.error('Ometong: failed to load orders', ordersRes.error);
+      if (ordersList) window.ometongShowError?.(ordersList, "Couldn't load your orders.", loadOrders);
       return;
     }
     if (reviewsRes.error) console.error('Ometong: failed to load reviews', reviewsRes.error);

@@ -337,12 +337,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const rawId = params.get('id');
   let product = null;
+  let realListingFailed = false;
   if (rawId && /^\d+$/.test(rawId)) {
     product = allProducts.find(p => p.id === parseInt(rawId, 10)) || null;
   } else if (rawId) {
     product = await loadRealListing(rawId);
+    if (!product) realListingFailed = true;
   }
   if (!product) product = allProducts[0];
+
+  // A real listing link (?id=<uuid>) that didn't resolve — either it
+  // genuinely doesn't exist/isn't approved, or the fetch just failed
+  // — used to silently swap in an unrelated demo product with no
+  // indication anything was wrong. Show a clear notice instead so
+  // it's obvious this isn't the product that was linked to.
+  if (realListingFailed) {
+    const breadcrumb = document.getElementById('breadcrumb');
+    const notice = document.createElement('p');
+    notice.className = 'ometong-load-state ometong-load-state--error';
+    notice.style.textAlign = 'left';
+    notice.textContent = "We couldn't load that specific product — it may have been removed, or something went wrong loading it. Showing a similar item instead.";
+    breadcrumb?.insertAdjacentElement('afterend', notice);
+  }
   const catLabel = product.cat.charAt(0).toUpperCase() + product.cat.slice(1);
 
   // Record this as a "recently viewed" product — rendered further

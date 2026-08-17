@@ -179,12 +179,20 @@
     populateSubcategories();
     categorySelect?.addEventListener("change", populateSubcategories);
 
-    function showError(message) {
+    let lastInvalidField = null;
+    function showError(message, field) {
       errorEl.textContent = message;
       errorEl.classList.add("show");
+      if (lastInvalidField) lastInvalidField.classList.remove("field-invalid");
+      lastInvalidField = field || null;
+      if (field) {
+        field.classList.add("field-invalid");
+        field.focus();
+      }
     }
     function clearError() {
       errorEl.classList.remove("show");
+      if (lastInvalidField) { lastInvalidField.classList.remove("field-invalid"); lastInvalidField = null; }
     }
 
     /* ---------- Bulk pricing tiers (optional) ----------
@@ -279,6 +287,15 @@
       submitBtn.querySelector("span").textContent = isLoading ? "Publishing…" : "Publish Listing";
     }
 
+    // Clear a field's red "invalid" highlight as soon as the seller
+    // starts fixing it, rather than making them re-submit first.
+    [form.title, form.price, categorySelect].forEach((field) => {
+      if (!field) return;
+      field.addEventListener(field.tagName === "SELECT" ? "change" : "input", () => {
+        if (String(field.value || "").trim()) field.classList.remove("field-invalid");
+      });
+    });
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearError();
@@ -300,9 +317,9 @@
       const hsCode = form.hsCode.value.trim() || null;
       const warranty = form.warranty.value.trim() || null;
 
-      if (!title) { showError("Please enter a product or service name."); return; }
-      if (!category) { showError("Please select a category."); return; }
-      if (isNaN(price) || price < 0) { showError("Please enter a valid price."); return; }
+      if (!title) { showError("Please enter a product or service name.", form.title); return; }
+      if (!category) { showError("Please select a category.", categorySelect); return; }
+      if (isNaN(price) || price < 0) { showError("Please enter a valid price.", form.price); return; }
 
       const { tiers, error: tiersError } = collectTiers();
       if (tiersError) { showError(tiersError); return; }

@@ -1289,3 +1289,9 @@ svg {
 
 .scroller-wrap.fade-left::before { opacity: 1; }
 .scroller-wrap.fade-right::after { opacity: 1; }
+
+/* ---------- Shared loading/error state (loadingState.js) ---------- */
+.ometong-load-state{text-align:center;padding:32px 16px;font-size:.85rem;color:var(--ink-faint);}
+.ometong-load-state--error{color:var(--ink-soft);}
+.ometong-load-state--error .link-inline{background:none;border:none;color:var(--accent);font-weight:700;cursor:pointer;font-size:.85rem;margin-left:6px;padding:0;}
+.ometong-load-state--error .link-inline:hover{text-decoration:underline;}

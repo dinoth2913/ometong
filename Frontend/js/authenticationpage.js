@@ -152,7 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return destinationForRole(role);
   }
 
-  function showError(form, message) {
+  const lastInvalidField = new WeakMap();
+  function showError(form, message, field) {
     let errorEl = form.querySelector('.auth-error');
     if (!errorEl) {
       errorEl = document.createElement('p');
@@ -161,11 +162,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     errorEl.textContent = message;
     errorEl.classList.add('show');
+
+    const prev = lastInvalidField.get(form);
+    if (prev) prev.classList.remove('field-invalid');
+    if (field) {
+      field.classList.add('field-invalid');
+      field.focus();
+      lastInvalidField.set(form, field);
+    } else {
+      lastInvalidField.delete(form);
+    }
   }
 
   function clearError(form) {
     const errorEl = form.querySelector('.auth-error');
     if (errorEl) errorEl.classList.remove('show');
+    const prev = lastInvalidField.get(form);
+    if (prev) { prev.classList.remove('field-invalid'); lastInvalidField.delete(form); }
   }
 
   function setLoading(form, isLoading, label) {
@@ -186,6 +199,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!window.sb) {
     console.error('Ometong: Supabase client not available — check that supabaseConfig.js and supabaseClient.js are loaded before authenticationpage.js.');
   }
+
+  // Clear a signup field's red "invalid" highlight as soon as it's
+  // fixed, rather than making the visitor re-submit first.
+  ['name', 'email', 'password', 'business'].forEach((fieldName) => {
+    const field = signupForm[fieldName];
+    if (!field) return;
+    field.addEventListener('input', () => {
+      if (field.value.trim()) field.classList.remove('field-invalid');
+    });
+  });
 
   /* ---------- Forgot password ---------- */
   const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
@@ -267,6 +290,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const business = signupForm.business ? signupForm.business.value.trim() : '';
     const category = signupForm.category ? signupForm.category.value : '';
     const details = signupForm.details ? signupForm.details.value.trim() : '';
+
+    // The form has novalidate (custom styling for errors instead of
+    // the browser's native popups), which also means nothing was
+    // checking these required fields client-side before this — an
+    // empty name or business name would only ever get caught by
+    // Supabase's own validation of email/password, if at all.
+    if (!fullName) { showError(signupForm, 'Please enter your full name.', signupForm.name); return; }
+    if (!email) { showError(signupForm, 'Please enter your email address.', signupForm.email); return; }
+    if (!password) { showError(signupForm, 'Please create a password.', signupForm.password); return; }
+    if (currentRole !== 'buyer' && !business) {
+      showError(signupForm, 'Please enter your business name.', signupForm.business);
+      return;
+    }
 
     const captcha = ometongGetCaptchaToken(ometongSignupCaptchaId);
     if (captcha.required && !captcha.token) {

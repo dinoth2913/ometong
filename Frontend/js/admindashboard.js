@@ -64,8 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let activity = [];
   const profileMap = {};
 
+  const loadErrorEl = document.getElementById('adminLoadError');
+
   async function loadAll() {
     if (!window.sb) return;
+    if (loadErrorEl) loadErrorEl.hidden = true;
+    if (pendingGridLoading()) window.ometongShowLoading?.(document.getElementById('pendingGrid'), 'Loading…');
+
     const [listingsRes, profilesRes, ordersRes, activityRes] = await Promise.all([
       window.sb.from('listings').select('*').order('created_at', { ascending: false }),
       window.sb.from('profiles').select('*').order('created_at', { ascending: false }),
@@ -78,11 +83,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ordersRes.error) console.error('Ometong: failed to load orders', ordersRes.error);
     if (activityRes.error) console.error('Ometong: failed to load activity log', activityRes.error);
 
+    const anyError = listingsRes.error || profilesRes.error || ordersRes.error || activityRes.error;
+    if (anyError && loadErrorEl) {
+      loadErrorEl.innerHTML = "Some dashboard data couldn't be loaded — parts of this page may be incomplete or out of date. " +
+        '<button type="button" class="link-inline" id="adminLoadRetry">Try again</button>';
+      loadErrorEl.hidden = false;
+      document.getElementById('adminLoadRetry')?.addEventListener('click', async () => {
+        await loadAll();
+        renderAll();
+      });
+    }
+
     listings = listingsRes.data || [];
     profiles = profilesRes.data || [];
     orders = ordersRes.data || [];
     activity = activityRes.data || [];
     profiles.forEach(p => { profileMap[p.id] = p; });
+  }
+
+  // Only show the brief loading text in the pending-approvals grid if
+  // it's currently empty (first load) — avoids flashing "Loading…"
+  // over real content on a background refresh.
+  function pendingGridLoading() {
+    const el = document.getElementById('pendingGrid');
+    return el && !el.children.length;
   }
 
   /* ---------- Pending approval ---------- */

@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadListings() {
     if (!window.sb) return;
+    if (listingsGrid) { listingsGrid.style.display = ''; window.ometongShowLoading?.(listingsGrid, 'Loading your listings…'); }
     const user = await window.ometongGetUser();
     if (!user) return;
     const { data, error } = await window.sb
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .order('created_at', { ascending: false });
     if (error) {
       console.error('Ometong: failed to load listings', error);
+      if (listingsGrid) window.ometongShowError?.(listingsGrid, "Couldn't load your listings.", async () => { await loadListings(); renderListings(); });
       return;
     }
     listings = data || [];
@@ -172,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadRequests() {
     if (!window.sb) return;
+    if (requestsGrid) { requestsGrid.style.display = ''; window.ometongShowLoading?.(requestsGrid, 'Loading buyer requests…'); }
     const user = await window.ometongGetUser();
     if (!user) return;
     const { data, error } = await window.sb
@@ -180,7 +183,11 @@ document.addEventListener('DOMContentLoaded', () => {
       .eq('status', 'open')
       .order('created_at', { ascending: false })
       .limit(40);
-    if (error) { console.error('Ometong: failed to load buyer requests', error); return; }
+    if (error) {
+      console.error('Ometong: failed to load buyer requests', error);
+      if (requestsGrid) window.ometongShowError?.(requestsGrid, "Couldn't load buyer requests.", async () => { await loadRequests(); renderRequests(); });
+      return;
+    }
     requests = data || [];
 
     const { data: responses, error: respErr } = await window.sb
@@ -312,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
      of that order, not its grand total. */
   async function loadOrders() {
     if (!window.sb) return;
+    if (ordersList) window.ometongShowLoading?.(ordersList, 'Loading your orders…');
     const user = await window.ometongGetUser();
     if (!user) return;
     const { data, error } = await window.sb
@@ -319,7 +327,11 @@ document.addEventListener('DOMContentLoaded', () => {
       .select('*, orders(*)')
       .eq('supplier_id', user.id)
       .order('created_at', { ascending: false });
-    if (error) { console.error('Ometong: failed to load orders', error); return; }
+    if (error) {
+      console.error('Ometong: failed to load orders', error);
+      if (ordersList) window.ometongShowError?.(ordersList, "Couldn't load your orders.", async () => { await loadOrders(); renderOrders(); });
+      return;
+    }
 
     const grouped = {};
     (data || []).forEach(item => {

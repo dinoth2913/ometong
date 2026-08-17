@@ -200,6 +200,7 @@ label input[type="text"],label input[type="email"],label input[type="password"]{
   padding:12px 14px;border-radius:10px;border:1px solid var(--line);font-weight:400;font-size:.92rem;color:var(--ink);background:#fff;transition:border-color .25s, box-shadow .25s;
 }
 label input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,116,49,.12);outline:none;}
+label input.field-invalid{border-color:#C0392B;box-shadow:0 0 0 3px rgba(192,57,43,.1);}
 .pw-hint{font-size:.72rem;font-weight:500;color:var(--ink-faint);}
 
 .pw-field{position:relative;display:flex;}

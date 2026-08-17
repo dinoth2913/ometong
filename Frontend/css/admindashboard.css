@@ -18,6 +18,30 @@ main .container.section > section[data-reveal] {
   margin-bottom: 56px;
 }
 
+/* =========================================================
+   DARK MODE — admindashboard.css itself had zero [data-theme="dark"]
+   rules. Most of the page already adapts fine since it inherits
+   supplierdashboard.css's dark-mode CSS variables (--card-bg,
+   --ink, --bg-alt, etc.), but a handful of admin-only elements use
+   hardcoded light-mode colors instead of those variables:
+   - .admin-badge.* are solid pastel light backgrounds (#FFF4E5 etc)
+     that sit as bright light patches on a dark page.
+   - .contact-msg-status.replied / .contact-msg-reply-label use a
+     dark green (#178A50) meant for light backgrounds, which reads
+     as low-contrast on dark.
+   Everything else here (buttons, badges using var()) already works
+   in both themes without changes.
+========================================================= */
+[data-theme="dark"] .admin-badge.pending { background: rgba(255, 196, 77, .18); color: var(--gold); }
+[data-theme="dark"] .admin-badge.active { background: rgba(34, 197, 94, .18); color: #5FE0A0; }
+[data-theme="dark"] .admin-badge.paused { background: rgba(255, 255, 255, .08); color: var(--ink-faint); }
+[data-theme="dark"] .admin-badge.buyer { background: rgba(58, 111, 247, .18); color: #9DB8FF; }
+[data-theme="dark"] .admin-badge.supplier { background: rgba(139, 92, 246, .18); color: #C4B5FD; }
+[data-theme="dark"] .admin-badge.manufacturer { background: rgba(239, 68, 68, .18); color: #F5A3A3; }
+[data-theme="dark"] .admin-badge.admin { background: #fff; color: #111; }
+[data-theme="dark"] .contact-msg-status.replied { color: #5FE0A0; }
+[data-theme="dark"] .contact-msg-reply-label { color: #5FE0A0; }
+
 main .container.section > section[data-reveal]:last-of-type {
   margin-bottom: 0;
 }

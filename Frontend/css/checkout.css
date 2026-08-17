@@ -51,6 +51,12 @@
   outline: none;
 }
 
+.checkout-block input.field-invalid,
+.checkout-block select.field-invalid {
+  border-color: #C0392B;
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, .1);
+}
+
 .link-inline {
   background: none;
   border: none;
@@ -188,4 +194,18 @@
 #placeOrderBtn:disabled {
   opacity: .6;
   cursor: not-allowed;
+}
+
+/* The overall two-column checkout layout already stacks on mobile
+   via cart.css's .cart-layout breakpoint (900px) — this page reuses
+   that shared grid. The one piece that didn't have its own mobile
+   rule was the City/Country row, which stays side-by-side down to
+   the smallest phone widths and gets cramped. */
+@media (max-width: 480px) {
+  .checkout-block .field-row {
+    grid-template-columns: 1fr;
+  }
+  .checkout-block {
+    padding: 20px;
+  }
 }

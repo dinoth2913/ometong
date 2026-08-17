@@ -411,6 +411,17 @@
     if (!els.form) return;
     els.form.country.addEventListener("change", updateCustomsNotice);
     updateCustomsNotice();
+
+    // Clear a field's red "invalid" highlight as soon as the buyer
+    // starts fixing it, rather than making them re-submit first.
+    ["fullName", "phone", "address", "city", "country"].forEach(function (name) {
+      var field = els.form[name];
+      if (!field) return;
+      var evt = field.tagName === "SELECT" ? "change" : "input";
+      field.addEventListener(evt, function () {
+        if (field.value.trim()) field.classList.remove("field-invalid");
+      });
+    });
     els.form.addEventListener("submit", async function (e) {
       e.preventDefault();
       clearError();
@@ -422,8 +433,25 @@
       var country = els.form.country.value.trim();
       var notes = els.form.notes.value.trim();
 
-      if (!fullName || !phone || !address || !city || !country) {
+      // Highlight exactly which required field(s) are empty, instead
+      // of just a generic "fill in all required fields" banner that
+      // makes the buyer hunt for which one is actually missing.
+      var requiredFields = [
+        { el: els.form.fullName, value: fullName },
+        { el: els.form.phone, value: phone },
+        { el: els.form.address, value: address },
+        { el: els.form.city, value: city },
+        { el: els.form.country, value: country }
+      ];
+      var firstInvalid = null;
+      requiredFields.forEach(function (f) {
+        var missing = !f.value;
+        f.el.classList.toggle("field-invalid", missing);
+        if (missing && !firstInvalid) firstInvalid = f.el;
+      });
+      if (firstInvalid) {
         showError("Please fill in all required shipping details.");
+        firstInvalid.focus();
         return;
       }
       if (!cart.length) {

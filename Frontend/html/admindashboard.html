@@ -107,6 +107,8 @@
       <a href="add-listing.html" class="btn btn-primary btn-sm">Add a listing</a>
     </div>
 
+    <p class="ometong-load-state ometong-load-state--error" id="adminLoadError" hidden style="text-align:left;padding:14px 18px;border-radius:12px;background:var(--card-bg);border:1px solid var(--line);margin-bottom:24px;"></p>
+
     <!-- ===== QUICK JUMP ===== -->
     <nav class="quick-jump" id="quickJump" aria-label="Jump to section">
       <a href="#pending">Pending Approval</a>
@@ -701,6 +703,7 @@
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/authGuard.js" data-role="admin"></script>
 <script src="../js/i18n.js"></script>
+<script src="../js/loadingState.js"></script>
 <script src="../js/admindashboard.js"></script>
 <script src="../js/adminInquiries.js"></script>
 <script src="../js/adminContactMessages.js"></script>

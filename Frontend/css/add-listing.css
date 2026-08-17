@@ -66,6 +66,7 @@ input,textarea,select{
   color:var(--ink);background:#fff;resize:vertical;transition:border-color .25s, box-shadow .25s;
 }
 input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,116,49,.12);outline:none;}
+input.field-invalid,textarea.field-invalid,select.field-invalid{border-color:#C0392B;box-shadow:0 0 0 3px rgba(192,57,43,.1);}
 select{
   appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='%23666E7A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
