@@ -109,6 +109,8 @@
     "Germany": "As of July 2026, EU imports are subject to a flat customs handling fee plus VAT, regardless of order value.",
     "France": "As of July 2026, EU imports are subject to a flat customs handling fee plus VAT, regardless of order value.",
     "Other EU": "As of July 2026, EU imports are subject to a flat customs handling fee plus VAT, regardless of order value.",
+    "United Arab Emirates": "UAE customs duty (typically 5% of the item's value) applies to imported goods, collected on delivery.",
+    "Australia": "Australian GST and, for higher-value shipments, customs duty may apply to imported goods, collected on delivery.",
     "Sri Lanka": "Sri Lankan customs duty applies to imported goods based on their value and category, collected on delivery.",
     "India": "Indian imports are subject to Basic Customs Duty, surcharge, and IGST — commonly 30–55% of the item's value combined, collected on delivery. Some electronics also require BIS certification to clear customs.",
     "Other": "Import duties and taxes may apply on delivery, depending on your country's customs rules."
@@ -230,7 +232,8 @@
      --------------------------------------------------------------------- */
   var COUNTRY_CODE_MAP = {
     US: "United States", CA: "Canada", GB: "United Kingdom",
-    DE: "Germany", FR: "France", LK: "Sri Lanka", IN: "India"
+    DE: "Germany", FR: "France", AE: "United Arab Emirates",
+    AU: "Australia", LK: "Sri Lanka", IN: "India"
   };
   var EU_COUNTRY_CODES = ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"];
 
