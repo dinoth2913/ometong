@@ -200,6 +200,39 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Ometong: Supabase client not available — check that supabaseConfig.js and supabaseClient.js are loaded before authenticationpage.js.');
   }
 
+  /* ---------- "Sign in with Google" ----------
+     Every account created this way lands as a buyer — there's no
+     signup form in this flow to pick a role from, and Google login
+     is offered on both the Log in and Create Account tabs, so there
+     isn't even a reliable "which did they mean" signal to read at
+     the moment they click. The database's own new-user trigger
+     already defaults role to 'buyer' whenever nothing else says
+     otherwise (see handle_new_user() in schema.sql), so this needs
+     no extra code on that side — a first-time Google sign-in simply
+     falls through to that same default.
+     Supplier/manufacturer accounts still go through the normal
+     email/password signup, where the role picker actually applies.
+     redirectTo points back at this same page: it already has the
+     "already logged in? send them to their dashboard" check at the
+     top of this file, which runs again once Google sends the
+     visitor back here with a session. */
+  document.querySelectorAll('[data-provider="google"]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!window.sb) return;
+      btn.disabled = true;
+      const { error } = await window.sb.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + window.location.pathname }
+      });
+      if (error) {
+        btn.disabled = false;
+        showError(loginForm.classList.contains('active') ? loginForm : signupForm, error.message || 'Could not start Google sign-in. Please try again.');
+      }
+      // On success the browser navigates to Google immediately — no
+      // further UI update needed here, this tab is about to leave.
+    });
+  });
+
   // Clear a signup field's red "invalid" highlight as soon as it's
   // fixed, rather than making the visitor re-submit first.
   ['name', 'email', 'password', 'business'].forEach((fieldName) => {
