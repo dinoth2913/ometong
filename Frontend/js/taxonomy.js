@@ -22,6 +22,8 @@
     { slug: "food", label: "Food & Beverage", icon: "🍽" },
     { slug: "construction", label: "Construction", icon: "🏗" },
     { slug: "packaging", label: "Packaging", icon: "📦" },
+    { slug: "rubber", label: "Rubber Products", icon: "⚫" },
+    { slug: "gems", label: "Gems & Jewelry", icon: "💎" },
     { slug: "services", label: "Services", icon: "🛠" },
     { slug: "logistics", label: "Logistics", icon: "🚚" }
   ];
@@ -100,6 +102,17 @@
       { slug: "protective-packaging", label: "Protective Packaging" },
       { slug: "pallets-crates", label: "Pallets & Crates" },
       { slug: "bags-sacks", label: "Bags & Sacks" }
+    ],
+    rubber: [
+      { slug: "solid-industrial-tires", label: "Industrial & Solid Rubber Tires" },
+      { slug: "pneumatic-tires", label: "Pneumatic Tires" },
+      { slug: "rubber-gloves", label: "Medical & Industrial Rubber Gloves" },
+      { slug: "other-rubber-products", label: "Other Rubber Products" }
+    ],
+    gems: [
+      { slug: "sapphires", label: "Sapphires" },
+      { slug: "diamonds", label: "Cut & Polished Diamonds" },
+      { slug: "other-gemstones", label: "Other Gemstones & Jewelry" }
     ],
     services: [
       { slug: "quality-inspection", label: "Quality Inspection" },

@@ -150,6 +150,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     food: 'Export-grade produce handled under cold-chain and food-safety compliance from farm to freight, with batch-level traceability documentation supplied for every shipment.',
     construction: 'Site-ready materials meeting standard structural and safety certifications for commercial projects, with test certificates available for import compliance.',
     packaging: 'Custom-fit packaging engineered for shipping durability and shelf presentation alike, with sample units available before committing to a full production run.',
+    rubber: 'Sri Lanka is one of the world\'s leading natural rubber exporters — tires, gloves and industrial rubber goods produced to international quality standards.',
+    gems: 'Sri Lanka — historically known as Ceylon — is world-renowned for fine gemstones, especially blue sapphires, ethically sourced and certified.',
     services: 'A dedicated specialist team manages this end-to-end, so your shipment never sits idle waiting on paperwork or approvals.',
     logistics: 'Tracked, insured movement with real-time visibility from pickup to final delivery, backed by Ometong\'s logistics partner network across all supported regions.',
   };
@@ -211,7 +213,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     return list;
   }
-  const allProducts = buildProducts();
+
+  /* ---------- Sri Lankan export specialties ----------
+     Mirrors the same explicit, always-Sri-Lanka-origin product list
+     in marketplace.js (same ids, 90000+) so a card's "View full
+     details" link resolves correctly on this page too. */
+  const SRI_LANKA_PRODUCTS = [
+    { title: 'Knitted & Crocheted Clothing', cat: 'textiles', sub: 'knitted-fabrics', min: 6, max: 28 },
+    { title: 'Intimate Apparel & Sportswear', cat: 'apparel', sub: 'womens-activewear', min: 5, max: 24 },
+    { title: 'Non-Knit Clothing', cat: 'textiles', sub: 'woven-fabrics', min: 6, max: 30 },
+    { title: 'Pure Ceylon Tea', cat: 'food', sub: 'tea-coffee', min: 3, max: 22 },
+    { title: 'Industrial & Solid Rubber Tires', cat: 'rubber', sub: 'solid-industrial-tires', min: 40, max: 420 },
+    { title: 'Pneumatic Tires', cat: 'rubber', sub: 'pneumatic-tires', min: 35, max: 260 },
+    { title: 'Medical & Industrial Rubber Gloves', cat: 'rubber', sub: 'rubber-gloves', min: 4, max: 30 },
+    { title: 'Ceylon Cinnamon', cat: 'food', sub: 'spices-seasonings', min: 5, max: 32 },
+    { title: 'Black Pepper', cat: 'food', sub: 'spices-seasonings', min: 4, max: 26 },
+    { title: 'Cloves', cat: 'food', sub: 'spices-seasonings', min: 6, max: 34 },
+    { title: 'Nutmeg', cat: 'food', sub: 'spices-seasonings', min: 5, max: 30 },
+    { title: 'Cardamom', cat: 'food', sub: 'spices-seasonings', min: 8, max: 45 },
+    { title: 'Desiccated Coconut', cat: 'food', sub: 'nuts-dried-fruit', min: 2, max: 14 },
+    { title: 'Virgin Coconut Oil', cat: 'food', sub: 'edible-oils', min: 3, max: 20 },
+    { title: 'Coir-based Fiber Products', cat: 'textiles', sub: 'home-textiles', min: 3, max: 18 },
+    { title: 'Blue Sapphires', cat: 'gems', sub: 'sapphires', min: 200, max: 8500 },
+    { title: 'Cut & Polished Diamonds', cat: 'gems', sub: 'diamonds', min: 500, max: 12000 },
+    { title: 'Electrical Machinery & Components', cat: 'machinery', sub: 'spare-parts', min: 20, max: 650 },
+    { title: 'Fresh & Frozen Seafood', cat: 'food', sub: 'seafood', min: 6, max: 40 },
+  ];
+  const SRI_LANKA_SUPPLIERS = ['Ceylon Traders Ltd', 'Lanka Industrial Group', 'Island Manufacturing', 'Ceylon Export Co.', 'Lanka Global Exports'];
+
+  function buildSriLankaProducts() {
+    return SRI_LANKA_PRODUCTS.map((def, i) => {
+      const id = 90000 + i;
+      const cat = def.cat;
+      const ci = categories.indexOf(cat);
+      const span = def.max - def.min;
+      return {
+        id,
+        cat,
+        title: def.title,
+        brand: 'Ceylon Export',
+        supplier: SRI_LANKA_SUPPLIERS[i % SRI_LANKA_SUPPLIERS.length],
+        countryOfOrigin: 'Sri Lanka',
+        price: Math.round(def.min + ((id * 13) % (span || 1))),
+        rating: (3.8 + ((id * 7) % 12) / 10).toFixed(1),
+        reviews: 12 + (id * 5) % 200,
+        color: palette[(ci >= 0 ? ci : 0) % palette.length],
+        badge: 'Verified',
+        description: descriptions[cat] || '',
+        moq: 20 + (id * 17) % 180,
+        leadTime: 5 + (id * 3) % 15,
+      };
+    });
+  }
+
+  const allProducts = buildProducts().concat(buildSriLankaProducts());
 
   /* ---------- Real listing lookup (a supplier/manufacturer's own product) ---------- */
   async function loadRealListing(id) {
