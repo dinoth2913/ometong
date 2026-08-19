@@ -320,6 +320,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       description: row.description || descriptions[cat] || '',
       moq: row.moq || null,
       leadTime: row.lead_time_days || null,
+      availableQuantity: row.available_quantity, // null = not tracked (unlimited); a number = real, enforced stock
       countryOfOrigin: row.country_of_origin || null,
       hsCode: row.hs_code || null,
       warranty: row.warranty || null,
@@ -562,6 +563,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           <span class="pd-spec-label">Origin</span>
           <span class="pd-spec-value">${esc(product.countryOfOrigin)}${product.hsCode ? ' · HS ' + esc(product.hsCode) : ''}</span>
         </div>` : ''}
+        ${product.availableQuantity != null ? `
+        <div class="pd-spec-card${product.availableQuantity <= 0 ? ' pd-spec-out-of-stock' : ''}">
+          <div class="pd-spec-icon"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 018 0v2"/></svg></div>
+          <span class="pd-spec-label">Stock</span>
+          <span class="pd-spec-value">${product.availableQuantity > 0 ? product.availableQuantity.toLocaleString('en-US') + ' available' : 'Out of stock'}</span>
+        </div>` : ''}
       </div>
 
       <p class="pd-desc">${esc(product.description)}</p>
@@ -574,12 +581,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       <div class="pd-actions">
         <div class="pd-qty">
           <button type="button" id="pdQtyMinus" aria-label="Decrease quantity">–</button>
-          <input type="number" id="pdQtyInput" value="1" min="1">
+          <input type="number" id="pdQtyInput" value="1" min="1"${product.availableQuantity != null ? ` max="${Math.max(product.availableQuantity, 0)}"` : ''}>
           <button type="button" id="pdQtyPlus" aria-label="Increase quantity">+</button>
         </div>
-        <button class="pd-add-btn" id="pdAddBtn">
+        <button class="pd-add-btn" id="pdAddBtn"${product.availableQuantity != null && product.availableQuantity <= 0 ? ' disabled' : ''}>
           <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="9" cy="21" r="1.4"/><circle cx="18" cy="21" r="1.4"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
-          Add to Cart
+          ${product.availableQuantity != null && product.availableQuantity <= 0 ? 'Out of Stock' : 'Add to Cart'}
         </button>
         ${product.isReal ? `
         <button class="pd-contact-btn" id="pdContactBtn" type="button" title="Sent to our team, who relay it to the seller — buyers and sellers don't message each other directly on Ometong">
@@ -815,16 +822,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // When this listing tracks stock, qtyInput carries a `max` attribute
+  // (set in the HTML above) — clamp every path that changes the value
+  // to that ceiling so a buyer can't spin the stepper past what's
+  // actually available. Listings that don't track stock have no
+  // `max` attribute at all, so this is a no-op for them.
+  function clampQty(value) {
+    const max = qtyInput.max !== '' ? parseInt(qtyInput.max, 10) : null;
+    if (max != null && value > max) return max;
+    return value;
+  }
+
   document.getElementById('pdQtyMinus').addEventListener('click', () => {
     qtyInput.value = Math.max(1, parseInt(qtyInput.value || '1', 10) - 1);
     refreshPriceForQty();
   });
   document.getElementById('pdQtyPlus').addEventListener('click', () => {
-    qtyInput.value = parseInt(qtyInput.value || '1', 10) + 1;
+    qtyInput.value = clampQty(parseInt(qtyInput.value || '1', 10) + 1);
     refreshPriceForQty();
   });
   qtyInput.addEventListener('change', () => {
     if (!qtyInput.value || parseInt(qtyInput.value, 10) < 1) qtyInput.value = 1;
+    else qtyInput.value = clampQty(parseInt(qtyInput.value, 10));
     refreshPriceForQty();
   });
   qtyInput.addEventListener('input', refreshPriceForQty);

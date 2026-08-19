@@ -76,6 +76,13 @@
           </label>
         </div>
 
+        <div class="field-row">
+          <label><span class="label-cap">Available stock <span class="field-hint-inline">(optional)</span></span>
+            <input type="number" id="availableQuantity" name="availableQuantity" min="0" step="1" placeholder="e.g. 5000">
+          </label>
+        </div>
+        <p class="field-hint">Leave blank if you don't track stock through Ometong (made-to-order, or unlimited). If you set a number, an order can never be placed for more than what's actually left.</p>
+
         <div class="tiers-section">
           <div class="tiers-head">
             <label class="tiers-label"><span class="label-cap">Bulk pricing <span class="field-hint-inline">(optional)</span></span></label>
@@ -150,6 +157,6 @@
 <script src="../js/supabaseConfig.js"></script>
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/taxonomy.js?v=2"></script>
-<script src="../js/add-listing.js?v=3"></script>
+<script src="../js/add-listing.js?v=4"></script>
 </body>
 </html>

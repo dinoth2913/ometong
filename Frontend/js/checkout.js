@@ -501,6 +501,14 @@
       var itemsInsert = await window.sb.from("order_items").insert(itemRows);
       if (itemsInsert.error) {
         setLoading(false);
+        // The order row was already created (with no items on it) —
+        // most commonly this fails because a stock-tracked listing
+        // ran out between "add to cart" and checkout, surfaced by the
+        // database itself, not just this insert generically failing.
+        // Mark that empty order cancelled instead of leaving it
+        // sitting there forever as a phantom "pending" order — best
+        // effort, doesn't block the real error message below either way.
+        window.sb.from("orders").update({ status: "cancelled" }).eq("id", orderId).then(function () {});
         showError(itemsInsert.error.message || "Could not save your order items. Please try again.");
         return;
       }

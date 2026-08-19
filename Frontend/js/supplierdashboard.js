@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isActive = item.status === 'active';
       const color = listingColors[i % listingColors.length];
       const moqLabel = item.moq ? `MOQ ${item.moq.toLocaleString('en-US')}` : 'No MOQ set';
+      const stockLabel = item.available_quantity == null ? 'Stock not tracked' : `${item.available_quantity.toLocaleString('en-US')} in stock`;
       let statusClass = 'pending', statusLabel = 'Pending review';
       if (item.is_approved) {
         statusClass = isActive ? 'active' : 'paused';
@@ -137,6 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="listing-title">${esc(item.title)}</div>
             <div class="listing-meta">${esc(item.category)} · ${moqLabel}${item.country_of_origin ? ' · Origin: ' + esc(item.country_of_origin) : ''}</div>
             <div class="listing-price">$${Number(item.price).toLocaleString('en-US')} <span style="color:var(--ink-faint);font-weight:600;font-size:.72rem;">/ unit</span></div>
+            <div class="listing-stock-row" data-stock-row="${item.id}">
+              <span class="listing-stock-label">${stockLabel}</span>
+              <button type="button" class="listing-stock-edit" data-stock-edit="${item.id}">Update stock</button>
+            </div>
             <button class="listing-toggle ${isActive ? '' : 'is-paused'}" data-toggle="${item.id}">${isActive ? 'Pause listing' : 'Reactivate listing'}</button>
           </div>
         </div>`;
@@ -158,6 +163,45 @@ document.addEventListener('DOMContentLoaded', () => {
         item.status = next;
         renderListings();
         renderStats();
+      });
+    });
+
+    /* ---------- Update stock (inline) ----------
+       Swaps the stock label for a number input + Save/Cancel right
+       in place, rather than a separate edit page — this is the only
+       field a listing ever needs updating after it's published. */
+    listingsGrid.querySelectorAll('[data-stock-edit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-stock-edit');
+        const item = listings.find(l => String(l.id) === id);
+        const row = listingsGrid.querySelector(`[data-stock-row="${id}"]`);
+        if (!item || !row) return;
+        row.innerHTML = `
+          <input type="number" min="0" step="1" class="listing-stock-input" id="stockInput-${id}"
+            placeholder="Leave blank = not tracked" value="${item.available_quantity == null ? '' : item.available_quantity}">
+          <button type="button" class="listing-stock-save" data-stock-save="${id}">Save</button>
+          <button type="button" class="listing-stock-cancel" data-stock-cancel="${id}">Cancel</button>
+        `;
+        row.querySelector('[data-stock-cancel]').addEventListener('click', () => renderListings());
+        row.querySelector('[data-stock-save]').addEventListener('click', async () => {
+          const input = document.getElementById(`stockInput-${id}`);
+          const raw = input.value.trim();
+          const value = raw === '' ? null : parseInt(raw, 10);
+          if (raw !== '' && (isNaN(value) || value < 0)) {
+            input.focus();
+            return;
+          }
+          const saveBtn = row.querySelector('[data-stock-save]');
+          saveBtn.disabled = true;
+          const { error } = await window.sb.from('listings').update({ available_quantity: value }).eq('id', id);
+          saveBtn.disabled = false;
+          if (error) {
+            console.error('Ometong: failed to update stock', error);
+            return;
+          }
+          item.available_quantity = value;
+          renderListings();
+        });
       });
     });
   }

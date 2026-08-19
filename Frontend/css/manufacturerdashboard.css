@@ -230,6 +230,22 @@ main .container.section > section[data-reveal]:last-of-type{margin-bottom:0;}
 }
 .listing-toggle:hover{border-color:var(--accent);color:var(--accent);}
 .listing-toggle.is-paused{color:var(--ink-faint);}
+
+.listing-stock-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.listing-stock-label{font-size:.74rem;font-weight:600;color:var(--ink-soft);}
+.listing-stock-edit{background:none;border:none;color:var(--accent);font-weight:700;font-size:.74rem;cursor:pointer;padding:0;}
+.listing-stock-edit:hover{text-decoration:underline;}
+.listing-stock-input{
+  flex:1;min-width:80px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card-bg);color:var(--ink);font-size:.8rem;font-family:inherit;
+}
+.listing-stock-save,.listing-stock-cancel{
+  border:none;border-radius:8px;padding:6px 10px;font-weight:700;font-size:.74rem;cursor:pointer;
+}
+.listing-stock-save{background:var(--accent);color:#fff;}
+.listing-stock-save:hover{background:var(--accent-dark);}
+.listing-stock-cancel{background:transparent;color:var(--ink-faint);}
+.listing-stock-cancel:hover{color:var(--ink);}
 @media (max-width:980px){ .listings-grid{grid-template-columns:repeat(2,1fr);} }
 @media (max-width:620px){ .listings-grid{grid-template-columns:1fr 1fr;} }
 

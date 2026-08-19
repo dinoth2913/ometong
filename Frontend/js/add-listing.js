@@ -328,6 +328,7 @@
       const price = parseFloat(form.price.value);
       const moq = form.moq.value ? parseInt(form.moq.value, 10) : null;
       const leadTime = form.leadTime.value ? parseInt(form.leadTime.value, 10) : null;
+      const availableQuantity = form.availableQuantity.value ? parseInt(form.availableQuantity.value, 10) : null;
       const description = form.description.value.trim();
       const countryOfOrigin = form.countryOfOrigin.value === "Other"
         ? (form.countryOfOriginOther.value.trim() || null)
@@ -386,6 +387,7 @@
         price,
         moq,
         lead_time_days: leadTime,
+        available_quantity: availableQuantity,
         description,
         image_url: imageUrl,
         country_of_origin: countryOfOrigin,
