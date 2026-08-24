@@ -18,9 +18,27 @@
   const RV_KEY = "ometong_recently_viewed";
   const MAX_ITEMS = 12;
 
+  // Real listing ids are Supabase UUIDs (always contain a hyphen);
+  // every id the old demo catalog ever used was a plain number. Since
+  // the demo catalog no longer exists anywhere on the site, a purely
+  // numeric id in here can only be a leftover from browsing it before
+  // — filtered out (and the cleaned-up list re-saved) every time this
+  // is read, so stale demo entries disappear for good instead of
+  // sitting in someone's "recently viewed" forever, and real products
+  // people view from here on are completely unaffected.
+  function isRealId(id) {
+    return !/^\d+$/.test(String(id));
+  }
+
   function getRecentlyViewed() {
-    try { return JSON.parse(localStorage.getItem(RV_KEY)) || []; }
+    let list;
+    try { list = JSON.parse(localStorage.getItem(RV_KEY)) || []; }
     catch { return []; }
+    const cleaned = list.filter(p => isRealId(p.id));
+    if (cleaned.length !== list.length) {
+      try { localStorage.setItem(RV_KEY, JSON.stringify(cleaned)); } catch { /* ignore */ }
+    }
+    return cleaned;
   }
 
   function track(product) {
