@@ -271,7 +271,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const allProducts = buildProducts().concat(buildSriLankaProducts());
+  // The demo/placeholder catalog (buildProducts()/buildSriLankaProducts()
+  // above) is no longer shown — the marketplace now displays only real
+  // Supabase listings, loaded below via loadRealListings(). Starts
+  // empty; #marketplaceEmpty shows a "list your first product" CTA
+  // until real listings exist. The generator functions themselves are
+  // left in place, unused, rather than deleted, in case demo data is
+  // ever wanted again for testing.
+  const allProducts = [];
 
   /* ---------- Real listings from Supabase (suppliers/manufacturers who've added products) ---------- */
   async function loadRealListings() {
@@ -468,8 +475,33 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>`;
   }
 
+  const marketplaceEmpty = document.getElementById('marketplaceEmpty');
+
   function render(list) {
-    grid.innerHTML = list.map(cardHTML).join('');
+    if (!list.length) {
+      grid.innerHTML = '';
+      if (marketplaceEmpty) {
+        marketplaceEmpty.hidden = false;
+        const heading = marketplaceEmpty.querySelector('.marketplace-empty-heading');
+        const text = marketplaceEmpty.querySelector('.marketplace-empty-text');
+        const ctas = marketplaceEmpty.querySelector('.marketplace-empty-ctas');
+        // Two different empty states: the catalog genuinely has
+        // nothing in it yet, vs. there ARE real listings but this
+        // particular filter combination matched none of them.
+        if (allProducts.length > 0) {
+          if (heading) heading.textContent = 'No listings match your filters';
+          if (text) text.textContent = "Try clearing some filters, or search for something else.";
+          if (ctas) ctas.hidden = true;
+        } else {
+          if (heading) heading.textContent = 'Nothing listed here yet';
+          if (text) text.textContent = "Ometong is just getting started — be among the first suppliers and manufacturers to list here, and reach buyers across the United States, Canada, Europe, UAE, Australia, Sri Lanka and India.";
+          if (ctas) ctas.hidden = false;
+        }
+      }
+    } else {
+      if (marketplaceEmpty) marketplaceEmpty.hidden = true;
+      grid.innerHTML = list.map(cardHTML).join('');
+    }
     resultCount.textContent = `${list.length} listing${list.length === 1 ? '' : 's'}`;
   }
 

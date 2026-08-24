@@ -266,7 +266,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  const allProducts = buildProducts().concat(buildSriLankaProducts());
+  // Demo/placeholder catalog is no longer shown on the marketplace — see
+  // the matching change in marketplace.js. Left generating nothing here
+  // too, so a stale numeric-id link doesn't quietly show a demo product
+  // that no longer exists anywhere else on the site.
+  const allProducts = [];
 
   /* ---------- Real listing lookup (a supplier/manufacturer's own product) ---------- */
   async function loadRealListing(id) {
@@ -414,6 +418,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!product) realListingFailed = true;
   }
   if (!product) product = allProducts[0];
+
+  // Nothing resolved at all (no demo catalog exists to fall back to
+  // any more, and either no id was given or the real listing genuinely
+  // doesn't exist) — show a clean "not found" state instead of letting
+  // the rest of this handler crash on a null product.
+  if (!product) {
+    const pdMain = document.getElementById('pdMain');
+    if (pdMain) {
+      pdMain.innerHTML = `
+        <div class="container" style="padding:80px 24px;text-align:center;">
+          <h1 style="margin-bottom:12px;">Product not found</h1>
+          <p style="color:var(--ink-soft);margin-bottom:24px;">This product may have been removed, or the link is incorrect.</p>
+          <a href="marketplace.html" class="btn-pill">Back to Marketplace</a>
+        </div>`;
+    }
+    return;
+  }
 
   // A real listing link (?id=<uuid>) that didn't resolve — either it
   // genuinely doesn't exist/isn't approved, or the fetch just failed
@@ -894,7 +915,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* ---------- Related products (same category) ---------- */
   const relatedGrid = document.getElementById('relatedGrid');
+  const relatedSection = document.getElementById('relatedSection');
   const related = allProducts.filter(p => p.cat === product.cat && p.id !== product.id).slice(0, 8);
+  if (relatedSection) relatedSection.hidden = related.length === 0;
   relatedGrid.innerHTML = related.map((p, i) => `
     <div class="rel-card" data-id="${p.id}">
       <div class="rel-thumb" style="background:${p.color}12">

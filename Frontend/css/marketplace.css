@@ -793,6 +793,50 @@ svg {
   gap: 16px;
 }
 
+.marketplace-empty {
+  text-align: center;
+  padding: 64px 24px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.marketplace-empty svg {
+  fill: none;
+  stroke: var(--ink-faint);
+  stroke-width: 1.5;
+  margin: 0 auto 20px;
+}
+
+.marketplace-empty-heading {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+
+.marketplace-empty-text {
+  color: var(--ink-soft);
+  font-size: .92rem;
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.marketplace-empty-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.marketplace-empty-cta-primary {
+  background: var(--accent);
+  padding: 11px 22px;
+  font-size: .84rem;
+}
+
+.marketplace-empty-cta-primary:hover {
+  background: var(--accent-dark);
+}
+
 .p-card {
   position: relative;
   cursor: pointer;

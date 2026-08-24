@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/marketplace.css?v=2">
+<link rel="stylesheet" href="../css/marketplace.css?v=3">
 <link rel="stylesheet" href="../css/chatWidget.css">
 <link rel="stylesheet" href="../css/logo.css">
 </head>
@@ -179,6 +179,16 @@
     <div class="spotlight-slot" id="spotlightSlot" hidden></div>
 
     <div class="product-grid" id="productGrid"><!-- cards injected by marketplace.js --></div>
+
+    <div class="marketplace-empty" id="marketplaceEmpty" hidden>
+      <svg viewBox="0 0 24 24" width="48" height="48"><path d="M3 9l9-6 9 6-9 6-9-6zM3 9v9l9 6M21 9v9l-9 6"/></svg>
+      <h3 class="marketplace-empty-heading">Nothing listed here yet</h3>
+      <p class="marketplace-empty-text">Ometong is just getting started — be among the first suppliers and manufacturers to list here, and reach buyers across the United States, Canada, Europe, UAE, Australia, Sri Lanka and India.</p>
+      <div class="marketplace-empty-ctas">
+        <a href="Supplier.html" class="btn-pill marketplace-empty-cta-primary">Become a Supplier</a>
+        <a href="add-listing.html" class="btn-pill">Already selling? Add a listing</a>
+      </div>
+    </div>
   </section>
 
 </main>
@@ -192,7 +202,7 @@
 <script src="../js/recentlyViewed.js"></script>
 <script src="../js/adDisplay.js"></script>
 <script src="../js/loadingState.js"></script>
-<script src="../js/marketplace.js?v=4"></script>
+<script src="../js/marketplace.js?v=5"></script>
 
 <!-- Liquid glass distortion filter for the navbar (adapted from a displacement-map glass demo) -->
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
