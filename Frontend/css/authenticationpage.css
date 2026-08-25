@@ -184,6 +184,12 @@ label select:focus,label textarea:focus{border-color:var(--accent);box-shadow:0 
 .auth-sub{font-size:.88rem;margin-bottom:6px;}
 
 .social-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* .social-row/.divider set their own `display`, which — at equal CSS
+   specificity — wins over the browser's default `[hidden]{display:
+   none}` rule, silently defeating the hidden attribute added to hide
+   these until Google sign-in is wanted back. Explicit override so
+   hidden actually means hidden. */
+.social-row[hidden],.divider[hidden]{display:none;}
 .social-btn{
   display:flex;align-items:center;justify-content:center;gap:8px;
   padding:11px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;
