@@ -584,8 +584,13 @@ button,input,select{font-family:inherit;}
 .footer-legal a:hover{color:var(--accent-light);}
 
 /* ===== Back to top ===== */
+/* bottom:96px, not 26px — chatWidget.js's launcher bubble sits at
+   bottom:22px;right:22px, is 60px across, and has a much higher
+   z-index (99999 vs this button's 900), so at the same corner it was
+   sitting directly on top of and completely hiding this button the
+   entire time. Stacked above it instead, same right edge. */
 .back-top{
-  position:fixed;bottom:26px;right:26px;width:54px;height:54px;border-radius:50%;
+  position:fixed;bottom:96px;right:26px;width:54px;height:54px;border-radius:50%;
   background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;
   display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-glow);
   opacity:0;visibility:hidden;transform:translateY(14px) scale(.85);
