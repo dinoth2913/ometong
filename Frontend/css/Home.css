@@ -584,10 +584,39 @@ button,input,select{font-family:inherit;}
 .footer-legal a:hover{color:var(--accent-light);}
 
 /* ===== Back to top ===== */
-.back-top{position:fixed;bottom:26px;right:26px;width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;border:none;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);opacity:0;visibility:hidden;transform:translateY(10px);transition:all .35s var(--ease);z-index:900;}
-.back-top.show{opacity:1;visibility:visible;transform:translateY(0);}
-.back-top svg{fill:none;stroke:#fff;stroke-width:1.8;}
-.back-top:hover{background:var(--accent);}
+.back-top{
+  position:fixed;bottom:26px;right:26px;width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-glow);
+  opacity:0;visibility:hidden;transform:translateY(14px) scale(.85);
+  transition:opacity .4s var(--ease),visibility .4s var(--ease),transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .3s var(--ease);
+  z-index:900;
+}
+/* A soft pulsing ring behind the button so it actually catches the
+   eye once it appears, instead of just sitting there static — pauses
+   automatically on hover so it doesn't fight the hover feedback. */
+.back-top::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  box-shadow:0 0 0 0 rgba(255,116,49,.55);
+  animation:backTopPulse 2.4s ease-out infinite;
+  pointer-events:none;
+}
+.back-top.show{opacity:1;visibility:visible;transform:translateY(0) scale(1);}
+.back-top svg{fill:none;stroke:#fff;stroke-width:2;position:relative;z-index:1;}
+.back-top:hover{transform:translateY(-4px) scale(1.08);box-shadow:0 18px 36px rgba(255,116,49,.45);}
+.back-top:hover::after{animation-play-state:paused;}
+.back-top:active{transform:translateY(-1px) scale(.97);}
+
+@keyframes backTopPulse{
+  0%{box-shadow:0 0 0 0 rgba(255,116,49,.55);}
+  70%{box-shadow:0 0 0 16px rgba(255,116,49,0);}
+  100%{box-shadow:0 0 0 0 rgba(255,116,49,0);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .back-top::after{animation:none;}
+  .back-top{transition:opacity .2s ease,visibility .2s ease;}
+}
 
 /* =========================================================
    RESPONSIVE
@@ -638,6 +667,12 @@ button,input,select{font-family:inherit;}
   background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
   opacity:.6;mix-blend-mode:overlay;
 }
+/* The shared overflow:hidden above (needed for .btn/.ai-btn's own
+   glass sheen) would also clip the pulse ring's outward glow on
+   .back-top — its own ::before still clips to a circle fine via
+   border-radius:inherit alone, so overflow doesn't need to be
+   hidden here at all. */
+.back-top{overflow:visible;}
 .btn:active,.ai-btn:active,.back-top:active{
   transform:scale(.94);
   transition:transform .12s var(--ease);
