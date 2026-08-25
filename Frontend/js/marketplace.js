@@ -477,6 +477,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const marketplaceEmpty = document.getElementById('marketplaceEmpty');
 
+  // The category chip bar is rendered from the full taxonomy
+  // regardless of whether anything's actually listed in any of those
+  // categories yet — with a genuinely empty catalog that reads as
+  // "browse 11 categories," all of which are empty, which is more
+  // confusing than just not showing the bar at all until there's
+  // something real to filter. Reappears on its own the moment real
+  // listings load in below.
+  const categoriesSection = document.querySelector('.categories');
+  function updateCategoryBarVisibility() {
+    if (categoriesSection) categoriesSection.hidden = allProducts.length === 0;
+  }
+
   function render(list) {
     if (!list.length) {
       grid.innerHTML = '';
@@ -646,6 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   populateBrandOptions();
   refresh();
+  updateCategoryBarVisibility();
   updateCartBadge();
 
   /* ---------- Sponsored ads ----------
@@ -720,6 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (realProducts.length) {
       allProducts.unshift(...realProducts);
       refresh();
+      updateCategoryBarVisibility();
     }
     return applyRealRatings();
   });
