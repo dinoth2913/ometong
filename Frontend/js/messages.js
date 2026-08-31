@@ -65,6 +65,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = 'authenticationpage.html';
     return;
   }
+
+  // Same 2FA step-up check as authGuard.js and security.js — a
+  // session stuck at aal1 with 2FA pending shouldn't reach a real
+  // inbox any more than it should reach a dashboard.
+  const { data: aal } = await window.sb.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+    window.location.href = 'mfa-challenge.html?next=' + encodeURIComponent('messages.html');
+    return;
+  }
+
   const profile = await window.ometongGetProfile();
   if (!profile) {
     window.location.href = 'authenticationpage.html';

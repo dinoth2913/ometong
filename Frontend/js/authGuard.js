@@ -63,6 +63,22 @@
       return; // stays hidden — page is navigating away
     }
 
+    // A password sign-in alone only ever reaches "aal1" — Supabase
+    // issues a real, valid session at that point even when the
+    // account has 2FA turned on, and the 2FA code is a separate
+    // step-up to "aal2" afterward. Without this check, an account
+    // with 2FA enabled would still be able to view every dashboard
+    // page right after the password step, with the 2FA code never
+    // actually enforced by anything. mfa-challenge.html is the only
+    // page allowed to be open at aal1 with 2FA pending.
+    if (window.sb.auth.mfa && !window.location.pathname.endsWith("mfa-challenge.html")) {
+      const { data: aal } = await window.sb.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
+        window.location.href = "mfa-challenge.html?next=" + encodeURIComponent(window.location.pathname + window.location.search);
+        return; // stays hidden — page is navigating away
+      }
+    }
+
     const profile = await window.ometongGetProfile();
     if (!profile) {
       window.location.href = "authenticationpage.html";

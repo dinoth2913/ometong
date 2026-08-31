@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ometong | Verify Your Sign-In</title>
+    <meta name="description" content="Enter your two-factor authentication code to finish signing in to Ometong.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="../../images/smile-logo-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/authenticationpage.css?v=3">
+    <link rel="stylesheet" href="../css/logo.css">
+</head>
+
+<body>
+
+    <div class="bg-blobs" aria-hidden="true">
+        <span class="blob b1"></span>
+        <span class="blob b2"></span>
+    </div>
+
+    <div class="auth-shell">
+
+        <!-- ===== LEFT PANEL ===== -->
+        <aside class="auth-brand">
+            <a href="Home.html" class="logo">
+                <img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact">
+            </a>
+
+            <div class="brand-content">
+                <h1>One more step to keep your account safe.</h1>
+                <p>Your password checked out — now confirm it's really you with the 6-digit code from your authenticator app.</p>
+            </div>
+
+            <a href="#" id="cancelLink" class="back-home">&larr; Log out and go back</a>
+        </aside>
+
+        <!-- ===== RIGHT PANEL ===== -->
+        <main class="auth-panel">
+            <div class="auth-card">
+
+                <form class="auth-form active" id="mfaForm" novalidate>
+                    <h2>Verify it's you</h2>
+                    <p class="auth-sub">Open your authenticator app and enter the current 6-digit code for Ometong.</p>
+
+                    <label>Authentication code
+                        <input type="text" name="code" id="mfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required autofocus style="letter-spacing:.3em;font-size:1.2rem;text-align:center;">
+                    </label>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="mfaSubmitBtn">Verify &amp; continue</button>
+                </form>
+
+                <!-- ===== SUCCESS STATE ===== -->
+                <div class="auth-success" id="authSuccess">
+                    <svg viewBox="0 0 52 52" width="56" height="56">
+                        <circle cx="26" cy="26" r="25" fill="none" />
+                        <path fill="none" d="M14 27l7 7 16-16" />
+                    </svg>
+                    <h3 id="successTitle">Verified</h3>
+                    <p id="successText">Redirecting you now…</p>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="../js/supabaseConfig.js"></script>
+    <script src="../js/supabaseClient.js"></script>
+    <script src="../js/mfa-challenge.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Security | Ometong</title>
+<meta name="description" content="Change your password and turn on two-factor authentication for your Ometong account.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../images/smile-logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/supplierdashboard.css?v=4">
+<link rel="stylesheet" href="../css/security.css">
+<link rel="stylesheet" href="../css/logo.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+</div>
+
+<!-- ===== NAV ===== -->
+<header class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="Home.html" class="logo">
+      <img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact">
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#" id="dashboardLink">Dashboard</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contactus.html">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <span class="user-chip"><span class="user-chip-avatar" id="userAvatarInitials">?</span><span id="userChipName">Account</span></span>
+      <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" id="dashboardLinkMobile">Dashboard</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="contactus.html">Contact</a>
+  <a href="authenticationpage.html" class="link-btn logout-link">Log out</a>
+</div>
+
+<main>
+  <div class="container section first">
+
+    <div class="dash-header" data-reveal>
+      <div>
+        <span class="tag">Account</span>
+        <h1>Password &amp; security</h1>
+        <p>Manage your password and turn on two-factor authentication for extra protection.</p>
+      </div>
+    </div>
+
+    <!-- ===== CHANGE PASSWORD ===== -->
+    <section data-reveal id="password">
+      <div class="section-head">
+        <h2>Change password</h2>
+        <span class="section-hint">You'll stay signed in on this device after changing it</span>
+      </div>
+      <form class="verify-upload-form sec-form" id="passwordForm">
+        <label>New password
+          <input type="password" id="newPassword" required minlength="8" placeholder="At least 8 characters" autocomplete="new-password">
+        </label>
+        <label>Confirm new password
+          <input type="password" id="confirmPassword" required minlength="8" placeholder="Re-enter your new password" autocomplete="new-password">
+        </label>
+        <p class="ot-msg" id="passwordFormMsg" hidden></p>
+        <button type="submit" class="btn btn-primary btn-sm" id="passwordSubmitBtn">Update password</button>
+      </form>
+    </section>
+
+    <!-- ===== TWO-FACTOR AUTHENTICATION ===== -->
+    <section data-reveal id="twofactor">
+      <div class="section-head">
+        <h2>Two-factor authentication</h2>
+        <span class="status-pill pending" id="mfaStatusPill">
+          <svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></svg>
+          <span id="mfaStatusText">Not enabled</span>
+        </span>
+      </div>
+      <p class="sec-dek">Adds a second step at login — after your password, you'll also enter a 6-digit code from an authenticator app (like Google Authenticator, Authy, or 1Password).</p>
+
+      <!-- state: not enrolled -->
+      <div id="mfaEnrollPrompt">
+        <button type="button" class="btn btn-primary btn-sm" id="mfaEnableBtn">Turn on two-factor authentication</button>
+      </div>
+
+      <!-- state: mid-enrollment (QR + verify) -->
+      <div class="sec-card" id="mfaEnrollCard" hidden>
+        <div class="mfa-setup-grid">
+          <div class="mfa-qr" id="mfaQrHolder"></div>
+          <div class="mfa-setup-steps">
+            <ol>
+              <li>Scan this QR code with your authenticator app.</li>
+              <li>Or enter this code manually: <code id="mfaSecretText"></code></li>
+              <li>Then enter the 6-digit code it shows you below.</li>
+            </ol>
+            <label>Authentication code
+              <input type="text" id="mfaVerifyCode" inputmode="numeric" maxlength="6" placeholder="000000" style="letter-spacing:.25em;">
+            </label>
+            <p class="ot-msg" id="mfaEnrollMsg" hidden></p>
+            <div class="sec-form-actions">
+              <button type="button" class="btn btn-primary btn-sm" id="mfaConfirmBtn">Confirm &amp; turn on</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="mfaCancelEnrollBtn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- state: enrolled -->
+      <div class="sec-card" id="mfaEnabledCard" hidden>
+        <p style="margin:0 0 14px;font-size:.86rem;color:var(--ink-soft);">Two-factor authentication is on. You'll be asked for a code from your authenticator app each time you log in.</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="mfaDisableBtn">Turn off two-factor authentication</button>
+        <p class="ot-msg" id="mfaDisableMsg" hidden></p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/supabaseConfig.js"></script>
+<script src="../js/supabaseClient.js"></script>
+<script src="../js/security.js"></script>
+</body>
+</html>

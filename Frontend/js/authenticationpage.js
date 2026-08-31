@@ -39,6 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
     if (!session) return;
+
+    // Same aal1-vs-aal2 gap as the login handler below — a session
+    // with a 2FA step-up still pending isn't "logged in" yet as far
+    // as showing them their dashboard goes.
+    const { data: aal } = await window.sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+      window.location.href = 'mfa-challenge.html';
+      return;
+    }
+
     const profile = await window.ometongGetProfile();
     if (profile) window.location.href = window.ometongDashboardForRole(profile.role);
   })();
@@ -310,6 +320,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = profile ? profile.role : 'buyer';
     const dest = nextRedirect(role);
     const cameFromElsewhere = dest !== destinationForRole(role);
+
+    // A correct password alone only ever reaches "aal1". If this
+    // account has 2FA turned on, Supabase already has a valid
+    // session at this point but the real destination isn't safe to
+    // show yet — send them to the code-entry step first, carrying
+    // where they were actually headed as ?next= so they land there
+    // (not just their default dashboard) once the code checks out.
+    const { data: aal } = await window.sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+      const challengeDest = 'mfa-challenge.html?next=' + encodeURIComponent(dest);
+      showSuccess('Almost there', 'One more step — enter your authenticator code…', challengeDest);
+      return;
+    }
 
     showSuccess('Welcome back', cameFromElsewhere ? 'Redirecting you back to finish up…' : 'Redirecting you to your dashboard…', dest);
   });
