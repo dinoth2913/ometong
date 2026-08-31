@@ -302,6 +302,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       .select('image_url')
       .eq('listing_id', row.id)
       .order('sort_order', { ascending: true });
+
+    const { data: variantRows } = await window.sb
+      .from('product_variants')
+      .select('id, variant_name, sku, price, available_quantity')
+      .eq('listing_id', row.id)
+      .order('created_at', { ascending: true });
+
+    const { data: certRows } = await window.sb
+      .from('certifications')
+      .select('id, name, issuing_body, certificate_number, status, expires_at')
+      .eq('listing_id', row.id)
+      .eq('status', 'active')
+      .order('created_at', { ascending: true });
     // Cover photo (image_url) first, then the rest of the gallery —
     // mirrors how add-listing.js saves them (first upload = cover,
     // rest go into listing_images).
@@ -330,6 +343,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       warranty: row.warranty || null,
       specs: Array.isArray(row.specs) ? row.specs : [],
       priceTiers: tierRows || [],
+      variants: variantRows || [],
+      certifications: certRows || [],
       isReal: true
     };
   }
@@ -543,6 +558,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         <span class="pd-price-unit">/ unit</span>
       </div>
 
+      ${product.variants && product.variants.length ? `
+      <div class="pd-variants" id="pdVariants">
+        <span class="pd-variants-label">Choose an option</span>
+        <div class="pd-variant-options" id="pdVariantOptions">
+          ${product.variants.map((v, i) => `
+            <button type="button" class="pd-variant-btn${i === 0 ? ' active' : ''}" data-variant-id="${esc(v.id)}"${v.available_quantity === 0 ? ' disabled' : ''}>
+              ${esc(v.variant_name)}${v.available_quantity === 0 ? ' (Out of stock)' : ''}
+            </button>`).join('')}
+        </div>
+      </div>` : ''}
+
       ${product.priceTiers && product.priceTiers.length ? `
       <div class="pd-bulk-pricing">
         <span class="pd-bulk-pricing-label">
@@ -593,6 +619,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
 
       <p class="pd-desc">${esc(product.description)}</p>
+
+      ${product.certifications && product.certifications.length ? `
+      <div class="pd-certifications" id="pdCertifications">
+        ${product.certifications.map(c => `
+          <span class="pd-cert-badge" title="${esc(c.issuing_body || '')}${c.certificate_number ? ' · ' + esc(c.certificate_number) : ''}">
+            <svg viewBox="0 0 24 24" width="13" height="13"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+            ${esc(c.name)}
+          </span>`).join('')}
+      </div>` : ''}
 
       <div class="pd-trust-row">
         <span class="pd-trust-item"><svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>Escrow-protected purchase</span>
@@ -825,6 +860,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (fav) fav.classList.toggle('saved', ids.some(x => String(x) === String(product.id)));
   });
 
+  /* ---------- Variant selector ----------
+     A flat price on the selected variant overrides bulk-pricing tiers
+     (tiers belong to the base product); no price on the variant means
+     it just inherits whatever the base product/tiers already resolve to. */
+  let selectedVariant = product.variants && product.variants.length ? product.variants[0] : null;
+  const pdVariantOptions = document.getElementById('pdVariantOptions');
+  pdVariantOptions?.querySelectorAll('.pd-variant-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      pdVariantOptions.querySelectorAll('.pd-variant-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedVariant = product.variants.find(v => String(v.id) === btn.dataset.variantId) || null;
+      refreshPriceForQty();
+    });
+  });
+
   /* ---------- Quantity stepper (+ live bulk-price update) ---------- */
   const qtyInput = document.getElementById('pdQtyInput');
   const pdPriceEl = document.getElementById('pdPrice');
@@ -832,7 +883,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function refreshPriceForQty() {
     const qty = Math.max(1, parseInt(qtyInput.value || '1', 10));
-    if (pdPriceEl) pdPriceEl.textContent = '$' + unitPriceForQty(product, qty);
+    const unitPrice = (selectedVariant && selectedVariant.price != null) ? Number(selectedVariant.price) : unitPriceForQty(product, qty);
+    if (pdPriceEl) pdPriceEl.textContent = '$' + unitPrice;
     if (pdBulkTiers) {
       const tierEls = [...pdBulkTiers.querySelectorAll('.pd-bulk-tier')];
       let activeEl = tierEls[0];
@@ -873,7 +925,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ---------- Add to cart ---------- */
   document.getElementById('pdAddBtn').addEventListener('click', (e) => {
     const qty = Math.max(1, parseInt(qtyInput.value || '1', 10));
-    addToCart(product, qty);
+    if (selectedVariant) {
+      const hasOwnPrice = selectedVariant.price != null;
+      addToCart({
+        ...product,
+        id: product.id + ':' + selectedVariant.id,
+        title: product.title + ' — ' + selectedVariant.variant_name,
+        price: hasOwnPrice ? Number(selectedVariant.price) : product.price,
+        // a variant's own flat price overrides bulk-pricing tiers entirely — see refreshPriceForQty()
+        priceTiers: hasOwnPrice ? [] : product.priceTiers,
+        listingId: product.id, // the real order_items.listing_id still points at the base listing — variants aren't tracked there yet
+      }, qty);
+    } else {
+      addToCart(product, qty);
+    }
     const btn = e.currentTarget;
     btn.classList.add('added');
     const original = btn.innerHTML;

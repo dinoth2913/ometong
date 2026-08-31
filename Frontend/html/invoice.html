@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice | Ometong</title>
+<meta name="description" content="View and print your Ometong order invoice.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../images/smile-logo-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/supplierdashboard.css?v=4">
+<link rel="stylesheet" href="../css/invoice.css">
+<link rel="stylesheet" href="../css/logo.css">
+</head>
+<body>
+
+<header class="nav no-print" id="mainNav">
+  <div class="nav-inner">
+    <a href="Home.html" class="logo">
+      <img src="../../images/logo.png" alt="Ometong" class="logo-img logo-img-full"><img src="../../images/smile-logo-icon.png" alt="Ometong" class="logo-img logo-img-compact">
+    </a>
+    <div class="nav-actions">
+      <a href="#" id="dashboardLink" class="link-btn">Back to dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container inv-wrap" id="invWrap">
+    <p id="invLoading" style="text-align:center;padding:60px 0;color:var(--ink-faint);">Loading invoice…</p>
+
+    <div class="inv-card" id="invCard" hidden>
+      <div class="inv-head">
+        <div>
+          <img src="../../images/logo.png" alt="Ometong" class="inv-logo">
+          <p class="inv-company">Guangzhou Ometong International Trade Co., Ltd.</p>
+        </div>
+        <div class="inv-head-meta">
+          <h1>Invoice</h1>
+          <p id="invNumber">—</p>
+          <p id="invStatus" class="inv-status-pill"></p>
+        </div>
+      </div>
+
+      <div class="inv-meta-grid">
+        <div>
+          <span>Billed to</span>
+          <p id="invBillTo">—</p>
+        </div>
+        <div>
+          <span>Issued</span>
+          <p id="invIssued">—</p>
+        </div>
+        <div>
+          <span>Order</span>
+          <p id="invOrderRef">—</p>
+        </div>
+      </div>
+
+      <table class="inv-table">
+        <thead>
+          <tr><th>Item</th><th>Qty</th><th>Unit price</th><th>Line total</th></tr>
+        </thead>
+        <tbody id="invItemsBody"></tbody>
+      </table>
+
+      <div class="inv-totals">
+        <div><span>Subtotal</span><strong id="invSubtotal">—</strong></div>
+        <div><span>Shipping</span><strong id="invShipping">—</strong></div>
+        <div><span>Tax</span><strong id="invTax">—</strong></div>
+        <div><span>Discount</span><strong id="invDiscount">—</strong></div>
+        <div class="inv-total-final"><span>Total</span><strong id="invTotal">—</strong></div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-sm no-print" id="invPrintBtn">Print / Save as PDF</button>
+    </div>
+
+    <p id="invError" class="ot-msg error" hidden style="text-align:center;padding:60px 0;"></p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/supabaseConfig.js"></script>
+<script src="../js/supabaseClient.js"></script>
+<script src="../js/invoice.js"></script>
+</body>
+</html>

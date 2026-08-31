@@ -92,6 +92,15 @@
           <div id="tiersContainer"></div>
         </div>
 
+        <div class="tiers-section">
+          <div class="tiers-head">
+            <label class="tiers-label"><span class="label-cap">Variants <span class="field-hint-inline">(optional)</span></span></label>
+            <button type="button" class="tiers-add-btn" id="addVariantBtn">+ Add variant</button>
+          </div>
+          <p class="field-hint">Different versions of this product — e.g. Red/Small, Blue/Large — each with its own name and, optionally, its own price and stock. Leave empty if this listing is one fixed product.</p>
+          <div id="variantsContainer"></div>
+        </div>
+
         <div class="compliance-notice" id="complianceNotice" hidden>
           <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
           <span id="complianceNoticeText"></span>
@@ -131,6 +140,15 @@
           <div id="specsContainer"></div>
         </div>
 
+        <div class="tiers-section">
+          <div class="tiers-head">
+            <label class="tiers-label"><span class="label-cap">Certifications <span class="field-hint-inline">(optional)</span></span></label>
+            <button type="button" class="tiers-add-btn" id="addCertBtn">+ Add certification</button>
+          </div>
+          <p class="field-hint">Product certifications buyers can rely on — e.g. CE, ISO 9001, FDA. Shown on the product page to build buyer trust.</p>
+          <div id="certsContainer"></div>
+        </div>
+
         <label>Product photos (optional)
           <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp" multiple>
           <span class="field-hint">JPG, PNG or WEBP, up to 5MB each, up to 6 photos. The first one is used as the cover photo shown on the marketplace.</span>
@@ -157,6 +175,6 @@
 <script src="../js/supabaseConfig.js"></script>
 <script src="../js/supabaseClient.js"></script>
 <script src="../js/taxonomy.js?v=2"></script>
-<script src="../js/add-listing.js?v=4"></script>
+<script src="../js/add-listing.js?v=5"></script>
 </body>
 </html>

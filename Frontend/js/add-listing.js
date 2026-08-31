@@ -255,6 +255,93 @@
     }
     addSpecBtn?.addEventListener("click", addSpecRow);
 
+    /* ---------- Variants (optional) ----------
+       Same optional dynamic-row pattern as bulk pricing tiers above,
+       saved into product_variants once the listing itself has an id.
+       Price/stock left blank = inherit the parent listing's. */
+    const variantsContainer = document.getElementById("variantsContainer");
+    const addVariantBtn = document.getElementById("addVariantBtn");
+
+    function addVariantRow() {
+      if (!variantsContainer) return;
+      const row = document.createElement("div");
+      row.className = "tier-row";
+      row.innerHTML = `
+        <label>Variant name <input type="text" class="variant-name" placeholder="e.g. Red / Medium"></label>
+        <label>SKU <span class="field-hint-inline">(optional)</span><input type="text" class="variant-sku" placeholder="e.g. SKU-RED-M"></label>
+        <label>Price override (USD) <span class="field-hint-inline">(optional)</span><input type="number" class="variant-price" min="0" step="0.01" placeholder="Same as base price"></label>
+        <label>Stock <span class="field-hint-inline">(optional)</span><input type="number" class="variant-qty" min="0" step="1" placeholder="Unlimited"></label>
+        <button type="button" class="tier-row-remove" aria-label="Remove this variant">&times;</button>
+      `;
+      row.querySelector(".tier-row-remove").addEventListener("click", () => row.remove());
+      variantsContainer.appendChild(row);
+    }
+    addVariantBtn?.addEventListener("click", addVariantRow);
+
+    function collectVariants() {
+      if (!variantsContainer) return { variants: [], error: null };
+      const rows = [...variantsContainer.querySelectorAll(".tier-row")];
+      const variants = [];
+      for (const row of rows) {
+        const name = row.querySelector(".variant-name").value.trim();
+        const sku = row.querySelector(".variant-sku").value.trim();
+        const priceRaw = row.querySelector(".variant-price").value;
+        const qtyRaw = row.querySelector(".variant-qty").value;
+        if (!name && !sku && !priceRaw && !qtyRaw) continue; // silently skip a fully-empty row
+        if (!name) {
+          return { variants: null, error: "Please give every variant a name, or remove the empty row." };
+        }
+        const price = priceRaw ? parseFloat(priceRaw) : null;
+        const qty = qtyRaw ? parseInt(qtyRaw, 10) : null;
+        if (priceRaw && (isNaN(price) || price < 0)) {
+          return { variants: null, error: `Please enter a valid price for the "${name}" variant, or leave it blank.` };
+        }
+        if (qtyRaw && (isNaN(qty) || qty < 0)) {
+          return { variants: null, error: `Please enter a valid stock number for the "${name}" variant, or leave it blank.` };
+        }
+        variants.push({ variant_name: name, sku: sku || null, price, available_quantity: qty });
+      }
+      return { variants, error: null };
+    }
+
+    /* ---------- Certifications (optional) ----------
+       Same pattern again, saved into public.certifications with this
+       listing's id once it exists. */
+    const certsContainer = document.getElementById("certsContainer");
+    const addCertBtn = document.getElementById("addCertBtn");
+
+    function addCertRow() {
+      if (!certsContainer) return;
+      const row = document.createElement("div");
+      row.className = "tier-row";
+      row.innerHTML = `
+        <label>Certification name <input type="text" class="cert-name" placeholder="e.g. CE Marking"></label>
+        <label>Issuing body <span class="field-hint-inline">(optional)</span><input type="text" class="cert-issuer" placeholder="e.g. TÜV Rheinland"></label>
+        <label>Certificate number <span class="field-hint-inline">(optional)</span><input type="text" class="cert-number" placeholder="e.g. CE-2024-00123"></label>
+        <button type="button" class="tier-row-remove" aria-label="Remove this certification">&times;</button>
+      `;
+      row.querySelector(".tier-row-remove").addEventListener("click", () => row.remove());
+      certsContainer.appendChild(row);
+    }
+    addCertBtn?.addEventListener("click", addCertRow);
+
+    function collectCerts() {
+      if (!certsContainer) return { certs: [], error: null };
+      const rows = [...certsContainer.querySelectorAll(".tier-row")];
+      const certs = [];
+      for (const row of rows) {
+        const name = row.querySelector(".cert-name").value.trim();
+        const issuer = row.querySelector(".cert-issuer").value.trim();
+        const number = row.querySelector(".cert-number").value.trim();
+        if (!name && !issuer && !number) continue; // silently skip a fully-empty row
+        if (!name) {
+          return { certs: null, error: "Please give every certification a name, or remove the empty row." };
+        }
+        certs.push({ name, issuing_body: issuer || null, certificate_number: number || null });
+      }
+      return { certs, error: null };
+    }
+
     function collectSpecs() {
       if (!specsContainer) return { specs: [], error: null };
       const rows = [...specsContainer.querySelectorAll(".tier-row")];
@@ -346,6 +433,12 @@
       const { specs, error: specsError } = collectSpecs();
       if (specsError) { showError(specsError); return; }
 
+      const { variants, error: variantsError } = collectVariants();
+      if (variantsError) { showError(variantsError); return; }
+
+      const { certs, error: certsError } = collectCerts();
+      if (certsError) { showError(certsError); return; }
+
       setLoading(true);
 
       // Upload every selected photo; the first becomes the listing's
@@ -422,6 +515,21 @@
           uploadedImageUrls.slice(1).map((url, i) => ({ listing_id: newListing.id, image_url: url, sort_order: i }))
         );
         if (imagesInsertError) console.error("Ometong: failed to save extra listing photos", imagesInsertError);
+      }
+
+      if (variants.length) {
+        const { error: variantsInsertError } = await window.sb.from("product_variants").insert(
+          variants.map(v => ({ listing_id: newListing.id, variant_name: v.variant_name, sku: v.sku, price: v.price, available_quantity: v.available_quantity }))
+        );
+        // Same don't-block-success reasoning as tiers/images above.
+        if (variantsInsertError) console.error("Ometong: failed to save product variants", variantsInsertError);
+      }
+
+      if (certs.length) {
+        const { error: certsInsertError } = await window.sb.from("certifications").insert(
+          certs.map(c => ({ listing_id: newListing.id, name: c.name, issuing_body: c.issuing_body, certificate_number: c.certificate_number }))
+        );
+        if (certsInsertError) console.error("Ometong: failed to save certifications", certsInsertError);
       }
 
       setLoading(false);

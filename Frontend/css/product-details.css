@@ -149,6 +149,24 @@ button,input,select{font-family:inherit;}
 .pd-price{font-family:var(--font-display);font-size:2.1rem;font-weight:700;color:var(--ink);}
 .pd-price-unit{font-size:.9rem;color:var(--ink-faint);font-weight:600;}
 
+.pd-variants{margin-bottom:22px;}
+.pd-variants-label{display:block;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);margin-bottom:10px;}
+.pd-variant-options{display:flex;gap:8px;flex-wrap:wrap;}
+.pd-variant-btn{
+  padding:8px 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card-bg);
+  font-size:.84rem;font-weight:600;color:var(--ink);cursor:pointer;transition:border-color .2s, background .2s;
+}
+.pd-variant-btn:hover:not(:disabled){border-color:var(--accent);}
+.pd-variant-btn.active{border-color:var(--accent);background:rgba(255,116,49,.1);color:var(--accent-dark);}
+.pd-variant-btn:disabled{opacity:.5;cursor:not-allowed;text-decoration:line-through;}
+
+.pd-certifications{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.pd-cert-badge{
+  display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:var(--ink);
+  background:var(--card-bg);border:1px solid var(--line);padding:6px 12px;border-radius:999px;
+}
+.pd-cert-badge svg{fill:none;stroke:var(--accent);stroke-width:1.8;flex-shrink:0;}
+
 .pd-bulk-pricing{margin-bottom:22px;}
 .pd-bulk-pricing-label{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);margin-bottom:10px;}
 .pd-bulk-pricing-label svg{fill:none;stroke:var(--accent);stroke-width:1.8;}

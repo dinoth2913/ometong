@@ -1,0 +1,56 @@
+/* =========================================================
+   OMETONG — invoice.html
+   Loaded alongside supplierdashboard.css for shared vars/nav/.ot-msg
+   ========================================================= */
+
+.inv-wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+.inv-card {
+  background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--radius-lg, 16px);
+  padding: 36px; box-shadow: var(--shadow-sm);
+}
+
+.inv-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 20px; }
+.inv-logo { height: 32px; width: auto; margin-bottom: 8px; }
+.inv-company { font-size: .8rem; color: var(--ink-soft); max-width: 30ch; margin: 0; }
+.inv-head-meta { text-align: right; }
+.inv-head-meta h1 { margin: 0 0 4px; font-size: 1.4rem; }
+.inv-head-meta p { margin: 0; font-size: .84rem; color: var(--ink-soft); }
+
+.inv-status-pill {
+  display: inline-block; margin-top: 6px !important; font-size: .7rem; font-weight: 700; text-transform: capitalize;
+  padding: 3px 10px; border-radius: 999px; background: rgba(148,163,184,.16); color: var(--ink-soft);
+}
+.inv-status-pill.paid { background: rgba(34,197,94,.12); color: #178A50; }
+.inv-status-pill.overdue { background: rgba(239,68,68,.1); color: #B91C1C; }
+.inv-status-pill.cancelled { background: rgba(148,163,184,.2); color: var(--ink-faint); }
+
+.inv-meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.inv-meta-grid span { font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); font-weight: 700; }
+.inv-meta-grid p { margin: 4px 0 0; font-size: .85rem; color: var(--ink); white-space: pre-line; }
+
+.inv-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: .85rem; }
+.inv-table th { text-align: left; font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); padding: 8px 6px; border-bottom: 1px solid var(--line); }
+.inv-table td { padding: 10px 6px; border-bottom: 1px solid var(--line); color: var(--ink); }
+.inv-table th:nth-child(2), .inv-table td:nth-child(2),
+.inv-table th:nth-child(3), .inv-table td:nth-child(3),
+.inv-table th:nth-child(4), .inv-table td:nth-child(4) { text-align: right; }
+
+.inv-totals { max-width: 280px; margin-left: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.inv-totals > div { display: flex; justify-content: space-between; font-size: .85rem; color: var(--ink-soft); }
+.inv-totals strong { color: var(--ink); font-weight: 600; }
+.inv-total-final { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 4px; }
+.inv-total-final span, .inv-total-final strong { font-size: 1rem; font-weight: 700; color: var(--ink); }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .inv-card { box-shadow: none; border: none; padding: 0; }
+  .inv-wrap { padding: 0; max-width: 100%; }
+}
+
+@media (max-width: 560px) {
+  .inv-meta-grid { grid-template-columns: 1fr; }
+  .inv-head { flex-direction: column; }
+  .inv-head-meta { text-align: left; }
+}

@@ -50,6 +50,17 @@
 
         <div class="ot-timeline" id="otTimeline"></div>
 
+        <div class="ot-invoice" id="otInvoice" hidden>
+          <div><span>Invoice</span><strong id="otInvoiceNumber">—</strong></div>
+          <span class="ot-invoice-status" id="otInvoiceStatus"></span>
+          <a href="#" id="otInvoiceLink" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">View invoice</a>
+        </div>
+
+        <div class="ot-shipments" id="otShipments" hidden>
+          <h4>Shipment history</h4>
+          <div class="ot-shipments-list" id="otShipmentsList"></div>
+        </div>
+
         <div class="ot-edit" id="otEdit" hidden>
           <div class="ot-edit-row">
             <label>Carrier <input id="otCarrierInput" placeholder="e.g. DHL, Maersk"></label>
@@ -90,6 +101,12 @@
       msg: overlay.querySelector('#otMsg'),
       saveDetailsBtn: overlay.querySelector('#otSaveDetailsBtn'),
       advanceBtn: overlay.querySelector('#otAdvanceBtn'),
+      invoice: overlay.querySelector('#otInvoice'),
+      invoiceNumber: overlay.querySelector('#otInvoiceNumber'),
+      invoiceStatus: overlay.querySelector('#otInvoiceStatus'),
+      invoiceLink: overlay.querySelector('#otInvoiceLink'),
+      shipments: overlay.querySelector('#otShipments'),
+      shipmentsList: overlay.querySelector('#otShipmentsList'),
       refund: overlay.querySelector('#otRefund'),
       refundStatus: overlay.querySelector('#otRefundStatus'),
       refundForm: overlay.querySelector('#otRefundForm'),
@@ -163,6 +180,46 @@
     els.timeline.innerHTML = html;
   }
 
+  async function renderInvoice(order) {
+    const { data: invoice, error } = await window.sb
+      .from('invoices')
+      .select('*')
+      .eq('order_id', order.id)
+      .maybeSingle();
+    if (error || !invoice) { els.invoice.hidden = true; return; }
+
+    els.invoice.hidden = false;
+    els.invoiceNumber.textContent = invoice.invoice_number;
+    els.invoiceStatus.textContent = invoice.status;
+    els.invoiceStatus.className = 'ot-invoice-status ' + invoice.status;
+    els.invoiceLink.href = 'invoice.html?order=' + encodeURIComponent(order.id);
+  }
+
+  const SHIPMENT_STATUS_LABELS = {
+    preparing: 'Preparing',
+    in_transit: 'In transit',
+    delivered: 'Delivered',
+    returned: 'Returned',
+    failed: 'Failed'
+  };
+
+  async function renderShipments(orderId) {
+    const { data: rows, error } = await window.sb
+      .from('shipments')
+      .select('*')
+      .eq('order_id', orderId)
+      .order('created_at', { ascending: true });
+    if (error || !rows || !rows.length) { els.shipments.hidden = true; return; }
+
+    els.shipments.hidden = false;
+    els.shipmentsList.innerHTML = rows.map(s => `
+      <div class="ot-shipment-row">
+        <span class="ot-shipment-status ${esc(s.status)}">${esc(SHIPMENT_STATUS_LABELS[s.status] || s.status)}</span>
+        <span class="ot-shipment-detail">${esc(s.carrier) || 'Carrier not set'}${s.tracking_number ? ' · ' + esc(s.tracking_number) : ''}</span>
+        <span class="ot-shipment-date">${esc(fmtDate(s.delivered_at) || fmtDate(s.shipped_at) || fmtDate(s.created_at))}</span>
+      </div>`).join('');
+  }
+
   function renderShipInfo(order) {
     els.carrier.textContent = order.carrier || '—';
     els.trackingNum.textContent = order.tracking_number || '—';
@@ -207,6 +264,8 @@
     renderShipInfo(order);
     renderTimeline(order, history || []);
     renderEdit(order);
+    renderInvoice(order);
+    renderShipments(order.id);
 
     overlay._currentOrder = order;
 
