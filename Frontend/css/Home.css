@@ -672,12 +672,20 @@ button,input,select{font-family:inherit;}
   background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);
   opacity:.6;mix-blend-mode:overlay;
 }
-/* The shared overflow:hidden above (needed for .btn/.ai-btn's own
-   glass sheen) would also clip the pulse ring's outward glow on
+/* The shared rule above also sets position:relative, which — coming
+   after .back-top's own position:fixed earlier in this file, at the
+   same specificity — was silently winning and overriding it. That's
+   why the button was never actually fixed to the viewport corner at
+   all: position:relative left it sitting in normal document flow
+   whereever it naturally fell in the page (right after the footer),
+   just nudged slightly by its own right/bottom offsets, so it
+   scrolled away with the page instead of staying anchored on screen.
+   overflow:hidden above (needed for .btn/.ai-btn's own glass sheen)
+   would also have clipped the pulse ring's outward glow on
    .back-top — its own ::before still clips to a circle fine via
    border-radius:inherit alone, so overflow doesn't need to be
-   hidden here at all. */
-.back-top{overflow:visible;}
+   hidden here either. */
+.back-top{position:fixed;overflow:visible;}
 .btn:active,.ai-btn:active,.back-top:active{
   transform:scale(.94);
   transition:transform .12s var(--ease);
