@@ -178,37 +178,55 @@
 
           <!-- ===== ships sailing slowly out from Guangzhou and back, flipping to face the way they're travelling ===== -->
           <g class="ship-icons">
-            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:20s;animation-delay:0s">
+            <!-- Each icon's own x/y (-14,-14) exists to center the 28x28
+                 image on whatever point animateMotion moves it to — that
+                 offset is only applied once the motion animation is
+                 actually running. Before a delayed icon's `begin` time
+                 arrives, the browser was rendering it at that raw -14,-14
+                 position instead, right at the top-left corner of the
+                 1000x1000 map — visible as a stray fragment for however
+                 long that icon's delay lasted. Each icon now starts at
+                 opacity 0 and only becomes visible at the exact moment
+                 its own motion animation begins, via a matching <animate>
+                 with fill="freeze". -->
+            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:20s;animation-delay:0s;opacity:0">
+              <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.01s" fill="freeze"/>
               <animateMotion dur="20s" begin="0s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
                 <mpath href="#routeHub0"/>
               </animateMotion>
             </image>
-            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:22s;animation-delay:1.4s">
+            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:22s;animation-delay:1.4s;opacity:0">
+              <animate attributeName="opacity" from="0" to="1" begin="1.4s" dur="0.01s" fill="freeze"/>
               <animateMotion dur="22s" begin="1.4s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
                 <mpath href="#routeHub1"/>
               </animateMotion>
             </image>
-            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:18s;animation-delay:2.8s">
+            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:18s;animation-delay:2.8s;opacity:0">
+              <animate attributeName="opacity" from="0" to="1" begin="2.8s" dur="0.01s" fill="freeze"/>
               <animateMotion dur="18s" begin="2.8s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
                 <mpath href="#routeHub2"/>
               </animateMotion>
             </image>
-            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:21s;animation-delay:4.2s">
+            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:21s;animation-delay:4.2s;opacity:0">
+              <animate attributeName="opacity" from="0" to="1" begin="4.2s" dur="0.01s" fill="freeze"/>
               <animateMotion dur="21s" begin="4.2s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
                 <mpath href="#routeHub3"/>
               </animateMotion>
             </image>
-            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:19s;animation-delay:5.6s">
+            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:19s;animation-delay:5.6s;opacity:0">
+              <animate attributeName="opacity" from="0" to="1" begin="5.6s" dur="0.01s" fill="freeze"/>
               <animateMotion dur="19s" begin="5.6s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
                 <mpath href="#routeHub4"/>
               </animateMotion>
             </image>
-            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:23s;animation-delay:7s">
+            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:23s;animation-delay:7s;opacity:0">
+              <animate attributeName="opacity" from="0" to="1" begin="7s" dur="0.01s" fill="freeze"/>
               <animateMotion dur="23s" begin="7s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
                 <mpath href="#routeHub5"/>
               </animateMotion>
             </image>
-            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:20s;animation-delay:8.4s">
+            <image class="ship-icon" href="../../images/smile-logo-icon.png" width="28" height="28" x="-14" y="-14" style="animation-duration:20s;animation-delay:8.4s;opacity:0">
+              <animate attributeName="opacity" from="0" to="1" begin="8.4s" dur="0.01s" fill="freeze"/>
               <animateMotion dur="20s" begin="8.4s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;0.5;1" calcMode="linear">
                 <mpath href="#routeHub6"/>
               </animateMotion>
