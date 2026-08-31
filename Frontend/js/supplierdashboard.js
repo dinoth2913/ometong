@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <button type="button" class="listing-stock-edit" data-stock-edit="${item.id}">Update stock</button>
             </div>
             <button class="listing-toggle ${isActive ? '' : 'is-paused'}" data-toggle="${item.id}">${isActive ? 'Pause listing' : 'Reactivate listing'}</button>
+            ${(!isActive || !item.is_approved) ? `<button class="listing-delete" data-delete="${item.id}" type="button">Delete listing</button>` : ''}
           </div>
         </div>`;
     }).join('');
@@ -161,6 +162,37 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         item.status = next;
+        renderListings();
+        renderStats();
+      });
+    });
+
+    /* ---------- Delete listing (paused/never-approved only) ----------
+       Real, permanent delete — the database itself (see
+       supabase/listings_schema.sql's "Owners can delete their own
+       listings" policy) has always allowed this; it just never had a
+       button. Restricted here to a listing that isn't currently live
+       (paused, or still pending review) so a supplier can't
+       accidentally remove something buyers are actively seeing —
+       pause it first, then delete. Safe for real order history too:
+       order_items keeps its own copy of title/price/qty, and its
+       listing_id just goes null (on delete set null) if this listing
+       had past orders — nothing about a completed order changes. */
+    listingsGrid.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-delete');
+        const item = listings.find(l => String(l.id) === id);
+        if (!item) return;
+        if (!window.confirm(`Delete "${item.title}"? This can't be undone.`)) return;
+        btn.disabled = true;
+        const { error } = await window.sb.from('listings').delete().eq('id', id);
+        btn.disabled = false;
+        if (error) {
+          console.error('Ometong: failed to delete listing', error);
+          window.alert('Could not delete this listing — please try again.');
+          return;
+        }
+        listings = listings.filter(l => String(l.id) !== id);
         renderListings();
         renderStats();
       });

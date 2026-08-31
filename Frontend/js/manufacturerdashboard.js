@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <button type="button" class="listing-stock-edit" data-stock-edit="${item.id}">Update stock</button>
             </div>
             <button class="listing-toggle ${isActive ? '' : 'is-paused'}" data-toggle="${item.id}">${isActive ? 'Pause listing' : 'Reactivate listing'}</button>
+            ${(!isActive || !item.is_approved) ? `<button class="listing-delete" data-delete="${item.id}" type="button">Delete listing</button>` : ''}
           </div>
         </div>`;
     }).join('');
@@ -163,6 +164,31 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         item.status = next;
+        renderListings();
+        renderStats();
+      });
+    });
+
+    /* ---------- Delete listing (paused/never-approved only) ----------
+       Real, permanent delete — see the matching comment in
+       supplierdashboard.js for the full reasoning (RLS already
+       allowed this; order_items keeps its own snapshot so past
+       orders are unaffected). */
+    listingsGrid.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-delete');
+        const item = listings.find(l => String(l.id) === id);
+        if (!item) return;
+        if (!window.confirm(`Delete "${item.title}"? This can't be undone.`)) return;
+        btn.disabled = true;
+        const { error } = await window.sb.from('listings').delete().eq('id', id);
+        btn.disabled = false;
+        if (error) {
+          console.error('Ometong: failed to delete listing', error);
+          window.alert('Could not delete this listing — please try again.');
+          return;
+        }
+        listings = listings.filter(l => String(l.id) !== id);
         renderListings();
         renderStats();
       });

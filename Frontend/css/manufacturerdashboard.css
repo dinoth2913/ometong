@@ -249,6 +249,11 @@ main .container.section > section[data-reveal]:last-of-type{margin-bottom:0;}
 }
 .listing-toggle:hover{border-color:var(--accent);color:var(--accent);}
 .listing-toggle.is-paused{color:var(--ink-faint);}
+.listing-delete{
+  width:100%;margin-top:6px;padding:8px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:#B91C1C;
+  font-weight:700;font-size:.76rem;cursor:pointer;transition:all .2s;
+}
+.listing-delete:hover{border-color:#B91C1C;background:rgba(239,68,68,.08);}
 
 .listing-stock-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .listing-stock-label{font-size:.74rem;font-weight:600;color:var(--ink-soft);}

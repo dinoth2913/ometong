@@ -122,7 +122,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                    </div>
                  `).join('')}
                </div>`
-            : `<p class="rfq-list-meta" style="margin-top:10px;">No quotes yet — our team will relay one here as soon as a supplier responds.</p>`}
+            : `<p class="rfq-list-meta" style="margin-top:10px;">No quotes yet — our team will relay one here as soon as a supplier responds.</p>
+               ${r.status === 'open' ? `<button class="rfq-delete" data-delete="${r.id}" type="button">Delete request</button>` : ''}`}
         </div>`;
     }).join('');
 
@@ -130,6 +131,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       btn.addEventListener('click', () => {
         const box = document.getElementById('rfq-quotes-' + btn.getAttribute('data-toggle'));
         if (box) box.hidden = !box.hidden;
+      });
+    });
+    listEl.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!window.confirm("Delete this request? This can't be undone.")) return;
+        const id = btn.getAttribute('data-delete');
+        btn.disabled = true;
+        const { error } = await window.sb.from('rfqs').delete().eq('id', id);
+        if (error) {
+          console.error('Ometong: failed to delete RFQ', error);
+          window.alert('Could not delete this request — please try again.');
+          btn.disabled = false;
+          return;
+        }
+        await loadRfqs();
       });
     });
     listEl.querySelectorAll('[data-award]').forEach(btn => {
