@@ -161,6 +161,25 @@ main .container.section > section[data-reveal]:last-of-type{margin-bottom:0;}
 .mobile-menu.open{right:0;}
 .mobile-menu a{font-weight:700;font-size:1.05rem;color:var(--ink);}
 
+/* ---- notification bell ---- */
+.notif-bell-wrap{position:relative;}
+.notif-bell{position:relative;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card-bg);color:var(--ink-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s,color .2s;}
+.notif-bell:hover{border-color:var(--accent);color:var(--ink);}
+.notif-bell svg{fill:none;stroke:currentColor;stroke-width:1.8;}
+.notif-bell-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#EF4444;color:#fff;font-size:.62rem;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
+.notif-dropdown{position:absolute;top:calc(100% + 10px);right:0;width:320px;max-width:calc(100vw - 32px);max-height:420px;background:var(--card-bg);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-md,0 16px 40px rgba(21,24,31,.16));overflow:hidden;display:flex;flex-direction:column;z-index:600;}
+.notif-dropdown-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.84rem;font-weight:700;color:var(--ink);flex-shrink:0;}
+.notif-dropdown-head button{background:none;border:none;color:var(--accent);font-size:.76rem;font-weight:700;cursor:pointer;padding:0;}
+.notif-dropdown-body{overflow-y:auto;}
+.notif-row{display:flex;flex-direction:column;gap:3px;padding:12px 16px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;}
+.notif-row:last-child{border-bottom:none;}
+.notif-row:hover{background:var(--bg-alt);}
+.notif-row.unread{background:rgba(255,116,49,.06);}
+.notif-row-title{font-size:.84rem;font-weight:700;color:var(--ink);}
+.notif-row-body{font-size:.78rem;color:var(--ink-soft);}
+.notif-row-time{font-size:.7rem;color:var(--ink-faint);}
+@media (max-width:620px){.notif-dropdown{position:fixed;top:70px;right:16px;left:16px;width:auto;}}
+
 /* ---- user chip ---- */
 .user-chip{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:999px;background:var(--glass-bg);border:1px solid var(--glass-border);}
 .user-chip-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem;flex-shrink:0;}
