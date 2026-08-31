@@ -333,6 +333,9 @@ button,input,textarea,select{font-family:inherit;}
   transform:scale(.95);
   transition:transform .12s var(--ease);
 }
+/* Same silent position:relative override as supplierdashboard.css —
+   see the comment there. */
+.back-top{position:fixed;}
 
 /* ===== Rate order modal ===== */
 .rate-modal{

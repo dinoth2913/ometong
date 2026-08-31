@@ -420,6 +420,12 @@ main .container.section > section[data-reveal]:last-of-type{margin-bottom:0;}
 .btn,.back-top,.user-chip{position:relative;overflow:hidden;isolation:isolate;backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);}
 .btn::before,.back-top::before,.user-chip::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%);opacity:.6;mix-blend-mode:overlay;}
 .btn:active,.back-top:active{transform:scale(.95);transition:transform .12s var(--ease);}
+/* The shared rule above sets position:relative, which — at equal
+   specificity and coming after .back-top's own position:fixed
+   earlier in this file — was silently winning, so the button was
+   never actually anchored to the viewport corner; it just sat in
+   normal document flow wherever it fell in the page. */
+.back-top{position:fixed;}
 
 /* On phones the top bar ran wider than the screen: the user chip
    carries the full business name, and the language switcher and
