@@ -194,5 +194,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  /* ---------- Realtime — see supabase/realtime_messaging.sql ---------- */
+  window.sb
+    .channel('ometong-admin-support-messages-' + adminId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages' }, async (payload) => {
+      const openId = active ? active.id : null;
+      await loadThreads();
+      if (openId && payload.new.thread_id === openId) await openThread(openId);
+    })
+    .subscribe();
+
   await loadThreads();
 });

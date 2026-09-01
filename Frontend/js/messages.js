@@ -436,6 +436,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     msgShell.hidden = true;
   });
 
+  /* =========================================================
+     REALTIME — a new message pushes in instead of needing a manual
+     refresh. Requires supabase/realtime_messaging.sql to have been
+     run (adds these tables to the supabase_realtime publication);
+     without that this just quietly never fires, same as before.
+     RLS still governs what actually reaches this client — this only
+     ever sees inserts on rows the current account could already
+     SELECT anyway.
+  ========================================================= */
+  window.sb
+    .channel('ometong-inquiry-messages-' + myId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'inquiry_messages' }, async (payload) => {
+      const row = payload.new;
+      const openId = activeInquiry ? activeInquiry.id : null;
+      await loadInquiries();
+      if (openId && row.inquiry_id === openId) await openInquiry(openId);
+    })
+    .subscribe();
+
+  window.sb
+    .channel('ometong-support-messages-' + myId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages' }, async (payload) => {
+      const row = payload.new;
+      const openId = activeSupportThread ? activeSupportThread.id : null;
+      await loadSupportThreads();
+      if (openId && row.thread_id === openId) await openSupportThread(openId);
+    })
+    .subscribe();
+
   /* ---------- Deep link from "Contact Supplier" (?inquiry=<id>) ---------- */
   await loadInquiries();
   await loadSupportThreads();

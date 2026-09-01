@@ -166,5 +166,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  /* ---------- Realtime — see supabase/realtime_messaging.sql ---------- */
+  window.sb
+    .channel('ometong-admin-inquiry-messages-' + adminId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'inquiry_messages' }, async (payload) => {
+      const openId = active ? active.id : null;
+      await loadInquiries();
+      if (openId && payload.new.inquiry_id === openId) await openInquiry(openId);
+    })
+    .subscribe();
+
   await loadInquiries();
 });
