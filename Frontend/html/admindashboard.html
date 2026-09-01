@@ -127,6 +127,7 @@
       <a href="#contactmessages">Contact Messages</a>
       <a href="#chatmessages">Live Chat</a>
       <a href="#support">Customer Support</a>
+      <a href="#analytics">Analytics</a>
       <a href="#activity">Activity Log</a>
     </nav>
 
@@ -678,6 +679,50 @@
       </div>
     </section>
 
+    <!-- ===== ANALYTICS ===== -->
+    <section data-reveal id="analytics">
+      <div class="section-head">
+        <h2>Analytics</h2>
+        <span class="section-hint">Platform-wide performance at a glance</span>
+      </div>
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <div class="analytics-card-head">
+            <h3 id="chartGmvTitle">Platform GMV, last 6 months</h3>
+            <div class="analytics-card-actions">
+              <select class="analytics-range" id="chartGmvRange" aria-label="Time range">
+                <option value="6">Last 6 months</option>
+                <option value="12">Last 12 months</option>
+              </select>
+              <button type="button" class="btn btn-ghost btn-sm" id="chartGmvExport">Export CSV</button>
+            </div>
+          </div>
+          <div id="chartGmv"></div>
+        </div>
+        <div class="analytics-card">
+          <div class="analytics-card-head">
+            <h3>Orders by status</h3>
+            <button type="button" class="btn btn-ghost btn-sm" id="chartAdminOrderStatusExport">Export CSV</button>
+          </div>
+          <div id="chartAdminOrderStatus"></div>
+        </div>
+        <div class="analytics-card">
+          <div class="analytics-card-head">
+            <h3>New sign-ups</h3>
+            <button type="button" class="btn btn-ghost btn-sm" id="chartSignupsExport">Export CSV</button>
+          </div>
+          <div id="chartSignups"></div>
+        </div>
+        <div class="analytics-card">
+          <div class="analytics-card-head">
+            <h3>Top suppliers by revenue</h3>
+            <button type="button" class="btn btn-ghost btn-sm" id="chartTopSuppliersExport">Export CSV</button>
+          </div>
+          <div id="chartTopSuppliers"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== ACTIVITY LOG ===== -->
     <section data-reveal id="activity">
       <div class="section-head">
@@ -728,7 +773,8 @@
 <script src="../js/authGuard.js?v=1" data-role="admin"></script>
 <script src="../js/i18n.js"></script>
 <script src="../js/loadingState.js"></script>
-<script src="../js/admindashboard.js?v=2"></script>
+<script src="../js/barChart.js"></script>
+<script src="../js/admindashboard.js?v=3"></script>
 <script src="../js/adminInquiries.js?v=1"></script>
 <script src="../js/adminContactMessages.js"></script>
 <script src="../js/adminRefunds.js"></script>

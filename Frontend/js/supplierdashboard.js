@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
      empty until then. */
   let listings = [];
   let orders = [];
+  let orderItemsFlat = [];
   let requests = [];
   let myResponses = {}; // rfq_id -> rfq_responses row
   const demoPayouts = [];
@@ -410,6 +411,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const grouped = {};
+    // Kept flat too (not just grouped-by-order) so the "Top listings
+    // by revenue" chart can aggregate per line item without re-fetching.
+    orderItemsFlat = (data || []).filter(item => item.orders && item.orders.status !== 'cancelled');
     (data || []).forEach(item => {
       const o = item.orders;
       if (!o) return;
@@ -546,6 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
      Export CSV buttons can download exactly what's on screen. */
   let lastEarningsRows = [];
   let lastStatusRows = [];
+  let lastTopListingsRows = [];
 
   function renderAnalytics() {
     const earningsEl = document.getElementById('chartEarnings');
@@ -585,11 +590,31 @@ document.addEventListener('DOMContentLoaded', () => {
       lastStatusRows = rows;
       window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders yet.' });
     }
+
+    /* ---------- Top listings by revenue ----------
+       Aggregated from the flat order_items list (not the grouped
+       `orders`, which loses per-item detail) — top 5 by summed
+       line_total, cancelled orders already excluded when it was built. */
+    const topListingsEl = document.getElementById('chartTopListings');
+    if (topListingsEl) {
+      const byTitle = {};
+      orderItemsFlat.forEach(item => {
+        const key = item.title || 'Untitled listing';
+        byTitle[key] = (byTitle[key] || 0) + Number(item.line_total || 0);
+      });
+      const rows = Object.entries(byTitle)
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5);
+      lastTopListingsRows = rows;
+      window.ometongRenderBarChart(topListingsEl, rows, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders yet.' });
+    }
   }
 
   document.getElementById('chartEarningsRange')?.addEventListener('change', renderAnalytics);
   document.getElementById('chartEarningsExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastEarningsRows, 'ometong-earnings'));
   document.getElementById('chartOrderStatusExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastStatusRows, 'ometong-orders-by-status'));
+  document.getElementById('chartTopListingsExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastTopListingsRows, 'ometong-top-listings'));
 
   (async () => {
     await Promise.all([loadListings(), loadOrders(), loadRequests()]);

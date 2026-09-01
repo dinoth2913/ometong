@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let profiles = [];
   let orders = [];
   let activity = [];
+  let orderItemsFlat = [];
   const profileMap = {};
 
   const loadErrorEl = document.getElementById('adminLoadError');
@@ -71,17 +72,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loadErrorEl) loadErrorEl.hidden = true;
     if (pendingGridLoading()) window.ometongShowLoading?.(document.getElementById('pendingGrid'), 'Loading…');
 
-    const [listingsRes, profilesRes, ordersRes, activityRes] = await Promise.all([
+    const [listingsRes, profilesRes, ordersRes, activityRes, orderItemsRes] = await Promise.all([
       window.sb.from('listings').select('*').order('created_at', { ascending: false }),
       window.sb.from('profiles').select('*').order('created_at', { ascending: false }),
       window.sb.from('orders').select('*').order('created_at', { ascending: false }),
-      window.sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(100)
+      window.sb.from('admin_audit_log').select('*').order('created_at', { ascending: false }).limit(100),
+      // Platform-wide, used only for the "Top suppliers by revenue"
+      // chart — admins can see every order_item, unlike a supplier's
+      // own dashboard which is scoped to their own supplier_id.
+      window.sb.from('order_items').select('supplier_id, line_total, orders(status)')
     ]);
 
     if (listingsRes.error) console.error('Ometong: failed to load listings', listingsRes.error);
     if (profilesRes.error) console.error('Ometong: failed to load profiles', profilesRes.error);
     if (ordersRes.error) console.error('Ometong: failed to load orders', ordersRes.error);
     if (activityRes.error) console.error('Ometong: failed to load activity log', activityRes.error);
+    if (orderItemsRes.error) console.error('Ometong: failed to load order items', orderItemsRes.error);
 
     const anyError = listingsRes.error || profilesRes.error || ordersRes.error || activityRes.error;
     if (anyError && loadErrorEl) {
@@ -98,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     profiles = profilesRes.data || [];
     orders = ordersRes.data || [];
     activity = activityRes.data || [];
+    orderItemsFlat = (orderItemsRes.data || []).filter(item => item.orders && item.orders.status !== 'cancelled');
     profiles.forEach(p => { profileMap[p.id] = p; });
   }
 
@@ -382,7 +389,101 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOrders();
     renderActivity();
     renderStats();
+    renderAdminAnalytics();
   }
+
+  /* ---------- Analytics (platform-wide) ----------
+     Same shared bar-chart component + CSV export pattern used on the
+     buyer/supplier/manufacturer dashboards, computed from the
+     already-loaded `orders`/`profiles`/`orderItemsFlat` — admin sees
+     every account's activity, not just its own. */
+  let lastGmvRows = [];
+  let lastAdminStatusRows = [];
+  let lastSignupsRows = [];
+  let lastTopSuppliersRows = [];
+
+  function monthBuckets(monthCount) {
+    const now = new Date();
+    const months = [];
+    const byKey = {};
+    for (let i = monthCount - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const m = { key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short', year: monthCount > 6 ? '2-digit' : undefined }), value: 0 };
+      months.push(m);
+      byKey[m.key] = m;
+    }
+    return { months, byKey };
+  }
+
+  function renderAdminAnalytics() {
+    const gmvEl = document.getElementById('chartGmv');
+    const statusEl = document.getElementById('chartAdminOrderStatus');
+    const signupsEl = document.getElementById('chartSignups');
+    const topSuppliersEl = document.getElementById('chartTopSuppliers');
+    if (!gmvEl && !statusEl && !signupsEl && !topSuppliersEl) return;
+
+    const gmvRange = document.getElementById('chartGmvRange');
+    const gmvTitle = document.getElementById('chartGmvTitle');
+    const monthCount = gmvRange ? parseInt(gmvRange.value, 10) || 6 : 6;
+
+    if (gmvEl) {
+      const { months, byKey } = monthBuckets(monthCount);
+      orders.forEach(o => {
+        if (o.status === 'cancelled' || !o.created_at) return;
+        const d = new Date(o.created_at);
+        const key = `${d.getFullYear()}-${d.getMonth()}`;
+        if (byKey[key]) byKey[key].value += Number(o.total || 0);
+      });
+      lastGmvRows = months;
+      if (gmvTitle) gmvTitle.textContent = `Platform GMV, last ${monthCount} months`;
+      window.ometongRenderBarChart(gmvEl, months, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders yet.' });
+    }
+
+    if (statusEl) {
+      const labels = { processing: 'Processing', transit: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled' };
+      const counts = { processing: 0, transit: 0, delivered: 0, cancelled: 0 };
+      const cls = { pending: 'processing', paid: 'processing', processing: 'processing', shipped: 'transit', delivered: 'delivered', completed: 'delivered', cancelled: 'cancelled', refunded: 'cancelled' };
+      orders.forEach(o => {
+        const c = cls[o.status] || o.status;
+        if (counts[c] !== undefined) counts[c]++;
+      });
+      const rows = Object.keys(labels).map(k => ({ label: labels[k], value: counts[k] }));
+      lastAdminStatusRows = rows;
+      window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders yet.' });
+    }
+
+    if (signupsEl) {
+      const { months, byKey } = monthBuckets(monthCount);
+      profiles.forEach(p => {
+        if (!p.created_at) return;
+        const d = new Date(p.created_at);
+        const key = `${d.getFullYear()}-${d.getMonth()}`;
+        if (byKey[key]) byKey[key].value += 1;
+      });
+      lastSignupsRows = months;
+      window.ometongRenderBarChart(signupsEl, months, { emptyText: 'No sign-ups yet.' });
+    }
+
+    if (topSuppliersEl) {
+      const byId = {};
+      orderItemsFlat.forEach(item => {
+        if (!item.supplier_id) return;
+        byId[item.supplier_id] = (byId[item.supplier_id] || 0) + Number(item.line_total || 0);
+      });
+      const rows = Object.entries(byId)
+        .map(([id, value]) => ({ label: sellerName(id), value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5);
+      lastTopSuppliersRows = rows;
+      window.ometongRenderBarChart(topSuppliersEl, rows, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders yet.' });
+    }
+  }
+
+  document.getElementById('chartGmvRange')?.addEventListener('change', renderAdminAnalytics);
+  document.getElementById('chartGmvExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastGmvRows, 'ometong-platform-gmv'));
+  document.getElementById('chartAdminOrderStatusExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastAdminStatusRows, 'ometong-orders-by-status'));
+  document.getElementById('chartSignupsExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastSignupsRows, 'ometong-new-signups'));
+  document.getElementById('chartTopSuppliersExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastTopSuppliersRows, 'ometong-top-suppliers'));
 
   (async () => {
     await loadAll();

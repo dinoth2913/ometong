@@ -513,6 +513,7 @@ document.addEventListener('DOMContentLoaded', () => {
      counts every non-cancelled order once. */
   let lastSpendingRows = [];
   let lastStatusRows = [];
+  let lastTopItemsRows = [];
 
   function renderAnalytics() {
     const spendingEl = document.getElementById('chartSpending');
@@ -549,11 +550,33 @@ document.addEventListener('DOMContentLoaded', () => {
       lastStatusRows = rows;
       window.ometongRenderBarChart(statusEl, rows, { emptyText: 'No orders placed yet.' });
     }
+
+    /* ---------- Top items purchased ----------
+       Aggregated from each order's own `items` (order_items rows) by
+       title, top 5 by total spend, cancelled orders excluded. */
+    const topItemsEl = document.getElementById('chartTopItems');
+    if (topItemsEl) {
+      const byTitle = {};
+      orders.forEach(o => {
+        if (o.status === 'cancelled') return;
+        (o.items || []).forEach(item => {
+          const key = item.title || 'Item';
+          byTitle[key] = (byTitle[key] || 0) + Number(item.line_total || 0);
+        });
+      });
+      const rows = Object.entries(byTitle)
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5);
+      lastTopItemsRows = rows;
+      window.ometongRenderBarChart(topItemsEl, rows, { format: v => '$' + v.toLocaleString('en-US'), emptyText: 'No orders placed yet.' });
+    }
   }
 
   document.getElementById('chartSpendingRange')?.addEventListener('change', renderAnalytics);
   document.getElementById('chartSpendingExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastSpendingRows, 'ometong-spending'));
   document.getElementById('chartOrderStatusExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastStatusRows, 'ometong-orders-by-status'));
+  document.getElementById('chartTopItemsExport')?.addEventListener('click', () => window.ometongExportChartCSV(lastTopItemsRows, 'ometong-top-items'));
 
   (async () => {
     await loadOrders();
