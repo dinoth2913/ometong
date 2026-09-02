@@ -108,6 +108,7 @@ button{font-family:inherit;}
 .section-head{max-width:680px;margin:0 auto 40px;text-align:center;}
 .story-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
 .story-copy p{font-size:.98rem;}
+.story-note{font-size:.86rem;color:var(--ink-faint);margin-top:14px;}
 .story-facts{display:flex;flex-direction:column;gap:16px;}
 .story-fact{
   display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);
