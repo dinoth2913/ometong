@@ -4,6 +4,10 @@
 -- Project Settings -> SQL Editor -> New query -> paste -> Run.
 -- =========================================================
 
+-- Reminder: after adding the AI module, when a customer asks for some
+-- product through the chat system, that product should be shown on the
+-- marketplace by AI as a fully AI-driven listing or suggestion.
+
 -- ---------- orders ----------
 -- One row per checkout. Holds the order-level totals and shipping
 -- details; the individual line items live in order_items below.

@@ -1,0 +1,3 @@
+Ometong project repository
+
+Contains a static frontend under Frontend/, Supabase SQL schema files under supabase/, and site assets at images/.

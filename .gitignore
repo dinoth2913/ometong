@@ -1,0 +1,43 @@
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Node dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+~*
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*.old
+
+# Supabase local config
+supabase/.cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
